@@ -1,0 +1,208 @@
+﻿<Window x:Class="ContractWork.MVVM.Popups.NewInventoryItemPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.Popups"
+        mc:Ignorable="d"
+        
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+ 
+        Height="200" Width="400"
+ 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        MouseLeftButtonDown="DragMe"
+        x:Name="NewInventoryItem" 
+        >
+    
+    <Window.Resources>
+        <Style TargetType="{x:Type Control}" x:Key="baseStyle">
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </Window.Resources>
+    
+    <Border CornerRadius="10 10 10 10"
+            Background="Bisque">
+
+        <DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Border CornerRadius="5 5 0 0" Background="#ffc79d" >
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0" >
+                            <Label Content="Add Part"/>
+                            <CheckBox x:Name="chkFrequentUsed" 
+                                      Content="Set As Frequent Used Item" 
+                                      VerticalAlignment="Center"
+                                      Margin="35 0 0 0"
+                                      IsThreeState="False"/>
+                        </StackPanel>
+
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                            <customcontrols:WindowControls 
+                            TextContent="-"
+                            btnWidth="20"
+                            btnMargin="3"
+                            btnBckgrnd="#F5B53F"
+                            btnClick="btnMinimize_Click"
+                            Margin="0,0,0,0"
+                            />
+                            <customcontrols:WindowControls 
+                            TextContent="X"
+                            TextPadding="1,0,1,2"
+                            btnWidth="20"
+                            btnMargin="3"
+                            btnBckgrnd="#F55551"
+                            btnClick="btnExit_Click"
+                            Margin="0,0,0,0"
+                            />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+            
+            <Grid DockPanel.Dock="Bottom" Height="25">
+                <Border CornerRadius="0 0 5 5" Background="#ffc79d" 
+                        BorderThickness="1 1 1 1" BorderBrush="#ff9342"/>
+                <customcontrols:SelectionControls 
+                    btnHeight="20"
+                    btnWidth="40"
+                    btnHorizAlign="Right"
+                    btnContentText="Next"
+                    btnBrdrMargin="0 0 10 0"
+                    btnBrdrCornerRadius="5"
+                    MaintCornerRadius="5"
+                    MaintBackground="#AA8468"
+                    btnClick="Next_btnClick"
+                />
+            </Grid>
+            
+            <StackPanel DockPanel.Dock="Left">
+                <Label Content="Catalog ID: " FontSize="10"/>
+                <Label Content="Equipment: " FontSize="10"/>
+                <Label Content="Description: " FontSize="10"/>
+                <Label Content="Catalog Number: " FontSize="10"/>
+                <Label Content="Category: " FontSize="10"/>
+                <Label Content="Part Number: " FontSize="10"/>
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Right" Background="White">
+                <customcontrols:txtbxRoundedControl 
+                    x:Name="txtbxCatalogID"
+                    txtbxWidth="40"
+                    txtbxHeight="18"
+                    txtbxVerticAlign="Center"
+                    txtbxHorizAlign="Left"
+                    txtbxMargin="5 3 0 3"
+                    txtbxPadding="2 0 0 0"
+                />
+                <!--<customcontrols:txtbxRoundedControl 
+                     x:Name="txtbxEquipment"
+                     txtbxWidth="150"
+                     txtbxHeight="18"
+                     txtbxVerticAlign="Center"
+                     txtbxHorizAlign="Left"
+                     txtbxMargin="5,5,0,0"
+                />-->
+                
+                <!--<ComboBox x:Name="cboEquipment"-->
+                <ComboBox x:Name="cboEquipment"
+                    Style="{StaticResource ComboBoxStyle}" 
+                    DisplayMemberPath="Value"
+                    SelectedValuePath="Key"
+                    Text="Select your equipment ..."
+                    IsEditable="True" 
+                    IsReadOnly="True" 
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Left"
+                    VerticalContentAlignment="Center"
+                    Margin="5,1,0 0"
+                    Padding="0,0,0,6"
+                    Width="150"
+                    Height="20"
+                    FontSize="12"
+                />
+                          
+                
+                <customcontrols:txtbxRoundedControl 
+                    x:Name="txtbxDescription"
+                    txtbxWidth="150"
+                    txtbxHeight="18"
+                    txtbxVerticAlign="Center"
+                    txtbxHorizAlign="Left"
+                    txtbxMargin="5,5,0,0"
+                    txtbxPadding="2 0 0 0"
+                />
+                <customcontrols:txtbxRoundedControl 
+                     x:Name="txtbxCatalogNumber"
+                     txtbxWidth="150"
+                     txtbxHeight="18"
+                     txtbxVerticAlign="Center"
+                     txtbxHorizAlign="Left"
+                     txtbxMargin="5,6,0,0"
+                    txtbxPadding="2 0 0 0"
+                />
+
+                <ComboBox x:Name="cboCategory"
+                    Style="{StaticResource ComboBoxStyle}" 
+                    DisplayMemberPath="Value"
+                    SelectedValuePath="Key"
+                    Text="Select your equipment ..."
+                    IsEditable="True" 
+                    IsReadOnly="True" 
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Left"
+                    VerticalContentAlignment="Center"
+                    Margin="5,1,0 0"
+                    Padding="0,0,0,6"
+                    Width="150"
+                    Height="20"
+                    FontSize="12"
+                />
+
+                <!--<ComboBox x:Name="cboCategory"
+                    Style="{StaticResource ComboBoxStyle}" 
+                    Text="Select your category ..."
+                    IsEditable="True" 
+                    IsReadOnly="True" 
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Left"
+                    VerticalContentAlignment="Center"
+                    Margin="5,1,0 0"
+                    Padding="0,0,0,6"
+                    Width="150"
+                    Height="20"
+                    FontSize="12"
+                />-->
+
+                <!--<customcontrols:txtbxRoundedControl 
+                     x:Name="txtbxCategory"
+                     txtbxWidth="150"
+                     txtbxHeight="18"
+                     txtbxVerticAlign="Center"
+                     txtbxHorizAlign="Left"
+                     txtbxMargin="5,5,0,0"
+                />-->
+                <customcontrols:txtbxRoundedControl 
+                     x:Name="txtbxPartNumber"
+                     txtbxWidth="150"
+                     txtbxHeight="18"
+                     txtbxVerticAlign="Center"
+                     txtbxHorizAlign="Left"
+                     txtbxMargin="5,5,0,0"
+                    txtbxPadding="2 0 0 0"
+                    
+                />
+            </StackPanel>
+        </DockPanel>
+    </Border>
+</Window>

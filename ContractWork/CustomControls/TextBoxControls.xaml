@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="ContractWork.CustomControls.TextBoxControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ContractWork.CustomControls"
+             xmlns:conv="clr-namespace:ContractWork.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="TextBoxControl">
+    
+    <UserControl.Resources>
+        <conv:ComplementaryColorsConverter x:Key="convcolors"/>
+
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource txtBoxRounded}">
+            <Setter Property="Background" 
+                Value="{Binding txtbxBackground, ElementName=TextBoxControl}" />
+            <Setter Property="Foreground"
+                Value="{Binding txtbxForeground, ElementName=TextBoxControl}" />
+            <Setter Property="BorderBrush"
+                Value="{Binding txtbxBorderBrush, ElementName=TextBoxControl}" />
+
+            <Setter Property="Border.CornerRadius"  
+                Value="{Binding txtbxCornerRadius, ElementName=TextBoxControl}"/>
+
+            <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background"
+                        Value="{Binding txtbxBackground, ElementName=TextBoxControl, Converter={StaticResource convcolors}}" />
+                <Setter Property="Foreground"
+                        Value="{Binding txtbxForeground, ElementName=TextBoxControl, Converter={StaticResource convcolors}}" />
+                <Setter Property="BorderBrush"
+                        Value="{Binding txtbxBorderBrush, ElementName=TextBoxControl, Converter={StaticResource convcolors}}" />
+
+                <Setter Property="Cursor" Value="IBeam" />
+                
+            </Trigger>
+        </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <TextBox x:Name="txtbox" 
+         Margin="{Binding txtbxMargin, ElementName=TextBoxControl}"
+         BorderThickness="{Binding txtbxBorderThickness, ElementName=TextBoxControl}"
+         Height="{Binding txtbxHeight, ElementName=TextBoxControl}"
+         Width="{Binding txtbxWidth, ElementName=TextBoxControl}"
+         FontSize="{Binding txtbxFontSize, ElementName=TextBoxControl}"
+         FontWeight="{Binding txtbxFontWeight, ElementName=TextBoxControl}"
+         Padding="{Binding txtbxPadding, ElementName=TextBoxControl}"
+         HorizontalContentAlignment="{Binding txtbxHorizContentAlign, ElementName=TextBoxControl}"
+         VerticalContentAlignment="{Binding txtbxVertContentAlign, ElementName=TextBoxControl}"
+         HorizontalAlignment="{Binding txtbxHorizAlign, ElementName=TextBoxControl}"
+         VerticalAlignment="{Binding txtbxVerticAlign, ElementName=TextBoxControl}"
+         Text="{Binding txtbxText, ElementName=TextBoxControl}"
+         
+         >
+    </TextBox>
+</UserControl>

@@ -1,0 +1,255 @@
+﻿<Window x:Class="ContractWork.MVVM.PMandInventory.InventoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.PMandInventory"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+        d:DataContext="{d:DesignInstance Type=local:InventoryViewModel}"
+        mc:Ignorable="d"
+        
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+
+        Height="800"
+        Width="1000"
+        WindowStartupLocation="CenterScreen"
+        x:Name="dashboard"
+        MouseLeftButtonDown="DragMe">
+
+    <Window.Resources>
+        <converters:MinusOrPlusConverter x:Key="MinusOrPlus"/>
+        <converters:DarkenColorConverter x:Key="Darken" />
+
+    </Window.Resources>
+
+
+    <Border CornerRadius="10"
+            Background="#17365D"
+            BorderBrush="White"
+            BorderThickness="3">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width=".5*" />
+                <ColumnDefinition Width=".5*" />
+                <ColumnDefinition Width=".13*" />
+                <ColumnDefinition Width="5" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5" />
+                <RowDefinition Height=".07*" />
+                <RowDefinition Height=".07*" />
+                <RowDefinition Height=".002*" />
+                <RowDefinition Height=".9*" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="1"
+                Grid.Row="1"
+                Foreground="White"
+                Text="Inventory"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="30,0,0,5"
+                FontSize="32" />
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+                        Background="White"
+            />
+
+            <StackPanel Grid.Row="1" Grid.Column="2"
+                        VerticalAlignment="Center">
+
+                <ComboBox Style="{StaticResource ComboBoxStyle}" 
+                          ItemsSource="{Binding ListOfPartsList}"
+                          SelectedItem="{Binding PartsSelectedView}"
+                          IsEditable="True" 
+                          IsReadOnly="True"
+                          d:Text="Please clear"
+                          Text="{Binding PartstextOverlay}"
+                          Margin="0,0,0,0"
+                      >
+                </ComboBox>
+            </StackPanel>
+
+            <Grid Grid.Column="3"
+                    Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="20"
+                        btnMargin="3"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                        Margin="60,0,0,20"
+                        />
+
+                    <customcontrols:WindowControls
+                        TextContent="X"
+                        TextPadding="1,0,1,2"
+                        btnWidth="20"
+                        btnMargin="3"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                        Margin="0,0,0,20"
+                        />
+
+                </StackPanel>
+            </Grid>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+                        Background="#D6DCE5">
+                <ContentControl Style="{StaticResource PanelRaised}"
+                    Margin="0,5,0,0"
+                    Height="40"
+                    Width="600"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                >
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbAll"
+                                     IsChecked="{Binding RbAllisChecked}"
+                                     Content="All"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbLP15"
+                                     IsChecked="{Binding RbLP15isChecked}"
+                                     Content="LP15"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbLucas"
+                                     IsChecked="{Binding RadbtnLucasIsChecked}"
+                                     Content="Lucas"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbLP35"
+                                     IsChecked="{Binding RadbtnLP35IsChecked}"
+                                     Content="LP35"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbAccessories"
+                                     IsChecked="{Binding RadbtnAccessoriesIsChecked}"
+                                     Content="Accessories"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbAEDs"
+                                     IsChecked="{Binding RadbtnAEDsIsChecked}"
+                                     Content="AED's"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbSMKEMS"
+                                     IsChecked="{Binding RadbtnSMKEMSIsChecked}"
+                                     Content="SMK-EMS"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                        <RadioButton Command ="{Binding ChangeEquipmentCommand}"
+                                     CommandParameter="rbSMKHospital"
+                                     IsChecked="{Binding RadbtnSMKHospitalIsChecked}"
+                                     Content="SMK-Hospital"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0"/>
+                    </StackPanel>
+                </ContentControl>
+                
+                <customcontrols:SelectionControls 
+                        btnBrdrHeight="30" 
+                        btnBrdrWidth =" 45"
+                        btnBrdrCornerRadius="10"
+                        MaintCornerRadius="10"
+                        MaintBackground="#D6DCE5"
+                        btnBrdrMargin ="40 5 0 0"
+                        btnContentText="New"
+                        btnClickCommand="{Binding NewInventoryCommand}"
+                />
+            </StackPanel>
+                        
+            
+            <DataGrid Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                      AutoGenerateColumns="False"
+                      ItemsSource="{Binding InventoryPartsList}"
+                      SelectedItem="{Binding SelectedInventoryItem}">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" IsReadOnly="True"
+                        Binding="{Binding CatalogNumberID}"/>
+                    <DataGridTextColumn Header="Type" IsReadOnly="True"
+                        Binding="{Binding EquipmentType}"/>
+
+                    <DataGridTemplateColumn Header="Catalog Number" IsReadOnly="True"
+                                            CanUserSort="True" SortMemberPath="CatalogNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CatalogNumber}">  
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding CopyCatalogNumberCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Description" IsReadOnly="True"
+                        Binding="{Binding Description}"/>
+                    <DataGridTextColumn Header="Category" IsReadOnly="True"
+                        Binding="{Binding Category}"/>
+
+                    <DataGridTemplateColumn Header="Frequent Item">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                
+                                <CheckBox IsChecked="{Binding FreqUsedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          >  
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetFrequentUsedCommand,
+                                                RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                                   CommandParameter="{Binding FreqUsedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
+                                    <!--{Binding DataContext.SetFrequentUsedCommand,
+                                                RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
+                                                                   CommandParameter="{Binding FreqUsedItem}-->
+                                    
+                                </CheckBox>
+                                
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!---->
+
+                    
+                    
+                    <DataGridTextColumn Header="Date Updated" IsReadOnly="True"
+                        Binding="{Binding LastDateUpdated}"/>
+                    <DataGridTextColumn Header="Notes"
+                                        Width="*"
+                        Binding="{Binding Notes}"/>
+
+                </DataGrid.Columns>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding EditInventoryItemCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                
+
+            </DataGrid>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,191 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!--<Brush x:Key=""  _pmTextBoxForeground = Brushes.Black</Brush>
+
+        [ObservableProperty]
+private Brush _pmTextBoxBackground = Brushes.White;     //(Brush)new BrushConverter().ConvertFrom("#FFF");
+
+[ObservableProperty]
+private Brush _pmTextBoxBorderBrush = Brushes.Black;
+
+[ObservableProperty]
+private Brush _serviceNotesForeground = Brushes.Black;     //(Brush)new BrushConverter().ConvertFrom("#000");
+
+[ObservableProperty]
+private Brush _serviceNotesBackground = Brushes.White;     //(Brush)new BrushConverter().ConvertFrom("#FFF");
+
+[ObservableProperty]
+private Brush _serviceNotesBorderBrush = Brushes.Black;-->
+
+
+
+
+    <Brush x:Key="Primary">#2196f3</Brush>
+
+    <Brush x:Key="WindowsBackgroundColor">#f2f2f7</Brush>
+    <SolidColorBrush x:Key="ColorBackground">#404751</SolidColorBrush>
+    <Color x:Key="WindowsBackgroundColor2">#303741</Color>
+
+    <SolidColorBrush x:Key="Backgroundwhiteish">#f0f0f0</SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroundDarkPurple">#272537</SolidColorBrush>
+    <SolidColorBrush x:Key="WindowsBackgroundColor3">#303741</SolidColorBrush>
+
+    <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+    <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+
+    <Brush x:Key="CurrentYear">#CC99FF</Brush>
+
+    <Brush x:Key="SystemBlue">#007AFF</Brush>
+    <Brush x:Key="SystemGreen">#34c759</Brush>
+    <Brush x:Key="SystemIndigo">#5856d6</Brush>
+    <Brush x:Key="SystemOrange">#ff9500</Brush>
+    <Brush x:Key="SystemPink">#ff2d55</Brush>
+    <Brush x:Key="SystemPurple">#af52de</Brush>
+    <Brush x:Key="SystemRed">#ff3b30</Brush>
+    <Brush x:Key="SystemTeal">#5ac8fa</Brush>
+    <Brush x:Key="SystemYellow">#ffcc00</Brush>
+    <Color x:Key="GradientRed">#ffe11212</Color>
+
+    <Brush x:Key="SystemGray">#8e8e93</Brush>
+    <Brush x:Key="SystemGray2">#aeaeb2</Brush>
+    <Brush x:Key="SystemGray3">#c7c7cc</Brush>
+    <Brush x:Key="SystemGray4">#d1d1d6</Brush>
+    <Brush x:Key="SystemGray5">#e5e5ea</Brush>
+    <Brush x:Key="SystemGray6">#f2f2f7</Brush>
+
+    <Brush x:Key="SystemBlueDark">#0a84ff</Brush>
+    <Brush x:Key="SystemGreenDark">#30d158</Brush>
+    <Brush x:Key="SystemIndigoDark">#5e5ce6</Brush>
+    <Brush x:Key="SystemOrangeDark">#ff9f0a</Brush>
+    <Brush x:Key="SystemPinkDark">#ff375f</Brush>
+    <Brush x:Key="SystemPurpleDark">#bf5af2</Brush>
+    <Brush x:Key="SystemRedDark">#ff453a</Brush>
+    <Brush x:Key="SystemTealDark">#64d2ff</Brush>
+    <Brush x:Key="SystemYellowDark">#ffd60a</Brush>
+
+    <Brush x:Key="SystemDarkPurple">#181735</Brush>
+    <Brush x:Key="SystemDarkPurple2">#0f0f2d</Brush>
+
+    <SolidColorBrush x:Key="DarkColor">#aa000000</SolidColorBrush>
+    <SolidColorBrush x:Key="LightColor">#45ffffff</SolidColorBrush>
+
+    <Color x:Key="WindowColor">#FFE8EDF9</Color>
+    <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+    <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+
+    <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+    <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+    <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+    <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+    <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+    <Color x:Key="ControlLightColor">White</Color>
+    <Color x:Key="ControlMediumColor">#FF7381F9</Color>
+    <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+
+    <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+    <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+
+
+    <Color x:Key="GlyphColor">#FF444444</Color>
+    <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+
+    <!--Border colors-->
+    <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+    <Color x:Key="BorderMediumColor">#FF888888</Color>
+    <Color x:Key="BorderDarkColor">#FF444444</Color>
+
+    <Color x:Key="PressedBorderLightColor">#FF888888</Color>
+    <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+
+    <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+    <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+
+    <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+
+    <!--Control-specific resources.-->
+    <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+    <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+    <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+
+    <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+    <LinearGradientBrush x:Key="MenuPopupBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
+        <GradientStop Color="{DynamicResource ControlMediumColor}" Offset="0.5" />
+        <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#000000FF" Offset="0" />
+                <GradientStop Color="#600000FF" Offset="0.4" />
+                <GradientStop Color="#600000FF" Offset="0.6" />
+                <GradientStop Color="#000000FF" Offset="1" />
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#FF6B8E95" Offset="0" />
+        <GradientStop Color="#FF14A7C1" Offset="1" />
+        <GradientStop Color="#FF1E424E" Offset="0.509" />
+        <GradientStop Color="#FF1D4855" Offset="0.542" />
+        <GradientStop Color="#FF1D4855" Offset="0.542" />
+        <GradientStop Color="#FF193A44" Offset="0.526" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HeaderBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#FF1D1D1D" Offset="0.614" />
+        <GradientStop Color="#FF007F96" Offset="0.853" />
+        <GradientStop Color="#FF0AEAFA" Offset="1" />
+    </LinearGradientBrush>
+
+
+
+    <LinearGradientBrush x:Key="btnLindefault" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#B6C7DC" Offset="1"/>
+        <GradientStop Color="#B6C7DC" Offset="0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="btnGradientBluish" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="Blue" Offset="0"/>
+        <GradientStop Color="LightBlue" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="btnGradientGreenish" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="Green" Offset="0"/>
+        <GradientStop Color="LightGreen" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="btnGelLike" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+        <GradientStop Color="#00000000" Offset="1"/>
+    </LinearGradientBrush>
+
+    <Color x:Key="defaultGreenColor">#FF5DAF65</Color>
+
+    <!--<LinearGradientBrush x:Key="btnGradientBluish" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="Blue" Offset="0"/>
+    <GradientStop Color="LightBlue" Offset="1"/>
+</LinearGradientBrush>
+
+<LinearGradientBrush x:Key="btnGradientGreenish" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="Green" Offset="0"/>
+    <GradientStop Color="LightGreen" Offset="1"/>
+</LinearGradientBrush>-->
+
+
+</ResourceDictionary>

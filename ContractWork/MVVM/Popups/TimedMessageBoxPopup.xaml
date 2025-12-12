@@ -1,0 +1,166 @@
+﻿<Window x:Class="ContractWork.MVVM.Popups.TimedMessageBoxPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.Popups"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        mc:Ignorable="d"
+        Title="TimedMessageBoxPopup" 
+        Height="350" Width="600"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        x:Name="timedMessagePopup">
+
+    <Window.Resources>
+        <converters:DarkenColorConverter x:Key="Darken" />
+    </Window.Resources>
+
+    <Grid>
+        <Border CornerRadius="40"
+            BorderThickness="5"
+            BorderBrush="#3a4149"
+            Background="#282d33">
+
+            <!--<Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="LightGray" Offset="0.0"/>
+                    <GradientStop Color="Gray" Offset="0.5"/>
+                    <GradientStop Color="DarkGray" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>-->
+
+        </Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" 
+                   Content="Please Wait..."
+                   FontSize="20"
+                   Foreground="WhiteSmoke"
+                   Width="180"
+                   Margin="60,5,0,0"
+                   HorizontalAlignment="Left"/>
+
+            <StackPanel Grid.Row="2" 
+                        Grid.RowSpan="3"
+                        Margin="0,20,0,0"
+                        Orientation="Horizontal">
+
+                <customcontrols:btnRoundedControl
+                    btnRDCornerRadius="10"
+                    btnRDBackground="RosyBrown"
+                    TextPadding="2, 0, 2, 0"
+                    btnRDMargin="10,0,10,20"
+                    btnRDHeight="100"
+                    btnRDWidth="70"
+                    btnRDVertAlign="Top"
+                    btnRDHorizAlign="Right"
+                    btnRDContent="Change?"
+                    btnClick="ChangeButton_Click"
+                />
+
+                <ContentControl Style="{StaticResource PanelSunken}"
+                                Margin="0,0,0,0"
+                                Height="250"
+                                Width="400"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Background="Wheat"
+                                >
+                    <Border BorderBrush="#3a4149"
+                            BorderThickness="4"
+                            CornerRadius="15">
+                <TextBlock x:Name="PopupMessageEnd"
+                           HorizontalAlignment="Left"
+                           d:Text="Hello World"
+                           FontSize="20"
+                           Foreground="Black"
+                           Background="Wheat"
+                           Margin="10,10,10,10"
+                           Height="220"
+                           Width="370"
+                           TextWrapping="Wrap"  
+                           TextAlignment="Left"
+                           VerticalAlignment="Top"/>
+                    </Border>
+                </ContentControl>
+                
+
+                <customcontrols:tglbtnRoundedControl
+                    x:Name="btnPause"
+                    tglbtnWidth="70"
+                    tglbtnHeight="60"
+                    tglbtnMargin="15,40,0,0"
+                    tglbtnBorderBrush="White"
+                    tglbtnBorderThickness="2"
+                    ClickChecked="Pause_Checked"
+                    ClickUnchecked="Continue_Unchecked"                    
+                    >
+                </customcontrols:tglbtnRoundedControl>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <TextBlock x:Name="PopupMessageBegin"
+                       d:Text="This message will exit in "
+                       FontSize="20"
+                       Foreground="WhiteSmoke"
+                       Margin="20,0,0,0"
+                       Width="340"
+                       Height="30"
+                       TextAlignment="Center"
+                       VerticalAlignment="Top"/>
+                <Label Name="lblSecs"
+                       d:Content="10 secs"
+                       Foreground="White"
+                   Margin="30,0,0,0"
+                   FontSize="20"
+                   Height="40"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   VerticalContentAlignment="Top"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="3">
+                
+                
+
+                <customcontrols:btnRoundedControl
+                    btnRDCornerRadius="10"
+                    btnRDBackground="SeaGreen"
+                    btnRDMargin="516,0,0,20"
+                    btnRDWidth="60"
+                    btnRDContent="Next"
+                    btnClick="Next_Click"
+                />
+            </StackPanel>
+            
+            <customcontrols:btnRoundedControl
+                Grid.Row="4"
+                btnRDCornerRadius="10"
+                btnRDBackground="Tomato"
+                btnRDMargin="0,10,24,0"
+                btnRDHeight="40"
+                btnRDWidth="60"
+                btnRDVertAlign="Top"
+                btnRDHorizAlign="Right"
+                btnRDContent="Exit"
+                btnClick="Exit_Click"
+            />
+        </Grid>
+    </Grid>
+</Window>

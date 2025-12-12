@@ -1,0 +1,78 @@
+﻿<Window x:Class="ContractWork.MVVM.ConvertToSAP.ConvertAccountsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.ConvertToSAP"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        mc:Ignorable="d"
+        Title="ConvertAccountsWindow" 
+        Height="250" Width="700">
+    
+    <Border CornerRadius="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width=".6*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="10"/>
+                
+            </Grid.RowDefinitions>
+            <StackPanel 
+                Grid.Column="1"
+                Grid.Row="1">
+                <Label Content="SAP Account"/>
+                <DataGrid
+                    HorizontalAlignment="Left"
+                    Width="200"
+                    ItemsSource="{Binding Sapaccounts}"
+                    x:Name="SAPAccountDatagrid" />
+            </StackPanel>
+            <StackPanel 
+                Grid.Column="3"
+                Grid.Row="1">
+                <Label Content="AccessDB Account"/>
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    HorizontalAlignment="Left"
+                    Width="400"
+                    ItemsSource="{Binding ConvertAccounts}"
+                    x:Name="AccessDBAccountDatagrid">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Account Name" Binding="{Binding AcctName, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="Main" Binding="{Binding AcctMain,
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="Billing" Binding="{Binding AcctBilling,
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                            />
+                        <DataGridTextColumn Header="Shipping" Binding="{Binding AcctShipping,
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="OldAccount" Binding="{Binding OldMainAccount,
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataGrid.Columns>
+
+                </DataGrid>
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="2"
+                Grid.Column="3">
+                <customcontrols:SelectionControls
+                    btnContentText="Update"
+                    btnHeight="25"
+                    btnWidth="65"
+                    Margin="300,10,0,0"
+                    btnClickCommand="{Binding UpdateAccountNumbersCommand}"
+                />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

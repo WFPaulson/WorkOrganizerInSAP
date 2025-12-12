@@ -1,0 +1,206 @@
+﻿<UserControl x:Class="ContractWork.CustomControls.btnRoundedGelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ContractWork.CustomControls"
+             xmlns:conv="clr-namespace:ContractWork.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignWidth="300"
+             d:DesignHeight="100" 
+             Name="btnGel"
+             >
+
+
+    <UserControl.Resources>
+        <conv:MinusOrPlusConverter x:Key="MinusOrPlus"/>
+        <conv:DarkenColorConverter x:Key="Darken"/>
+
+
+
+        <Style x:Key="btnGelStyle" TargetType="{x:Type Button}">
+            <!--<Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>-->
+            <Setter Property="Foreground" Value="{Binding btnForeground, ElementName=btnGel}"/>
+            <!--<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>-->
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            
+            <Setter Property="Padding" Value="{Binding textPadding, ElementName=btnGel}"/>
+
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="{Binding mainColor, ElementName=btnGel}" Offset="0" />
+                        <GradientStop Color="{Binding offsetColor, ElementName=btnGel}" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+
+            <!--<Setter Property="Background" Value="{StaticResource btndefault}"/>-->
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <!-- drop shadow - needs to be blurred for correct effect -->
+                            <Rectangle 
+                                x:Name="gelblur"
+                                Fill="#80000000" 
+                                d:Width="150"
+                                d:Height="30"
+                                Width="{Binding btngelWidth, ElementName=btnGel}" 
+                                Height="{Binding btngelHeight, ElementName=btnGel}" 
+                                Margin="6,6,0,0"
+                                RadiusX="{Binding RectRadiusX, ElementName=btnGel}" 
+                                RadiusY="{Binding RectRadiusY, ElementName=btnGel}">
+                            </Rectangle>
+                            <!--Fill="#80000000"-->
+
+                            <!-- main rect -->
+                            <Rectangle 
+                                x:Name="gelbackground"
+                                d:Width="150"
+                                d:Height="30"
+                                Width="{Binding btngelWidth, ElementName=btnGel}" 
+                                Height="{Binding btngelHeight, ElementName=btnGel}" 
+                                Margin="3,3,0,0"
+                                RadiusX="{Binding RectRadiusX, ElementName=btnGel}" 
+                                RadiusY="{Binding RectRadiusY, ElementName=btnGel}"
+                                Fill="{TemplateBinding Background}"
+                                >
+
+                                <!--Fill="{Binding mainColor, ElementName=btnGel}"-->
+                            </Rectangle>
+
+                            <!-- transparent rect -->
+                            <Rectangle 
+                                x:Name="gelshine"
+                                d:Width="148"
+                                d:Height="28"
+                                Width="{Binding btngelWidth, ElementName=btnGel,
+                                Converter={StaticResource MinusOrPlus},
+                                ConverterParameter={StaticResource minusTwo}}"
+            
+                                Height="{Binding btngelHeight, ElementName=btnGel,
+                                Converter={StaticResource MinusOrPlus},
+                                ConverterParameter={StaticResource minusTwo}}"
+            
+                                Margin="3,3,0,0"
+                                RadiusX="{Binding RectRadiusX, ElementName=btnGel, 
+                                Converter={StaticResource MinusOrPlus},
+                                ConverterParameter={StaticResource minusTwo}}" 
+                                
+                                RadiusY="{Binding RectRadiusY, ElementName=btnGel, 
+                                Converter={StaticResource MinusOrPlus},
+                                ConverterParameter={StaticResource minusTwo}}"
+                                
+                                Fill="{Binding transparentColor, ElementName=btnGel}"
+                                >
+
+                            </Rectangle>
+
+                            <ContentPresenter 
+                                x:Name="contentPresenter"
+                                
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                RecognizesAccessKey="True" 
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            >
+
+                            </ContentPresenter>
+                            <!-- these above are added might want to make depend prop for these-->
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="Stroke" TargetName="gelbackground"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="Azure"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Rectangle.Fill" TargetName="gelbackground">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin=".5, .5">
+                                            <!--<GradientStop Color="Green" Offset="0" />
+                                            <GradientStop Color="Yellow" Offset="1" />-->
+                                            <!--mainColor
+                                            offsetColor-->
+
+                                            <GradientStop Color="{Binding offsetColor, ElementName=btnGel}" Offset="0" />
+                                            <GradientStop Color="{Binding mainColor, ElementName=btnGel}" Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+
+                            <!-- THIS SEEMS TO WORK FOR CHANGING GRADIENT COLOR TO SOLID COLOR -->
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="gelbackground">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin=".5, .5">
+                                            <GradientStop Color="{Binding mainColor, ElementName=btnGel}" Offset="0" />
+                                            <GradientStop Color="{Binding mainColor, ElementName=btnGel}" Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <!--************************************************************************-->
+
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="gelbackground" 
+                                        Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="Stroke" TargetName="gelbackground" 
+                                        Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" 
+                                        Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+
+                            <!--{StaticResource Button.Disabled.Background}
+                            {StaticResource Button.Disabled.Border}
+                            {StaticResource Button.Disabled.Foreground}-->
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+
+        <Button Name="Button1"
+                Margin="0,0,0,0"
+                Style="{StaticResource btnGelStyle}"
+                Command="{Binding btngelCommand, ElementName=btnGel}"
+                CommandParameter="{Binding btngelCmdParameter, ElementName=btnGel}"
+                Click="OnBtnClick"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Center" 
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+        >
+            <Button.Content>
+                <TextBlock 
+                        Padding="{Binding textPadding, ElementName=btnGel}"
+                        FontSize="{Binding textFontSize, ElementName=btnGel}"
+                        TextWrapping="Wrap"
+                        FontFamily="Segoe UI"
+                        FontWeight="Normal"
+                        TextAlignment="Center"
+                        Foreground="{Binding btnForeground, ElementName=btnGel}"
+                        Text="{Binding textContent, ElementName=btnGel}">
+                    
+
+                </TextBlock>
+            </Button.Content>
+        </Button>
+    </Grid>
+</UserControl>

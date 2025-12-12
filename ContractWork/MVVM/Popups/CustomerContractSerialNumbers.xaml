@@ -1,0 +1,152 @@
+﻿<Window x:Class="ContractWork.MVVM.Popups.CustomerContractSerialNumbers"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.Popups"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls" 
+        mc:Ignorable="d"
+        Title="CustomerContractSerialNumbers" 
+        
+        SizeToContent="WidthAndHeight"
+        d:Height="800" d:Width="1160"
+        >
+    <Window.Resources>
+        
+        
+        
+    </Window.Resources>
+
+    <!--MaxWidth="{Binding MaximumWidth}"
+ MaxHeight="{Binding MaximumHeight}"-->
+
+    <Border CornerRadius="10"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        ScrollViewer.HorizontalScrollBarVisibility="Visible">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="87*"/>
+                <ColumnDefinition Width="407*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+
+            <customcontrols:SelectionControls
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                btnClick="createQuote_Click"
+                btnCmdParameter="AccessFile"
+                btnBrdrCornerRadius="6"
+                MaintCornerRadius="5"
+                MaintBackground="LightGray"
+                btnBrdrHeight="25"
+                btnBrdrWidth="45"
+                btnBrdrThickness="1"
+                btnContentText="Quote"
+                btnContentFontSize="10"
+                btnBrdrMargin="0,0,0,0"
+            />
+            <!--btnClickCommand="{Binding CreateQuoteCommand}"-->
+
+            <TextBox 
+                x:Name="TxtBoxTitle"
+                Grid.Column="0" Grid.ColumnSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid},
+                    Path=ColumnDefinitions.Count, Mode=OneWay}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Margin="0 0 0 0"
+                d:Text="Alderson Fire Department"
+            />
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Grid.ColumnSpan="2" Margin="0,0,0,20" >
+
+                <Label Content="Current Contracts"/>
+                <DataGrid
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    x:Name="AssetsOnThisContractDataGrid" 
+                    AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"
+                    Height="Auto">
+                </DataGrid>
+
+                <!--AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+            </StackPanel>
+
+            <StackPanel
+                Grid.Row="4"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Grid.ColumnSpan="2" Margin="0,0,0,20">
+
+                <Label Content="Expired Contracts"/>
+                <DataGrid 
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    x:Name="ContractExpiredDataGrid" 
+                    
+                    Height="Auto"
+                    >
+                    <!--<DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>-->
+                </DataGrid>
+                <!--AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+                <!--IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}"-->
+            </StackPanel>
+
+            <Grid
+                Grid.Row="7"
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                Grid.ColumnSpan="2">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label
+                        Grid.Row="0"
+                        Content="No Contract"/>
+
+                    <DataGrid 
+                        Grid.Row="1"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        x:Name="AssetsWithNoContractDataGrid" 
+                        AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"
+    
+                    />
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+    </Border>
+</Window>

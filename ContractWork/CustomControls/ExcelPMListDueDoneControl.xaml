@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="ContractWork.CustomControls.ExcelPMListDueDoneControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ContractWork.CustomControls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="200"
+             Name="PMListDueDone"
+             >
+    <UserControl.Resources>
+        <!--<libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>-->
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!--<Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>-->
+        <Border Grid.Column="0" 
+                BorderBrush="{Binding PMCellBorderBrush, ElementName=PMListDueDone}" 
+                BorderThickness="{Binding PMCellBorderThickness, ElementName=PMListDueDone}"
+                Margin="-1,-2,0,-2">
+            <TextBlock
+                   Text="{Binding PMCellDueText, ElementName=PMListDueDone}" 
+                   d:Text="6"
+                   Padding="0,6,0,0"
+                   TextAlignment="Center"
+                   Background="{Binding PMCellDueBackground, ElementName=PMListDueDone}"/>
+        </Border>
+        <Border Grid.Column="1" 
+                BorderBrush="{Binding PMCellBorderBrush, ElementName=PMListDueDone}" 
+                BorderThickness="{Binding PMCellBorderThickness, ElementName=PMListDueDone}"
+                Margin="-1,-2,0,-2">
+            <TextBlock 
+                    Text="{Binding PMCellDoneText, ElementName=PMListDueDone,
+                             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    d:Text="6"
+                    Padding="0,5,0,0"
+                    TextAlignment="Center"
+                    Background="{Binding PMCellDoneBackground, ElementName=PMListDueDone}"
+                    Foreground="Black">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding PMCellDoneCommand, ElementName=PMListDueDone}" 
+                                  MouseAction="LeftClick"/>
+
+                </TextBlock.InputBindings>
+            </TextBlock>
+        </Border>
+    </Grid>
+</UserControl>
+
+<!--Command="{Binding btnRDCommand, ElementName=btnRoundedWithShadow}"
+CCommandParameter="{Binding btnRDCmdParameter, ElementName=btnRoundedWithShadow}"
+Click="OnBtnClick"-->

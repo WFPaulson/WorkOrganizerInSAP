@@ -1,0 +1,404 @@
+﻿<Window x:Class="ContractWork.MVVM.ContractAndAssets.ContractAndAssetsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.ContractAndAssets"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        
+        d:DataContext="{d:DesignInstance Type=local:ContractAndAssetsViewModel}"
+        
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Title="ContractAndAssetsWindow" 
+        Height="900" Width="1100"
+        MouseLeftButtonDown="DragMe"
+        x:Name="ContractList"
+        >
+
+    <Window.Resources>
+        <converters:DarkenColorConverter x:Key="Darken" />
+        <converters:DateTimeConverter x:Key="DTime" />
+    </Window.Resources>
+
+    <Border CornerRadius="10"
+            Background="#212529"
+            BorderBrush="White"
+            BorderThickness="2">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <!--<RowDefinition Height="60"/>-->
+                <RowDefinition Height="180"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width=".8*"/>
+                <ColumnDefinition Width=".2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="2"
+                    BorderBrush="White"
+                    BorderThickness="2"
+                    Width="350"
+                    Height="35"
+                    Margin="0,0,0,5"
+                    CornerRadius="5"
+                    Background="Black">
+                <Label Content="Contracts And Assets"
+                   VerticalAlignment="Center"
+                   Padding="0,0,0,2"
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontWeight="Bold"
+                   FontSize="18"/>
+            </Border>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="4">
+                <customcontrols:WindowControls
+                    TextContent="-"                        
+                    btnWidth="20"
+                    btnMargin="20,0,0,0"
+                    btnBckgrnd="#F5B53F"
+                    btnClick="btnMinimize_Click"
+                    />
+
+                <customcontrols:WindowControls
+                    TextContent="X"
+                    btnWidth="20"
+                    btnMargin="5,0,0,0"
+                    btnBckgrnd="#F55551" 
+                    btnClick="btnExit_Click"
+                    />
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3">
+                <customcontrols:SelectionControls
+                    btnClickCommand="{Binding PickContractsFileCommand}"
+                    btnCmdParameter="PMText"
+                    btnBrdrCornerRadius="11"
+                    MaintCornerRadius="10"
+                    MaintBackground="#BEBEBE"
+                    btnBrdrHeight="45"
+                    btnBrdrWidth="75"
+                    btnBrdrThickness="2"
+                    btnContentText="Contracts File"
+                    />
+                <customcontrols:TextBoxControls
+                    x:Name="ContractsFile"
+                    txtbxWidth="800"
+                    txtbxHeight="28"
+                    txtbxMargin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    txtbxFontSize="15"
+                    txtbxBorderThickness="2"
+                    txtbxPadding="3,0,0,1"
+                    txtbxText="{Binding ContractFileName}"
+                    />
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="3">
+                <customcontrols:SelectionControls
+                     btnClickCommand="{Binding PickAssetsFileCommand}"
+                     btnCmdParameter="PMText"
+                     btnBrdrCornerRadius="11"
+                     MaintCornerRadius="10"
+                     MaintBackground="#BEBEBE"
+                     btnBrdrHeight="45"
+                     btnBrdrWidth="75"
+                     btnBrdrThickness="2"
+                     btnContentText="Assets File"
+                    />
+                <customcontrols:TextBoxControls
+                     x:Name="AssetsFile"
+                     txtbxWidth="800"
+                     txtbxHeight="28"
+                     txtbxMargin="5,0,0,0"
+                     HorizontalAlignment="Left"
+                     txtbxFontSize="15"
+                     txtbxBorderThickness="2"
+                     txtbxPadding="3,0,0,1"
+                     txtbxText="{Binding AssetFileName}"
+                />
+
+            </StackPanel>
+
+            <StackPanel 
+                    Orientation="Horizontal"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="3">
+                <customcontrols:SelectionControls
+                    btnClickCommand="{Binding PickAccessFileCommand}"
+                    btnBrdrCornerRadius="11"
+                    MaintCornerRadius="10"
+                    MaintBackground="#BEBEBE"
+                    btnBrdrHeight="45"
+                    btnBrdrWidth="75"
+                    btnBrdrThickness="2"
+                    btnContentText="Access File"
+                />
+                <customcontrols:TextBoxControls
+                    x:Name="PMTextbox"
+                    txtbxWidth="950"
+                    txtbxHeight="28"
+                    txtbxMargin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    txtbxFontSize="15"
+                    txtbxBorderThickness="2"
+                    txtbxPadding="3,0,0,1"
+                    txtbxText="{Binding AccessFileName}"
+                />
+
+            </StackPanel>
+
+            <StackPanel 
+                 Orientation="Horizontal"
+                 Grid.Row="4"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="3">
+                <customcontrols:SelectionControls
+                     btnClickCommand="{Binding PickInventoryFileCommand}"
+                     btnBrdrCornerRadius="11"
+                     MaintCornerRadius="10"
+                     MaintBackground="LightGoldenrodYellow"
+                     btnBrdrHeight="45"
+                     btnBrdrWidth="75"
+                     btnBrdrThickness="2"
+                     btnContentText="Inventory File"
+                />
+                <customcontrols:TextBoxControls
+                     x:Name="InventoryTextbox"
+                     txtbxWidth="800"
+                     txtbxHeight="28"
+                     txtbxMargin="5,0,0,0"
+                     HorizontalAlignment="Left"
+                     txtbxFontSize="15"
+                     txtbxBorderThickness="2"
+                     txtbxPadding="3,0,0,1"
+                     txtbxText="{Binding InventoryFileName}"
+                 />
+            </StackPanel>
+
+            <StackPanel 
+                Grid.Row="5"
+                Grid.Column="2"
+                Grid.ColumnSpan="2">
+
+                <StackPanel 
+                        Orientation="Horizontal"
+                    Margin="10"
+                        >
+                    <customcontrols:SelectionControls
+                        btnClickCommand="{Binding CompareAccountNumbersCommand}"
+                        btnCmdParameter="AccessFile"
+                        btnBrdrCornerRadius="11"
+                        MaintCornerRadius="10"
+                        MaintBackground="LightGray"
+                        btnBrdrHeight="45"
+                        btnBrdrWidth="75"
+                        btnBrdrThickness="2"
+                        btnContentText="Account Numbers"
+                        btnBrdrMargin="10,5,0,5"/>
+                    
+                    <customcontrols:SelectionControls
+                        btnClickCommand="{Binding CompareServicePlanCommand}"
+                        btnCmdParameter="AccessFile"
+                        btnBrdrCornerRadius="11"
+                        MaintCornerRadius="10"
+                        MaintBackground="LightGoldenrodYellow"
+                        btnBrdrHeight="45"
+                        btnBrdrWidth="75"
+                        btnBrdrThickness="2"
+                        btnContentText="Service Plans"
+                        btnBrdrMargin="20,10"
+                        btnHorizAlign="Left"/>
+
+                    <customcontrols:SelectionControls
+                        btnClickCommand="{Binding ContractExpireStatusCommand}"
+                        btnCmdParameter="AccessFile"
+                        btnBrdrCornerRadius="11"
+                        MaintCornerRadius="10"
+                        MaintBackground="IndianRed"
+                        btnBrdrHeight="45"
+                        btnBrdrWidth="125"
+                        btnBrdrThickness="2"
+                        btnContentText="Update Service Plan Status"
+                        btnBrdrMargin="0,10,20,10"/>
+
+                    <customcontrols:SelectionControls
+                        btnClickCommand="{Binding CompareEquipmentCommand}"
+                        btnCmdParameter="AccessFile"
+                        btnBrdrCornerRadius="11"
+                        MaintCornerRadius="10"
+                        MaintBackground="LightGreen"
+                        btnBrdrHeight="45"
+                        btnBrdrWidth="75"
+                        btnBrdrThickness="2"
+                        btnContentText="Equipment Contracts"
+                        btnBrdrMargin="0,10"
+                        btnHorizAlign="Left"/>
+
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+
+
+                    <customcontrols:SelectionControls
+                     btnClickCommand="{Binding ExpireListCommand}"
+                     btnCmdParameter="AccessFile"
+                     btnBrdrCornerRadius="11"
+                     MaintCornerRadius="10"
+                     MaintBackground="LightGray"
+                     btnBrdrHeight="45"
+                     btnBrdrWidth="100"
+                     btnBrdrThickness="2"
+                     btnContentText="Expired list"
+                     btnBrdrMargin="10,5,0,5"/>
+
+                    <customcontrols:SelectionControls
+                    btnClickCommand="{Binding GoToAccounListCommand}"
+                    btnCmdParameter="AccessFile"
+                    btnBrdrCornerRadius="11"
+                    MaintCornerRadius="10"
+                    MaintBackground="Green"
+                    btnBrdrHeight="45"
+                    btnBrdrWidth="75"
+                    btnBrdrThickness="2"
+                    btnContentText="Account List"
+                    btnBrdrMargin="10,5,0,5"/>
+
+                    <!--<customcontrols:SelectionControls
+                    btnClickCommand="{Binding ContractExpireStatusCommand}"
+                    btnCmdParameter="AccessFile"
+                    btnBrdrCornerRadius="11"
+                    MaintCornerRadius="10"
+                    MaintBackground="IndianRed"
+                    btnBrdrHeight="45"
+                    btnBrdrWidth="125"
+                    btnBrdrThickness="2"
+                    btnContentText="Update Expired and Future Status"
+                    btnBrdrMargin="10,5,0,5"/>-->
+
+                </StackPanel>
+
+
+
+
+            </StackPanel>
+
+            <Grid 
+                Grid.Row="6"
+                Grid.Column="1"
+                Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <DataGrid 
+                    x:Name="dtgrdXLSpreadsheet"
+                    ItemsSource="{Binding ExcelContractsDatatable}"
+                    SelectedItem="{Binding SelectedCustomerAccount}"
+                    AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"
+                    >
+                    <!--<DataGrid.Columns>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:SelectionControls
+                                    btnClickCommand="{Binding CreateQuoteCommand}"
+                                    btnBrdrCornerRadius="11"
+                                    MaintCornerRadius="10"
+                                    MaintBackground="LightGray"
+                                    btnBrdrHeight="15"
+                                    btnBrdrWidth="35"
+                                    btnBrdrThickness="1"
+                                    btnContentText="Quote"
+                                    btnContentFontSize="8"
+                                    btnBrdrMargin="0,0,0,0"
+                                >
+                                    
+
+                                </customcontrols:SelectionControls>
+                                
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>-->
+
+                    <!--<i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseClick">
+                            <i:InvokeCommandAction Command="{Binding CreateQuoteCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>-->
+
+                    <!--<DataGrid.Columns >
+                        <DataGridTemplateColumn
+                            Header="Create"
+                            Width="50"
+                            >
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <Button 
+                                        Background="Green"
+                                        Margin="12,2,12,2"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridCheckBoxColumn Header="Quota"/>
+                        <DataGridCheckBoxColumn Header="Expire List"/>
+                        
+                    </DataGrid.Columns>-->
+
+
+
+                    <!--"dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding OpenAccountContractsCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </DataGrid>
+            </Grid>
+
+            <Border 
+                Grid.Row="9"
+                Grid.Column="0"
+                Grid.ColumnSpan="5"
+                CornerRadius="0,0,10,10"
+                Background="LightGray"
+                BorderBrush="White"
+                BorderThickness="0,2,0,0"
+            />
+
+
+        </Grid>
+    </Border>
+</Window>
+            

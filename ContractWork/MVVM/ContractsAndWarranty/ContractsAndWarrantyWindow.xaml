@@ -1,0 +1,916 @@
+﻿<Window x:Class="ContractWork.MVVM.ContractsAndWarranty.ContractsAndWarrantyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.ContractsAndWarranty"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:OleDb="clr-namespace:System.Data.OleDb;assembly=System.Data.OleDb" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        MinHeight="1000" MinWidth="1520"
+        Height="1000" Width="1520"
+        MaxHeight="1000" MaxWidth="1900"
+        
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        MouseLeftButtonDown="DragMe"
+        x:Name="ContractsAndWarranty"
+        ContentRendered="ContractsAndWarranty_ContentRendered">
+    <!--d:DataContext="{d:DesignInstance Type=viewmodels:ContractsAndWarrantyViewModel}"-->
+
+    <Window.Resources>
+        <converters:DarkenColorConverter x:Key="Darken" />
+        <converters:MinusConverter x:Key="MinusTen" />
+        <Color x:Key="Bluish2">#00ff00</Color>
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+
+    </Window.Resources>
+
+    <Window.Background>
+        <StaticResource ResourceKey="ColorBackground"/>
+        <!--#5C83B4-->
+    </Window.Background>
+
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+
+        <!--This is the header-->
+        <Border BorderThickness="0,0,0,2" BorderBrush="Black"
+                    Grid.Row="0" Grid.ColumnSpan="3">
+            <Grid Background= "{StaticResource BackgroundDarkPurple}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel 
+                    Grid.Column="0"
+                    Orientation="Horizontal">
+
+                    <Border CornerRadius="10"
+                        Background="Wheat"
+                        Height="30"
+                        Width="130"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        Grid.Column="0"
+                        BorderBrush="WhiteSmoke"
+                        BorderThickness="2">
+                        <Button Content="Column Size Refresh"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="RefreshColumnSize_Click"/>
+                    </Border>
+
+                    <customcontrols:btnMaintenanceControl
+                        btnClickCommand="{Binding InspectContractCommand}"
+                        btnBrdrHeight="25"
+                        btnBrdrWidth="120"
+                        btnBrdrCornerRadius="10"
+                        btnBrdrBrush="Silver"
+                        btnBrdrThickness="1"
+                        MaintCornerRadius="9"
+                        MaintBackground="#2A2F36"
+                        btnBrdrMargin="15,5"
+                        btnForeground="White"
+                        btnContentText="Inspect Contract"
+                        btnVertAlign="Center"
+                        btnHorizAlign="Left"
+                    />
+                </StackPanel>
+
+                <Label Grid.Column="1"
+                       Content="Contracts and Warranties"
+                       Foreground="White" FontSize="18"
+                       HorizontalContentAlignment="Center"
+                       VerticalAlignment="Center"/>
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="10"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="20"
+                        btnMargin="1, 0, 1, 0"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                        />
+                        <customcontrols:WindowControls
+                        TextContent="X"
+                        btnWidth="20"
+                        btnMargin="3, 0, 1, 0"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                        />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1"
+                      VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Visible">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="208*"/>
+                    <ColumnDefinition Width="1323*"/>
+                    <ColumnDefinition Width="52*"/>
+                    <ColumnDefinition Width="52*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="310"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="310"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--This is the Excel Open / view / search / status / etc -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,0" Grid.ColumnSpan="4">
+
+                    <customcontrols:WindowControls
+                        TextContent="Max"
+                        TextFontSize="10"
+                        brdrCornerRadius="20"
+                        btnWidth="25"
+                        btnMargin="1, 0, 1, 0"
+                        btnBckgrnd="Gray"
+                        btnCommand="{Binding MaximizeExcelDatagridCommand}"
+                        />
+                    <TextBox Background="Wheat"
+                             Height="30"
+                             MinWidth="650"
+                             MaxWidth="650"
+                             Margin="5 0"
+                             Padding="2 3 0 0"
+                             HorizontalAlignment="Center"
+                             Text="{Binding XLFileName}" 
+                             />
+                    <ComboBox Style="{DynamicResource ComboBoxStyle}" 
+                              ItemsSource="{Binding ViewList}"
+                              SelectedItem="{Binding XLSelectedView}"
+                              IsEnabled="{Binding ViewXLArchivedIsEnabled}"
+                              Text="{Binding XLTextOverlay}"
+                              IsEditable="True"
+                              IsReadOnly="True" 
+                              HorizontalAlignment="Right"
+                              HorizontalContentAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              Margin="20,0,5 0"
+                              Width="140"
+                              Height="30"
+                              FontSize="11">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding ViewXLArchivedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ComboBox.ToolTip>
+                            <TextBlock Text="Choose the Table to Display" FontSize="14"/>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
+
+                    <Button Command="{Binding ClearXLFilterCommand}" 
+                            HorizontalAlignment="Left"
+                            Margin="20,0,0,0"
+                            Content="Clear Filter" 
+                            Width="120"
+                            Height="30"
+                            />
+                    <ComboBox 
+                        Style="{StaticResource ComboBoxStyle}"
+                        ItemsSource="{Binding ExcelFilterBy}" 
+                        Text="{Binding XLPickColumnTextOverlay}" 
+                        SelectedItem="{Binding PickedColumn}"
+                        IsEnabled="{Binding FilterByXLArchivedIsEnabled}"
+                        IsEditable="True" 
+                        IsReadOnly="True" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Margin="30,0,5,0"
+                        Width="150"
+                        Height="30"
+                        >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding FilterXLWorksheetByCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+
+                    <Button Command="{Binding XLArchiveEquipmentCommand}" Height="30"
+                             Width="115"
+                             VerticalContentAlignment="Center"
+                             Margin="20,0,10,0"
+                             Padding="0,0,0,0"
+                             Content="Archive Equipment" 
+                            />
+                    <Label Foreground="White"
+                           Content="Status:"
+                           Margin="30 0 0 0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center" 
+                           />
+                    <TextBox Height="30"
+                             Width="90"
+                             Margin="5 0"
+                             Padding="2 3 0 0"
+                             Text="{Binding DidXLFail}" 
+                             />
+                </StackPanel>
+                <!--ExcelDatatable
+                ItemsSource="{Binding EquipList}"-->
+                <!--This is the Excel Spreadsheet 
+                AutoGenerateColumns="False"
+AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+                <DataGrid Grid.Row="1" 
+                          x:Name="dtgrdXLSpreadsheet"
+                          
+                          ItemsSource="{Binding ExcelDatatable}"
+                          SelectedItem="{Binding SelectedCustomer, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                          
+                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                          AutoGenerateColumns="True"
+                          AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"
+                          
+                          RowHeight="20"
+                          MinHeight="290"
+                          Height="300"
+                          MinWidth="1400"
+                          Width="{Binding ElementName=ContractsAndWarranty, Path=ActualWidth, 
+                                Converter={StaticResource MinusTen}, 
+                                ConverterParameter={StaticResource Twenty}}"
+                          MaxWidth="1880"
+                          HorizontalAlignment="Left"
+                          Margin="0,5,0,5" Grid.ColumnSpan="2"
+                          >
+                    <!--<DataGrid.Resources>
+                        
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="Auto" Header="Service Plan Archive" 
+                                                CanUserSort="True" SortMemberPath="ServicePlanNumber"
+                                                Visibility="{Binding Data.VisibleColumns.ServicePlanNumberVisibility, Source={StaticResource proxy}}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  Command="{Binding Data.ArchiveByServicePlanNumberCommand, Source={StaticResource proxy}}"
+                                                  />
+
+                                        <TextBlock Text="{Binding ServicePlanNumber}" Width="Auto" 
+                                            Visibility="{Binding Data.VisibleColumns.ServicePlanNumberVisibility, 
+                                            Source={StaticResource proxy}}"/>
+
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+
+
+                        </DataGridTemplateColumn>
+
+                        --><!--<DataGridTextColumn Header="Service Plan" Binding="{Binding ServicePlanNumber}" Width="Auto" 
+                                            Visibility="{Binding Data.VisibleColumns.ServicePlanNumberVisibility, Source={StaticResource proxy}}"/>--><!--
+
+                        <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" Width="Auto" 
+                                            Visibility="{Binding Data.VisibleColumns.SerialNumberVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTextColumn Header="Name" Binding="{Binding AccountName}" Width="Auto" 
+                                            Visibility="{Binding Data.VisibleColumns.AccountNameVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,
+                                        StringFormat={}{0:MM/d/yyyy}}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.StartDateVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTextColumn Header="PO Expire Date" Binding="{Binding POExpireDate,
+                                        StringFormat={}{0:MM/d/yyyy}}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.POExpireDateVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpireDate,
+                                        StringFormat={}{0:MM/d/yyyy}}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.ExpirationDateVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTextColumn Header="New PO Required" Binding="{Binding NewPORequired}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.NewPORequiredVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="New Quote Required" Binding="{Binding NewQuoteRequired}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.NewQuoteRequiredVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding ServiceType}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.TypeVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="MainAccount" Binding="{Binding MainAccountNumber}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.MainAccountVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Plan Status" Binding="{Binding ServicePlanStatus}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.PlanStatusVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Contract Description" Binding="{Binding ContractDescription}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.ContractDescriptionVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Model Description" Binding="{Binding ModelDescription}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.ModelDescriptionVisibility, Source={StaticResource proxy}}"/>
+
+                        <DataGridTemplateColumn Header="Equipment Archive" Width="Auto" 
+                                                Visibility="{Binding Data.VisibleColumns.ArchiveVisibility, Source={StaticResource proxy}}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding DeviceServicePlanArchived}" 
+                                              Command="{Binding ArchiveBySerialNumberCommand}"
+                                              >
+                                    </CheckBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Service Rep" Binding="{Binding ServiceRep}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.ServiceRepVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Sales Rep" Binding="{Binding SalesRep}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.SalesRepVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding LocationAddress}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.LocationAddressVisibility, Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="County" Binding="{Binding County}" Width="Auto"
+                                            Visibility="{Binding Data.VisibleColumns.CountyVisibility, Source={StaticResource proxy}}"/>
+                    </DataGrid.Columns>-->
+                </DataGrid>
+
+                <!--This is the Access Open / view / search / status / etc -->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4">
+
+                    <customcontrols:WindowControls
+                        TextContent="Max"
+                        TextFontSize="10"
+                        brdrCornerRadius="20"
+                        btnWidth="25"
+                        btnMargin="1, 0, 1, 0"
+                        btnBckgrnd="Gray"
+                        btnCommand="{Binding MaximizeExcelDatagridCommand}"
+                        />
+                    <TextBox Background="Wheat"
+                             Height="30"
+                             MinWidth="650"
+                             MaxWidth="650"
+                             Margin="5,0"
+                             Padding="2 3 0 0"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DBFileName}" 
+                             />
+                    <ComboBox Style="{StaticResource ComboBoxStyle}" 
+                              ItemsSource="{Binding ViewList}"
+                              SelectedItem="{Binding DBSelectedView}"
+                              IsEnabled="{Binding ViewDBArchivedIsEnabled}" 
+                              Text="Please clear"
+                              IsEditable="True" 
+                              IsReadOnly="True" 
+                              HorizontalAlignment="Left"
+                              HorizontalContentAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              Margin="20,0,5 0"
+                              Width="140"
+                              Height="30"
+                              FontSize="11">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SetViewInAccessDataGridCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ComboBox.ToolTip>
+                            <TextBlock Text="Choose the Table to Display" FontSize="14"/>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
+                    <!--Text="Please clear" {Binding DBTextOverlay}-->
+                    <Button Command="{Binding UpdateExcelArchivedFromAccessCommand}" Grid.Column="0"
+                            Height="30"
+                            Width="120"
+                            Content="Update Excel Archived &#x0a;       From Access"
+                            FontSize="10"
+                            HorizontalAlignment="Left"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="20,0,0,0" 
+                            ToolTipService.ShowOnDisabled="True">
+                        <Button.ToolTip>
+                            <TextBlock Text="Load Both Access and Excel &#xA;with 'Viewing by All'"
+                                       FontSize="14"/>
+                        </Button.ToolTip>
+                    </Button>
+
+                    <Label Foreground="White"
+                           Margin="23,0,5,0"
+                           Content="Between:"
+                           Height="25"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center" 
+                           />
+                    <DatePicker IsEnabled="{Binding BetweenDatePickerEnabled}" 
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center" 
+                                />
+                    <Label Foreground="White"
+                           Content="And"
+                           Margin="10,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" 
+                           />
+                    <DatePicker IsEnabled="{Binding AfterDatePickerEnabled}" 
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center" 
+                                />
+                    <Label Foreground="White"
+                           Content="Status:"
+                           Margin="21,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center" 
+                           />
+                    <TextBox Height="30"
+                             Width="90"
+                             Margin="5,0"
+                             Padding="2 3 0 0"
+                             Text="{Binding DidDBFail}"
+                             />
+                </StackPanel>
+
+                <!--This is the Access Spreadsheet -->
+                <DataGrid Grid.Row="3"
+                          x:Name="dtgrdAccessDataBase"
+                          ItemsSource="{Binding AccessDatatable}"
+                          SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                          AutoGeneratingColumn="dtgrdAccessDataBase_AutoGeneratingColumn"
+                          AutoGenerateColumns="true"
+                          RowHeight="20"
+                          MinHeight="290"
+                          Height="300"
+                          MinWidth="1400"
+                          Width="{Binding ElementName=ContractsAndWarranty, Path=ActualWidth, 
+                                Converter={StaticResource MinusTen}, 
+                                ConverterParameter={StaticResource Twenty}}"
+                          MaxWidth="1880"
+                          HorizontalAlignment="Left"
+                          Margin="0,5,0,5"
+                          Background="#D5DFE5" Grid.ColumnSpan="2">
+                </DataGrid>
+
+                <!--This is the Access manipulation / etc -->
+                <Grid Grid.Row="4" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1085"/>
+                        <ColumnDefinition Width="550"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ContentControl Style="{StaticResource PanelSunken}"
+                                    Margin="0,5,0,0"
+                                    Height="40"
+                                    Width="387"
+                                    HorizontalAlignment="Left"
+                                    >
+                        <Label Content="New Status"
+                           Margin="0,0,0,0"
+                           Foreground="White"
+                           FontSize="18"
+                           VerticalContentAlignment="Center"
+                           HorizontalContentAlignment="Center"/>
+                    </ContentControl>
+
+                    <Button Command="{Binding UpdateAcessServicePlanArchivedCommand}" 
+                            Grid.Column="0"
+                            Height="40"
+                            Width="170"
+                            Content="{Binding ChangeArchiveStatus}"
+                            HorizontalAlignment="Left"
+                            Margin="400,0,0,0"/>
+
+
+
+                    <ContentControl Style="{StaticResource PanelSunken}"
+                                    Margin="465,5,0,0"
+                                    Height="40"
+                                    Width="375"
+                                    >
+                        <Label Content="Expired Status"
+                           Foreground="White"
+                           FontSize="18"
+                           Height="35"
+                           Width="150"
+                           VerticalContentAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                               
+                           />
+                    </ContentControl>
+
+                    <!--<Textblock Text="Both Access and Excel 'Viewing by All'"
+                                           Fontsize="16"/>-->
+
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <Button x:Name="btnCloseAccess"
+                                Width="100"
+                                Height="40"
+                                Margin="35,0,20,0"
+                                Command="{Binding OpenCloseAccessFileCommand}"
+                                Content="{Binding OpenCloseAccessText}" />
+                        <Button x:Name="btnCloseExcel"
+                                Width="100"
+                                Height="40"
+                                Margin="0,0,20,0"
+                                Command="{Binding CloseExcelFileCommand}"
+                                Content="Close Excel" />
+                        <Button x:Name="btnExit"
+                                Width="100"
+                                Height="40"
+                                HorizontalAlignment="Right"
+                                BorderThickness="2"
+                                BorderBrush="{StaticResource SystemYellowDark}"
+                                Click="btnExit_Click"
+                                Content="Exit" />
+                    </StackPanel>
+                </Grid>
+
+                <!--This is the Access table manipulation / etc -->
+                <Grid Grid.Row="5" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="375"/>
+                        <ColumnDefinition Width="510"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid ItemsSource="{Binding NewSide}"
+                              SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                              Background="White"
+                              MaxHeight="200"
+                              d:Height="200"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              VerticalAlignment="Top">
+                        
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{Binding Data.Column1Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding ServicePlanNumber}"
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+
+                            <DataGridTextColumn Header="{Binding Data.Column1Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding MainAccountNumber}" 
+                                                Visibility="{Binding Data.CustomerAccountsIsEnabled, Source={StaticResource proxy}}"/>
+
+                            <DataGridTextColumn Header="{Binding Data.Column2Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountName}"
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+
+                            <DataGridTextColumn Header="{Binding Data.Column2Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountName}" 
+                                                Visibility="{Binding Data.CustomerAccountsIsEnabled, Source={StaticResource proxy}}"/>
+
+                            <DataGridTextColumn Header="{Binding Data.Column3Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountArchived}"
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="Wheat"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding CreateNewCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DataGrid>
+
+                    <ContentControl Style="{StaticResource PanelRaised}"
+                                    Grid.Column="2"
+                                    MaxHeight="250"
+                                    MaxWidth="200">
+                        <StackPanel>
+                            <ContentControl Style="{StaticResource PanelSunken}"
+                                    Margin="5"
+                                    Height="40"
+                                    Width="180"
+                                    >
+                                <Label Content="Compare Selection"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"/>
+                            </ContentControl>
+                            <ComboBox 
+                                Style="{StaticResource ComboBoxStyle}"
+                                ItemsSource="{Binding CompareList}" 
+                                SelectedItem="{Binding CompareSelection}"
+                                IsEnabled="{Binding AreAccessAndExcelLoaded}"
+                                HorizontalAlignment="Center"
+                                Width="150"
+                                IsEditable="True" 
+                                IsReadOnly="True" 
+                                Text="Please clear" 
+                                Margin="0,0,0,5"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                            />
+
+
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding RunCompareScriptCommand}"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="80"
+                                btnBrdrCornerRadius="10"
+                                btnBrdrBrush="Silver"
+                                btnBrdrThickness="2"
+                                MaintCornerRadius="9"
+                                MaintBackground="#2A2F36"
+                                btnBrdrMargin="0,5"
+                                btnForeground="White"
+                                btnContentText="Compare"
+                                btnVertAlign="Top"/>
+
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding RefreshDatabaseCommand}"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="80"
+                                btnBrdrCornerRadius="10"
+                                btnBrdrBrush="Silver"
+                                btnBrdrThickness="2"
+                                MaintCornerRadius="9"
+                                MaintBackground="#2A2F36"
+                                btnBrdrMargin="0,50,0,0"
+                                btnForeground="White"
+                                btnContentText="Refresh Database"
+                                btnVertAlign="Top"
+                                btnContentFontSize="9"/>
+
+                        </StackPanel>
+                    </ContentControl>
+
+                    <DataGrid ItemsSource="{Binding ExpiredSide}"
+                              Background="White"
+                              MaxHeight="200"
+                              d:Height="200"
+                              Grid.Column="3"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                              VerticalAlignment="Top">
+
+                        <DataGrid.Columns>
+                            <!--<DataGridTextColumn HeaderStyle="{StaticResource DataGridColumnHeaderStyle1}"/>-->
+
+                            <DataGridTextColumn Header="{Binding Data.Column1Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding ServicePlanNumber}" 
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+                            <DataGridTextColumn Header="{Binding Data.Column1Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding MainAccountNumber}" 
+                                                Visibility="{Binding Data.CustomerAccountsIsEnabled, Source={StaticResource proxy}}"/>
+
+
+                            <DataGridTextColumn Header="{Binding Data.Column2Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountName}" 
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+                            <DataGridTextColumn Header="{Binding Data.Column2Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountName}" 
+                                                Visibility="{Binding Data.CustomerAccountsIsEnabled, Source={StaticResource proxy}}"/>
+
+                            <DataGridTextColumn Header="{Binding Data.Column3Header, Source={StaticResource proxy}}"
+                                                Binding="{Binding AccountName}" 
+                                                Visibility="{Binding Data.ServicePlanIsEnabled, Source={StaticResource proxy}}"/>
+
+                        </DataGrid.Columns>
+
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="Wheat"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.RowStyle>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding RemoveExpiredCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DataGrid>
+
+                    <GroupBox x:Name="XLorAccess" Grid.Column="4"
+                              Margin="10,0,10,0"
+                              VerticalAlignment="Top"
+                              Header="Excel or Access"
+                              Height="200"
+                              Foreground="White"
+                              ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".2*" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width=".2*" />
+                                <ColumnDefinition Width=".3*" />
+                                <!--<ColumnDefinition Width="*" />-->
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <GroupBox Grid.Row="0" Grid.RowSpan="5"
+                                      BorderThickness=".1" Margin="0,1,5,1"
+                                      Style="{StaticResource GroupBoxNoGap}">
+                                <StackPanel>
+                                    <RadioButton Command="{Binding ExcelSortOrFilterCommand}" 
+                                                 IsChecked="{Binding ExcelSortFilterIsChecked}" 
+                                                 Margin="0,5,0,0" 
+                                                 Content="Excel"
+                                                 Foreground="White"
+                                                 GroupName="Program"/>
+                                    <RadioButton Command="{Binding AccessSortOrFilterCommand}" 
+                                                 IsChecked="{Binding AccessSortFilterIsChecked}" 
+                                                 Content="Access"
+                                                 Foreground="White"
+                                                 GroupName="Program"/>
+
+                                    <RadioButton Command="{Binding SortCommand}"
+                                                 IsChecked="{Binding SortIsChecked}" 
+                                                 Margin="0,10,0,0" 
+                                                 Content="Sort"
+                                                 Foreground="White"
+                                                 GroupName="SortOrFilter"/>
+                                    <!--<RadioButton Command="{Binding FilterCommand}"
+                                                 IsChecked="{Binding FilterIsChecked}" 
+                                                 Content="Filter"
+                                                 Foreground="White"
+                                                 GroupName="SortOrFilter"/>-->
+
+                                    <Button Command="{Binding FilterCommand}" 
+                                        Width="40"
+                                        Height="20"
+                                            HorizontalAlignment="Left"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
+                                        FontSize="10"
+                                        Content="Filter"
+                                            Margin="0,20,0,0"
+                                            />
+
+                                    <Button Command="{Binding ClearAllSortOrFilterCommand}" 
+                                            Width="40"
+                                            Height="20"
+                                            HorizontalAlignment="Left"
+                                            VerticalContentAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            FontSize="10"
+                                            Content="Clear"
+                                            Margin="0,20,0,0"/>
+
+
+                                </StackPanel>
+
+                            </GroupBox>
+                            <ListBox x:Name="SortFilterListBox" 
+                                     AllowDrop="True"
+                                     MouseMove="SortFilterListBox_MouseMove"
+                                     Drop="SortFilterListBox_Drop"
+                                     DragLeave="SortFilterListBox_DragLeave"
+                                     DragOver="SortFilterListBox_DragOver"
+                                     MouseDoubleClick="SortFilterListBox_MouseDoubleClick"
+                                     
+                                     ItemsSource="{Binding ExcelOrAccessColumns}"
+                                     MaxHeight="200"
+                                     Grid.Column="1"
+                                     Grid.RowSpan="6">
+                            </ListBox>
+                            <!--SelectedItem="{Binding SelectedSection}"
+                                     SelectionMode="Multiple"-->
+
+                            <Label Foreground="White"
+                                   VerticalAlignment="Top"
+                                   Height="25"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Column="2"
+                                   Grid.Row="0"
+                                   Content="Order By:" />
+                            <TextBox x:Name="txtbx1"
+                                     AllowDrop="True"
+                                     Background="White"
+                                     Drop="txtbx1_Drop"
+                                     PreviewDrop="txtbx1_PreviewDrop"
+                                     DragEnter="txtbx1_DragEnter"
+                                     Text="{Binding Txtbx1, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                                     Grid.Column="3"
+                                     Grid.Row="0"
+                                     VerticalAlignment="Top"
+                                     Height="25"
+                                     VerticalContentAlignment="Center" 
+                                     />
+                            <!--Text="{Binding txtbx1, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"-->
+                            <Label x:Name="Lbl1"
+                                   Visibility="Visible"
+                                   Foreground="White"
+                                   Grid.Column="2"
+                                   Grid.Row="1"
+                                   Content="Then:" />
+                            <TextBox x:Name="txtbx2"
+                                     Visibility="Visible"
+                                     Height="25"
+                                     Grid.Column="3"
+                                     Grid.Row="1"
+                                     Text="{Binding Txtbx2, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label x:Name="Lbl2"
+                                   Visibility="Visible"
+                                   Foreground="White"
+                                   Grid.Column="2"
+                                   Grid.Row="2"
+                                   Content="Then:" />
+                            <TextBox x:Name="txtbx3"
+                                     Visibility="Visible"
+                                     Height="25"
+                                     Grid.Column="3"
+                                     Grid.Row="2"
+                                     Text="{Binding Txtbx3, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label x:Name="Lbl3"
+                                   Visibility="Visible"
+                                   Foreground="White"
+                                   Grid.Column="2"
+                                   Grid.Row="3"
+                                   Content="Then:" />
+                            <TextBox x:Name="txtbx4"
+                                     Visibility="Visible"
+                                     Height="25"
+                                     Grid.Column="3"
+                                     Grid.Row="3"
+                                     Text="{Binding Txtbx4, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label x:Name="Lbl4"
+                                   Visibility="Visible"
+                                   Foreground="White"
+                                   Grid.Column="2"
+                                   Grid.Row="4"
+                                   Content="Then:" />
+                            <TextBox x:Name="txtbx5"
+                                     Visibility="Visible"
+                                     Height="25"
+                                     Grid.Column="3"
+                                     Grid.Row="4"
+                                     Text="{Binding Txtbx5, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label x:Name="Lbl5"
+                                   Visibility="Visible"
+                                   Foreground="White"
+                                   Grid.Column="2"
+                                   Grid.Row="5"
+                                   Content="Then:" />
+                            <TextBox x:Name="txtbx6"
+                                     Visibility="Visible"
+                                     Height="25"
+                                     Grid.Column="3"
+                                     Grid.Row="5"
+                                     Text="{Binding Txtbx6, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </Grid>
+                    </GroupBox>
+
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

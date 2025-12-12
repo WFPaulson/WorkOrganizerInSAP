@@ -1,0 +1,494 @@
+﻿<Window x:Class="ContractWork.MVVM.Dashboard.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.Dashboard"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+        
+        d:DataContext="{d:DesignInstance Type=local:DashboardViewModel}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        mc:Ignorable="d"
+        Height="800"
+        Width="525"
+        WindowStartupLocation="CenterScreen"
+        x:Name="dashboard"
+        MouseLeftButtonDown="DragMe"
+        Loaded="dashboard_Loaded">
+
+    <Window.Resources>
+        <converters:MinusOrPlusConverter x:Key="MinusOrPlus"/>
+        <converters:DarkenColorConverter x:Key="Darken" />
+
+        <!--<SolidColorBrush x:Key="defaultColor" Color="#FFC4E5F6"/>-->
+
+        <Style x:Key="btnUCRoundish" TargetType="customcontrols:btnRoundedGelControl">
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="btngelWidth" Value="75"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="btngelHeight" Value="35"/>
+            <Setter Property="textFontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="mainColor" Value="Green"/>
+            <Setter Property="offsetColor" Value="LightGreen"/>
+            <Setter Property="transparentColor" Value="{StaticResource btnGelLike}"/>
+            <Setter Property="textPadding" Value="3,1,0,0"/>
+        </Style>
+
+    </Window.Resources>
+
+
+    <Border CornerRadius="10"
+            Background="#5C83B4"
+            BorderBrush="White"
+            BorderThickness="3">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width=".13*" />
+                <ColumnDefinition Width="5" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5" />
+                <RowDefinition Height=".07*" />
+                <RowDefinition Height=".9*" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="1"
+                       Grid.Row="1"
+                       Foreground="#385578"
+                       Text="Main Menu"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontSize="32" />
+
+            <Grid Grid.Column="2"
+                  Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="20"
+                        btnMargin="3"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                        />
+
+                    <customcontrols:WindowControls
+                        TextContent="X"
+                        TextPadding="1,0,1,2"
+                        btnWidth="20"
+                        btnMargin="3"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                        />
+
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Column="1"
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    BorderBrush="#546982"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Padding="2"
+                    Background="#7F9EC3">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".35*" />
+                        <ColumnDefinition Width=".25*" />
+                        <ColumnDefinition Width=".35*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".42*" />
+                        <RowDefinition Height=".03*" />
+                        <RowDefinition Height=".3*" />
+                        <RowDefinition Height=".35*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Column="0">
+
+                        <customcontrols:btnRoundedGelControl
+                            transparentColor="{StaticResource btnGelLike}"
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            textContent="Customer Accounts"
+                            btngelCommand="{Binding OpenCustomerAccountViewCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            Style="{StaticResource btnUCRoundish}"
+                            btngelWidth="85"
+                            IsEnabled="False"
+                            textContent= "Customer &#x0a; Account Info"
+                            btngelCommand="{Binding ServicePlanListCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            IsEnabled="False"
+                            textContent= "Service Plan Import"
+                            btngelCommand="{Binding ServicePlanImportInfoCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            Style="{StaticResource btnUCRoundish}"
+                            btngelWidth="85"
+                            textContent="Service Plan &#x0a; Maintenance" 
+                            btngelCommand="{Binding ServicePlanMaintenanceCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl
+                            transparentColor="{StaticResource btnGelLike}"
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            textContent="Task Manager"
+                            btngelMargin="0,0,0,0"
+                            btngelCommand="{Binding TaskManagerCommand}"
+                         />
+
+
+                        <ProgressBar Height="20" Margin="5,10,5,0" Value="{Binding CurrentProgress, Mode=OneWay}" 
+                                    Visibility="{Binding ProgressBarVisibility}"/>
+                        <!--{Binding ProgressBarVisibility}-->
+                        <TextBlock Text="0%" FontSize="15"
+                                   Height="25" Width="50"
+                                   Margin="5,3,5,5" TextAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding ProgressBarVisibility}"
+                        />
+
+
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+
+                        <customcontrols:btnRoundedGelControl
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            IsEnabled="False"
+                            textContent="Locations"
+                            btngelCommand="{Binding CustomerAccountCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            textContent="Inventory" 
+                            Margin="0,0,0,0"
+                            btngelCommand="{Binding InventoryCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            btngelHeight="40"
+                            btngelWidth="145"
+                            IsEnabled="False"
+                            textContent="Equipment" 
+                            Margin="0,0,0,0"
+                            btngelCommand="{Binding CustomerEquipmentCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            Style="{StaticResource btnUCRoundish}"
+                            btngelWidth="150"
+                            IsEnabled="False"
+                            textContent="Contract Inspect"
+                            d:textContent="Equipment Maintenance" 
+                            textFontSize="12"
+                            textPadding="3,1,0,0"
+                            btngelCommand="{Binding OpenContractInspectCommand}"
+                        />
+
+                        <customcontrols:btnRoundedGelControl 
+                            textContent="PM Month Sheet" 
+                            btngelCommand="{Binding CustomerPMSelectCommand}"
+                            btngelWidth="150"
+                        />
+                    </StackPanel>
+
+                    <Border Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Height="10"
+                            BorderBrush='white'
+                            BorderThickness='.5,.5,0,0'
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="{Binding ElementName=dashboard, Path=Width, Mode=TwoWay, 
+                                Converter={StaticResource MinusOrPlus},
+                                ConverterParameter={StaticResource minusThirty}}">
+
+                        <Border BorderBrush='Black'
+                                BorderThickness='0,0,.5,.5'>
+                        </Border>
+                    </Border>
+
+                    <StackPanel  
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0 0 0 0">
+                        <StackPanel Orientation="Horizontal" Margin="15 5 0 0">
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding CopyToClipboardCommand}"
+                                btnCmdParameter="PMText"
+                                btnBrdrCornerRadius="10"
+                                MaintCornerRadius="9"
+                                MaintBackground="#BEBEBE"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="50"
+                                btnBrdrThickness="1"
+                                btnContentText="Copy" 
+                                Margin="0 0 0 0"
+                            />
+                            <customcontrols:txtbxRoundedControl
+                                x:Name="PMTextbox"
+                                txtbxWidth="350"
+                                txtbxHeight="28"
+                                txtbxMargin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                txtbxFontSize="15"
+                                txtbxBorderThickness="2"
+                                txtbxPadding="3,0,0,1"
+                                txtbxText="{Binding PMText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Margin="0 0 0 0"
+                            />
+                        </StackPanel>
+
+                        
+                        <StackPanel Orientation="Horizontal" Margin="15 15 0 0">
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding CopyToClipboardCommand}"
+                                btnCmdParameter="ServiceNotes"
+                                btnBrdrCornerRadius="10"
+                                MaintCornerRadius="9"
+                                MaintBackground="#BEBEBE"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="50"
+                                btnBrdrThickness="1"
+                                btnContentText="Copy" 
+                                Margin="0 -30 0 0"
+                            />
+                            <customcontrols:txtbxRoundedControl
+                                x:Name="ServiceNotesTextBox"
+                                txtbxWidth="400"
+                                txtbxHeight="70"
+                                txtbxMargin="5,10,0,0"
+                                HorizontalAlignment="Left"
+                                txtbxFontSize="15"
+                                txtbxBorderThickness="2"
+                                txtbxPadding="3,0,0,1"
+                                txtbxText="{Binding ServiceNotesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                Margin="0 -10 0 0"
+                            />
+                        </StackPanel>
+
+                        <!--<StackPanel Orientation="Horizontal" Margin="15 15 0 0">
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding CopyToClipboardCommand}"
+                                btnCmdParameter="ServiceNotesUAText"
+                                btnBrdrCornerRadius="10"
+                                MaintCornerRadius="9"
+                                MaintBackground="#BEBEBE"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="50"
+                                btnBrdrThickness="1"
+                                btnContentText="Copy" 
+                                Margin="0 -2 0 0" 
+                            />
+                            <customcontrols:txtbxRoundedControl
+                                x:Name="ServiceNotesTextBox_Copy"
+                                txtbxWidth="350"
+                                txtbxHeight="30"
+                                txtbxMargin="5,5,0,0"
+                                HorizontalAlignment="Left"
+                                txtbxFontSize="15"
+                                txtbxBorderThickness="2"
+                                txtbxPadding="3,0,0,1"
+                                txtbxText="{Binding ServiceNotesUAText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                Margin="0 -6 0 0" 
+                                VerticalAlignment="Top"
+                            />
+                        </StackPanel>-->
+
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding CopyToClipboardCommand}"
+                                btnCmdParameter="ServiceNotesUAText"
+                                btnBrdrCornerRadius="10"
+                                MaintCornerRadius="9"
+                                MaintBackground="#BEBEBE"
+                                btnBrdrHeight="30"
+                                btnBrdrWidth="50"
+                                btnBrdrThickness="1"
+                                btnContentText="Copy" 
+                                Margin="17 -2 0 0" 
+                            />
+
+                            <customcontrols:cmbExtendedControl
+                                cmbList="{Binding Combolist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                cmbSelectedItem="{Binding SelectedUAReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Margin="5 0 0 5"
+                                PlaceHolderText="{Binding SelectedUAReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                VerticalContentAlignment="Center"
+                                HorizontalContentAlignment ="Left"
+                                Padding="0 0 0 0"
+                                FontSize="15"
+                                
+                                
+                            >
+
+                                <!--cmbWidth="{Binding CmbWidthForText}"
+                                    cmbHeight ="55"-->
+
+                            </customcontrols:cmbExtendedControl>
+                            
+                            <!--<customcontrols:cmbRoundedControl
+                                cmbFillerBackground="LightBlue"
+                                cmbTextBackground="LightBlue"
+                                cmbHeight="30" 
+                                cmbWidth="375"
+                                cmbMargin="5 0 0 0"
+                                cmbList="{Binding Combolist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceHolderText="...Pick an item"
+                                >
+                                
+                                
+                            </customcontrols:cmbRoundedControl>-->
+                            <!--<ComboBox Width="350" Height="30"
+                                      Margin="5 0 0 0"
+                                />-->
+                            <!--
+                            <customcontrols:txtbxRoundedControl
+                                x:Name="ServiceNotesTextBox_Copy"
+                                txtbxWidth="350"
+                                txtbxHeight="30"
+                                txtbxMargin="5,5,0,0"
+                                HorizontalAlignment="Left"
+                                txtbxFontSize="15"
+                                txtbxBorderThickness="2"
+                                txtbxPadding="3,0,0,1"
+                                txtbxText="{Binding ServiceNotesUAText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                Margin="0 -6 0 0" 
+                                VerticalAlignment="Top"
+                            />-->
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
+                                Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" Margin="0 5 0 0">
+                            <customcontrols:btnRoundedControl
+                                btnIconOverlayIsEnabled="Visible"
+                                btnRDContent="Change file Location &#x0a; ex. C:\Documents"
+                                btnRDCornerRadius="10"
+                                btnRDWidth="180"
+                                btnRDHeight="60"
+                                btnRDVertAlign="Top"
+                                btnRDMargin="2,0,0,0"
+                                btnRDCommand="{Binding ChangeFileLocationCommand}"
+                            />
+
+                            <!-- need to add this option to buttons maybe in the resource Dictionary
+                        try as a Windows resource first as a style based on btnRoundedControl
+                            
+                        FontFamily="Segoe MDL2 Assets"
+                            btnRDContent="&#xE721;"
+                            btnRDContent="Change File &#x0a;Default Locations"
+                            FontFamily="Segoe MDL2 Assets"
+                            btnRDContent="&#xE721;"
+                            btnRDContent="Change File &#x0a;Default Locations"
+                            
+                        -->
+
+
+
+
+
+                            <customcontrols:btnRoundedControl 
+                                btnRDContent="PM's: Customer &#x0a; Includes frequent parts" 
+                                btnRDCommand="{Binding PMandInventoryCommand}"
+                                IsEnabled="False"
+                                btnRDMargin="2, 10, 0, 0"
+                                btnRDWidth="180"
+                                btnRDHeight="60" Grid.ColumnSpan="4" 
+                            />
+
+
+
+                            <Border Margin="5 10 0 0"
+                                Height="65"
+                                Width="155"
+                                Background="#B6C7DC"
+                                CornerRadius="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                    >
+
+                                <customcontrols:btnMaintenanceControl 
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Center"
+                                    Padding="0 0 0 0"
+                                    btnContentText="Contract And Warranty &#x0a; Maintenance"
+                                    btnBrdrMargin="0 0 0 0"
+                                    btnContentFontSize="12"
+                                    Margin="0 2.5 0 0" 
+                                    btnBrdrHeight="60"
+                                    btnBrdrWidth="150"
+                                    btnHeight="Auto"
+                                    btnWidth="Auto"
+                                    btnBrdrCornerRadius="20"
+                                    MaintCornerRadius="19"
+                                    btnClickCommand="{Binding ContractAndWarrantyCommand}"
+                            />
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="30,0,0,0" >
+                            <TextBlock 
+                                HorizontalAlignment="Left"
+                                FontSize="18"
+                                Text="Notes:"
+                                Margin="0,0,0,0" 
+                                Foreground="Black"
+                            />
+                            <TextBox Margin="10,0,0,0"
+                                Background="#B6C7DC"
+                                Height="225"
+                                Width="228"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
+                                TextWrapping="Wrap"
+                                AcceptsReturn="True"
+                                AcceptsTab="True"
+                                SpellCheck.IsEnabled="True" 
+                                Text="{Binding NotesNonSpecific, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCompareValueCommand}" 
+                                            CommandParameter="{Binding NotesNonSpecific}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusInitialValueCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,362 @@
+﻿<Window x:Class="ContractWork.MVVM.PMandInventory.PMSchedulingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.PMandInventory"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        mc:Ignorable="d"
+        
+        AllowsTransparency="True" 
+        FontFamily="Poppins"
+        WindowStyle="None" 
+        Height="600" Width="700"
+        MouseLeftButtonDown="DragMe"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        SizeToContent="Width"
+        ContentRendered="Window_ContentRendered"
+        x:Name="PMSelect">
+    
+    <Window.Resources>
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border CornerRadius="20,20,0,0"
+            Background="#61B6CD"
+            BorderBrush="White"
+            BorderThickness="2,2,2,3">
+
+        </Border>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <StackPanel>
+                    <TextBlock Text="PM MONTH"
+                       FontSize="40"
+                       Margin="20,5,0,1"
+                       Foreground="#385578"/>
+
+                    <Border BorderThickness="0,0,1,1"
+                        BorderBrush="Black" 
+                        Height="39"
+                        Width="135" Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        CornerRadius="0,5,5,10">
+                        <Border BorderBrush="white" 
+                            BorderThickness="1,1,0,0"
+                            CornerRadius="10,5,0,10">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                <customcontrols:btnMaintenanceControl
+                                    btnClickCommand="{Binding OpenExcelPMDueListCommand}"
+                                    btnBrdrHeight="35"
+                                    btnBrdrWidth="40"
+                                    btnBrdrCornerRadius="10"
+                                    btnBrdrBrush="White"
+                                    btnBrdrThickness="1,1,0,0"
+                                    btn2ndBrdrBrush="Black"
+                                    btn2ndBrdrThickness="0,0,1,1"
+                                    MaintCornerRadius="9"
+                                    MaintBackground="#61B6CD"
+                                    btnBrdrMargin="1,0,0,0"
+                                    btnForeground="White"
+                                    btnHorizAlign="Left"
+                                    btnVertAlign="Center"
+                                    ImageSource="/Assets/Excel.png"
+                                    />
+                                <!--ImageSource="S:\C# Contract Database\2024-0404 - WorkOrganizer in SAP.beta1.02\WorkOrganizerInSAP\ContractWork\Assets\Excel.png"-->
+                                <Label Content="PM Due Sheet"
+                                   Margin="5,0,0,0"
+                                   VerticalAlignment="Center"/>
+
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </StackPanel>
+                <ContentControl Style="{StaticResource PanelSunken}"
+                        Margin="20,0,0,0"
+                        Height="80"
+                        Width="350"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Background="#61B6CD"
+                        >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".25*"/>
+                            <ColumnDefinition Width=".25*"/>
+                            <ColumnDefinition Width=".25*"/>
+                            <ColumnDefinition Width=".25*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <CheckBox Content="Jan" Margin="10,10,5,0" Foreground="White" 
+                          IsChecked="{Binding chkJan}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Feb" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkFeb}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Mar" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkMar}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <CheckBox Content="Apr" Margin="10,10,5,0" Foreground="White"
+                          IsChecked="{Binding chkApr}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="May" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkMay}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Jun" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkJun}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <CheckBox Content="Jul" Margin="10,10,5,0" Foreground="White"
+                          IsChecked="{Binding chkJul}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Aug" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkAug}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Sep" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkSep}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <CheckBox Content="Oct" Margin="10,10,5,0" Foreground="White"
+                          IsChecked="{Binding chkOct}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Nov" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkNov}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                            <CheckBox Content="Dec" Margin="10,5,5,0" Foreground="White"
+                          IsChecked="{Binding chkDec}"
+                          Command="{Binding PMMonthSelectionCommand}"/>
+                        </StackPanel>
+                    </Grid>
+
+                </ContentControl>
+                <!--<Border Grid.Column="1"
+                        BorderThickness="0,0,1,1"
+                    BorderBrush="Black" 
+                    Height="39"
+                    Width="44" Margin="35,45,0,0"
+                    HorizontalAlignment="Left"
+                    CornerRadius="0,10,10,10">
+                    <Border BorderBrush="white" 
+                        BorderThickness="1,1,0,0"
+                        CornerRadius="10,9,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding OpenPMToDoListCommand}"
+                                btnBrdrHeight="35"
+                                btnBrdrWidth="40"
+                                btnBrdrCornerRadius="10"
+                                btnBrdrBrush="White"
+                                btnBrdrThickness="1,1,0,0"
+                                btn2ndBrdrBrush="Black"
+                                btn2ndBrdrThickness="0,0,1,1"
+                                MaintCornerRadius="9"
+                                MaintBackground="#cd7861"
+                                btnBrdrMargin="1,0,0,0"
+                                textPadding="0,0,0,0"
+                                btnHorizAlign="Left"
+                                btnVertAlign="Center"
+                                btnContentText="PM List"
+                                btnContentFontSize="12"
+                                btnForeground="Black"
+                            />
+                            --><!--ImageSource="S:\C# Contract Database\2024-0404 - WorkOrganizer in SAP.beta1.02\WorkOrganizerInSAP\ContractWork\Assets\Excel.png"-->
+                            <!--<Border CornerRadius="10"
+                                    BorderThickness="1,1,1,1"
+                                    BorderBrush="Black" 
+                                    Width="32"
+                                    Height="22">
+                                <ToggleButton
+                                              />
+                            </Border>--><!--
+
+                        </StackPanel>
+                    </Border>
+                </Border>-->
+            </StackPanel>
+        
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".4*"/>
+                    <RowDefinition Height=".6*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <customcontrols:WindowControls
+                            TextContent="-"
+                            btnWidth="20"
+                            btnMargin="3,0,0,0"
+                            btnBckgrnd="#F5B53F"
+                            btnClick="btnMinimize_Click"
+                    />
+                    <customcontrols:WindowControls
+                            TextContent="X"
+                            TextPadding="1,0,1,2"
+                            btnWidth="20"
+                            btnMargin="3,0,10,0"
+                            btnBckgrnd="#F55551"
+                            btnClick="btnExit_Click"
+                    />
+
+                </StackPanel>
+                <Border Grid.Row="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        BorderThickness="0,0,1,1"
+                        BorderBrush="Black" 
+                        Height="27"
+                        Width="71" 
+                        CornerRadius="0,10,10,10"
+                        Margin="5,0,0,0">
+                    <Border BorderBrush="white" 
+                        BorderThickness="1,1,0,0"
+                        CornerRadius="10,9,0,10"
+                            Width="70" >
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <customcontrols:tglbtnRoundedControl
+                                Width="70"
+                                tglbtnWidth="69"
+                                tglbtnHeight="25"
+                                tglbtnMargin="0,0,0,0"
+                                tglbtnCommand="{Binding Full_PMListCommand}"
+                                TextContent="{Binding TogglePositionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                tglbtnIsChecked="{Binding FullorPMList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                >
+                                
+                                
+                            </customcontrols:tglbtnRoundedControl>
+                            <!--<customcontrols:btnMaintenanceControl
+                                btnClickCommand="{Binding OpenPMToDoListCommand}"
+                                btnBrdrHeight="35"
+                                btnBrdrWidth="40"
+                                btnBrdrCornerRadius="10"
+                                btnBrdrBrush="White"
+                                btnBrdrThickness="1,1,0,0"
+                                btn2ndBrdrBrush="Black"
+                                btn2ndBrdrThickness="0,0,1,1"
+                                MaintCornerRadius="9"
+                                MaintBackground="#cd7861"
+                                btnBrdrMargin="1,0,0,0"
+                                textPadding="0,0,0,0"
+                                btnHorizAlign="Left"
+                                btnVertAlign="Center"
+                                btnContentText="PM List"
+                                btnContentFontSize="12"
+                                btnForeground="Black"
+                            />-->
+                            <!--ImageSource="S:\C# Contract Database\2024-0404 - WorkOrganizer in SAP.beta1.02\WorkOrganizerInSAP\ContractWork\Assets\Excel.png"-->
+                            <!--<Border CornerRadius="10"
+                                BorderThickness="1,1,1,1"
+                                BorderBrush="Black" 
+                                Width="32"
+                                Height="22">
+                            <ToggleButton
+                                          />
+                        </Border>-->
+
+                        </StackPanel>
+                    </Border>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="1" 
+            BorderBrush="#61B6CD"
+            BorderThickness="2,2,2,2"
+            Background="White"
+        >
+        <DataGrid x:Name="PMMonthSchedule"
+                  Background="{x:Null}"
+                  BorderBrush="{x:Null}"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  SelectedItem="{Binding SelectedCustomer}"
+                  ItemsSource="{Binding PMScheduleList}">
+
+            <!--SelectedItem="{Binding SelectedCustomer}"-->
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}"  
+                                Width="Auto" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Account Name" 
+                                Width="Auto"
+                                Binding="{Binding 'Account Name'}"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="Model" 
+                                Binding="{Binding Model}"
+                                Width="Auto"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="Device Qty" 
+                                Width="Auto"
+                                Binding="{Binding 'Device Qty'}"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="PM Month" 
+                                Width="Auto"
+                                Binding="{Binding 'PM Month'}"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="Month Number" 
+                                Width="Auto"
+                                Binding="{Binding 'PM Month Number'}"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="PM Completed" 
+                                Width="Auto"
+                                Binding="{Binding 'PM Completed', StringFormat={}{0:M/dd/yy}}"
+                                CanUserSort="True" />
+                <DataGridTextColumn Header="Oldest Completed" 
+                                Width="Auto"
+                                Binding="{Binding 'Oldest Completed', StringFormat={}{0:M/dd/yy}}"
+                                CanUserSort="True" />
+
+                <DataGridTemplateColumn Header="Add To ToDo" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox 
+                                IsChecked="{Binding 'Add To List', Mode=TwoWay, 
+                                     UpdateSourceTrigger=PropertyChanged}"
+                                Command="{Binding Data.AddToPMListCommand, Source={StaticResource proxy}}"
+                                HorizontalAlignment="Center"
+                                />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:Interaction.Behaviors>
+                            <i:ConditionBehavior>
+                                <i:ConditionalExpression>
+                                    <i:ComparisonCondition LeftOperand="{Binding Path=Text, ElementName=addToListCheckbox}"
+                                                           Operator="NotEqual"
+                                                           RightOperand="Add To ToDo"/>
+                                </i:ConditionalExpression>
+                            </i:ConditionBehavior>
+                        </i:Interaction.Behaviors>
+                        <i:InvokeCommandAction Command="{Binding GetCustomerDataCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+        </DataGrid>
+    </Border>
+    </Grid>
+</Window>

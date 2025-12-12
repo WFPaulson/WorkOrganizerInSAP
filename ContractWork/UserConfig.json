@@ -1,0 +1,18 @@
+{
+    "AppSettings": {
+        "AccessFilePath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Access Customer DB files\\Best version at ths time\\Template Customer Contract and Equipment - 2024-0420.accdb",
+        "AccessFolderPath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Access Customer DB files\\Best version at ths time\\",
+        "AssetsFilePath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\raw spreadsheets\\Assets.xlsx",
+        "AssetsFolderPath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\raw spreadsheets\\",
+        "ContractsFilePath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\raw spreadsheets\\Contracts.xlsx",
+        "ContractsFolderPath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\raw spreadsheets\\",
+        "InventoryFilePath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Access Inventory DB files\\Inventory 2022-01-25.accdb",
+        "InventoryFolderPath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Access Inventory DB files\\"
+    }
+
+}
+//D:\Cloud Services\NextCloud\Physio Work\VBA files and images\Contracts from Power Bi\raw spreadsheets "D:\\Cloud Services\\NextCloud\\Bill's Folder\\My Documents\\2024-0309 - Assets.xlsx",
+// "ExtendedAssetsFilePath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\assetsExtended.xlsx\\",
+//"ExtendedAssetsFolderPath": "D:\\Cloud Services\\NextCloud\\Physio Work\\VBA files and images\\Contracts From Power bi\\",
+//"ExcelFilePath": "D:\\Cloud Services\\NextCloud\\Bill's Folder\\My Documents\\2022-1026 - Contracts and Warranties.xlsx",
+//        "ExcelFolderPath": "D:\\Cloud Services\\NextCloud\\Bill's Folder\\My Documents\\",

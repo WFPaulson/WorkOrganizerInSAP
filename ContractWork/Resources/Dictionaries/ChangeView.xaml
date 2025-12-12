@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:accountlist="clr-namespace:ContractWork.MVVM.AccountList"
+                    xmlns:dashboard="clr-namespace:ContractWork.MVVM.Dashboard"
+                    xmlns:converttosap="clr-namespace:ContractWork.MVVM.ConvertToSAP"
+                    xmlns:fileselection="clr-namespace:ContractWork.MVVM.FileSelection"
+                    xmlns:quoting="clr-namespace:ContractWork.MVVM.Quoting"
+                    
+                    
+                    >
+
+
+    <DataTemplate x:Key="FileSelection"  DataType="{x:Type TypeName=fileselection:FileSelectionViewModel}">
+        <fileselection:FileSelectionWindow/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="ConvertToSAP" DataType="{x:Type TypeName=converttosap:ConvertToSAPViewModel}">
+        <converttosap:ConvertToSAPWindow/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DashBoard" DataType="{x:Type TypeName=dashboard:DashboardViewModel}">
+        <dashboard:DashboardWindow/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="AccountList" DataType="{x:Type TypeName=accountlist:AccountListViewModel}">
+        <accountlist:AccountListWindow/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ConvertAccount" DataType="{x:Type TypeName=converttosap:ConvertAccountsViewModel}">
+        <converttosap:ConvertToSAPWindow/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Quoting" DataType="{x:Type TypeName=quoting:CustomerDeviceListViewModel}">
+        <quoting:CustomerDeviceListWindow/>
+    </DataTemplate>
+
+
+</ResourceDictionary>

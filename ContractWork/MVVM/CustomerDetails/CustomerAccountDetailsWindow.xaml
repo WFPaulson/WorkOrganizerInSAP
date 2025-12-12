@@ -1,0 +1,707 @@
+﻿ <Window x:Class="ContractWork.MVVM.CustomerDetails.CustomerAccountDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.CustomerDetails"
+        xmlns:converter="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        d:DataContext="{d:DesignInstance Type=local:CustomerEquipmentModel}"
+        mc:Ignorable="d"
+        
+        Height="920" Width="1180"
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="DragMe"
+        >
+    <!--d:DataContext="{d:DesignInstance Type=compositemodels:CustomerEquipmentDetails}"-->
+
+    <Window.Resources>
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+
+        <converter:DateTimeMinValueConverter x:Key="DTMinValue"/>
+        <converter:CloneMultiConverter x:Key="multiParameters"/>
+
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Border BorderBrush="LightGray"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="3"
+                    Background="WhiteSmoke"
+                    BorderThickness="0" />
+                    <Border 
+                      Grid.Column="0"
+                      CornerRadius="6" 
+                      Margin="1" 
+                      Background="WhiteSmoke" 
+                      BorderThickness="1" />
+                    <Path x:Name="Arrow"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M 0 0 L 4 4 L 8 0 Z" >
+                        <Path.Fill>
+                            <SolidColorBrush Color="Gray"/>
+                        </Path.Fill>
+                    </Path>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
+            <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+        </ControlTemplate>
+
+        <Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton 
+                                 Name="ToggleButton" 
+                                 Template="{StaticResource ComboBoxToggleButton}" 
+                                 Grid.Column="2" 
+                                 Focusable="false"
+                                 IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,
+                                    RelativeSource={RelativeSource TemplatedParent}}"
+                                 ClickMode="Press">
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="ContentSite" 
+                                              IsHitTestVisible="False" 
+                                              Content="{TemplateBinding SelectionBoxItem}" 
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
+                                              Margin="3,3,23,3" 
+                                              TextElement.Foreground="Black" 
+                                              VerticalAlignment="Center" 
+                                              HorizontalAlignment="Left"/>
+
+                            <TextBox x:Name="PART_EditableTextBox"
+                                 Style="{x:Null}" 
+                                 Template="{StaticResource ComboBoxTextBox}" 
+                                 HorizontalAlignment="Left" 
+                                 VerticalAlignment="Center" 
+                                 Margin="3,3,23,3"
+                                 Focusable="True" 
+                                 Background="Transparent"
+                                 Visibility="Hidden"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup 
+                                Name="Popup"
+                                Placement="Bottom"
+                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                AllowsTransparency="True" 
+                                Focusable="False"
+                                PopupAnimation="Slide">
+                                <Grid 
+                                    Name="DropDown"
+                                    SnapsToDevicePixels="True"                
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border 
+                                        x:Name="DropDownBorder"
+                                        Background="LightGray"
+                                        BorderThickness="1"/>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Border Background="#F0904E"
+            BorderBrush="White"
+            BorderThickness="2"
+            CornerRadius="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width=".55*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width=".075*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="Customer Account Details"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontSize="28" Margin="10,0,0,0"/>
+
+                <customcontrols:WindowControls
+                        TextContent="Refresh"
+                        TextFontSize="10"
+                        btnWidth="40"
+                        btnMargin="568, 0, 0, 0"
+                        brdrCornerRadius="20"
+                        btnBckgrnd="#F8CBAD"
+                        btnCommand="{Binding RefreshCommand}"
+                        TextPadding="0,0,0,0"
+                    />
+
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal">
+                    <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="22"
+                        btnMargin="25, 0, 0, 25"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                        TextPadding="0,0,0,0"
+                    />
+
+                    <customcontrols:WindowControls
+                        TextContent="X"
+                        btnWidth="22"
+                        btnMargin="5, 0, 0, 25"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                        TextPadding="0,0,0,4"
+                    />
+
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                  Background="#F8CBAD">
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="5,10,0,0" Content="Customer Account ID:"/>
+                        <TextBox x:Name="txtbxID" Margin="5,-5,0,0" 
+                         Background="White" Foreground="Black"
+                         Height="20" Width="50" HorizontalAlignment="Left"
+                         Text="{Binding CustomerAccount.CustomerAccountID}"
+                         IsReadOnly="true"/>
+
+                        <customcontrols:WindowControls
+                            TextContent="x"
+                            btnWidth="20"
+                            btnMargin="645, 34, 0, 0"
+                            btnBckgrnd="#F0904E"
+                            TextPadding="0,-2,0,3"
+                        />
+                    </StackPanel>
+
+                    <Label Margin="5,-8,0,4" Content="Account Name:"/>
+                    
+                    <!--TODO: need to add a Archive checkbox and an unlock/lock button-->
+                    
+                    <Label Margin="5,30,5,0" Content="Main Account:"/>
+                    <Label Margin="5" Content="Billing Account:"/>
+                    <Label Margin="5,0,5,5" Content="Shipping Account:"/>
+                    <Label Margin="5,15,5,0" Content="Service Rep:"/>
+                    <Label Margin="5,4,5,5" Content="Sales Rep:"/>
+
+                    <!--<customcontrols:btnRoundedGelControl
+                        Grid.Row="1" Grid.Column="0"
+                        transparentColor="{StaticResource btnGelLike}"
+                        mainColor="#F0904E"
+                        offsetColor="#F0904E" 
+                        btngelHeight="25"
+                        btngelWidth="130"
+                        textContent="Add/View Equipment"
+                        textFontSize="12"
+                        textPadding="2,4,0,0"
+                        btngelCommand="{Binding NewViewEquipmentCommand}"
+                        HorizontalAlignment="Left"
+                        RectRadiusX="12"
+                        RectRadiusY="12"
+                        Margin="0,10,0,0"
+                    />-->
+
+                    <StackPanel Orientation="Horizontal" Margin="5,15,0,0">
+
+                        <Label Content="Customer Equipment:"  />
+                        <CheckBox Content="{Binding EquipmentViewingby}" Margin="0,7,0,0"
+                                  d:Content="Viewing Current"
+                                IsChecked="{Binding IsCheckedEquipmentArchived}"
+                                Command="{Binding IncludeArchivedEquipmentCommand}"
+                                IsThreeState="True">
+                        </CheckBox>
+                    </StackPanel>
+
+                </StackPanel>
+
+                
+
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                        Margin="0,36,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="txtbxAccount" Margin="5,10,0,3" 
+                         Background="White" Foreground="Black"
+                         Height="25" Width="265" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                         Text="{Binding CustomerAccount.AccountName}"/>
+                </StackPanel>
+
+                <TextBox x:Name="txtbxMainAccount" Margin="5,32,5,4" 
+                         Height="25" Width="80" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                         Text="{Binding CustomerAccount.MainAccountNumber}"/>
+                <TextBox x:Name="txtbxBillingAccount" Margin="5,2,5,5" 
+                         Height="25" Width="80" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                         Text="{Binding CustomerAccount.BillingAccountNumber}"/>
+                <TextBox x:Name="txtbxShippingAccount" Margin="5,1,5,5" 
+                         Height="25" Width="80" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                         Text="{Binding CustomerAccount.ShippingAccountNumber}"/>
+                <TextBox x:Name="txtbxServiceRep" Margin="5,15,5,5" 
+                         Height="25" Width="130" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                         Text="{Binding CustomerAccount.ServiceRep}"/>
+                <ComboBox x:Name="txtbxSalesRep" Margin="5,1,5,5" 
+                         Height="25" Width="130" HorizontalAlignment="Left"
+                         IsReadOnly="true"
+                          ItemsSource="{Binding listOfSalesReps}"
+                         Text="{Binding CustomerAccount.SalesRep}"/>
+
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="2"
+                        Orientation="Horizontal" Margin="5,77,0,15">
+                <Label Content="Customer Service Plans:"/>
+                <CheckBox Content="{Binding ServicePlanViewingby}" 
+                          d:Content="Viewing Current"
+                          Margin="0,6"
+                          IsChecked="{Binding IsCheckedServicePlanArchived}"
+                          Command="{Binding IncludeArchivedServicePlanCommand}"
+                          IsThreeState="True">
+                </CheckBox>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="3">
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal">
+                    <Label Content="Customers:"/>
+                    <CheckBox Margin="2,7,5,5" IsThreeState="True"
+                            Content="{Binding CustomerViewingby}"
+                            d:Content="Viewing Current"
+                            IsChecked="{Binding IsCheckedCustomerArchived}"
+                            Command="{Binding IncludeArchivedCustomerCommand}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="13*"/>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="2*"/>
+                            </Grid.RowDefinitions>
+                            <TextBox x:Name="SearchTermTextBox"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="265"  
+                                     Height="25"
+                                     VerticalAlignment="Top"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalAlignment="Left"  
+                                     Margin="5,0,0,0" Grid.RowSpan="3">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding CustomerSearchCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <TextBlock IsHitTestVisible="False" 
+                                   Text="Customer Search..." 
+                                   VerticalAlignment="Top" 
+                                       
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,5,150,0" 
+                                   Foreground="DarkGray" Grid.RowSpan="2">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+
+                    </StackPanel>
+                    <ListView ItemsSource="{Binding CustomerList}" 
+                              SelectedItem="{Binding SelectedCustomer}"
+                              Margin="5,5,5,0"
+                              Width="300"
+                              Height="300"
+                              Background="White"
+                              Foreground="Black"
+                              HorizontalAlignment="Left"
+                              ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".75*"/>
+                                        <ColumnDefinition Width=".25*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding AccountName}"
+                                               Padding="0,0,0,0"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding CurrentCustomerPickedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListView>
+
+                    <DockPanel Margin="2,10,2,0">
+                        <Border DockPanel.Dock="top"
+                                Height="40"
+                                Background="WhiteSmoke"
+                                CornerRadius="20,20,0,0"
+                                BorderThickness="2,2,2,0"
+                                BorderBrush="White"
+                                Margin="2,0">
+                            <Menu Background="Transparent">
+                                <Menu.Items>
+                                    <MenuItem Header="Format" Margin="5,10,2,0" FontSize="16">
+                                        <MenuItem Header="Font" Margin="2,10,2,0" FontSize="14"/>
+                                        <MenuItem Header="Word Wrap" Margin="2,10,2,0" FontSize="14"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Save" Margin="5,10,2,0" FontSize="16" Command="{Binding CustomerAccount.LostFocusCompareValueCommand}"/>
+
+                                    <MenuItem Header="Undo" Margin="120,10,2,0" FontSize="16" Command="{Binding CustomerAccount.UndoCommand}"/>
+
+                                </Menu.Items>
+
+                            </Menu>
+                        </Border>
+
+                        <Border CornerRadius="0,0,10,10"
+                                DockPanel.Dock="Bottom"
+                                Height="420"
+                                Width="315"
+                                Background="Wheat"
+                                VerticalAlignment="Top"
+                                BorderBrush="White"
+                                BorderThickness="2,0,0,2">
+
+                            <TextBox  
+                                 Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 FontSize="14"
+                                 TextWrapping="Wrap"
+                                 Margin="0,0,0,0"
+                                 VerticalScrollBarVisibility="Visible"
+                                 AcceptsReturn="True"
+                                 Text="{Binding CustomerAccount.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding CustomerAccount.LostFocusCompareValueCommand}" />
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding CustomerAccount.GotFocusInitialValueCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </Border>
+                    </DockPanel>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="2">
+
+                <DataGrid 
+                    Style="{StaticResource roundedDataGrid}"
+                    SelectedItem="{Binding SelectedServicePlan}"
+                    IsReadOnly="True"
+                    Margin="5,105,3,0"
+                    Height="165" VerticalAlignment="Top"
+                    ItemsSource="{Binding CustomerServicePlanList}"
+                    AutoGenerateColumns="False"
+                    BorderBrush="White"
+                    BorderThickness="2" 
+                    SelectionChanged="DataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+
+                        <DataGridTemplateColumn Width="90" Header="Contract #" CanUserSort="True"  SortMemberPath="ServicePlanNumber" IsReadOnly="true">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ServicePlanNumber}">  
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                <i:InvokeCommandAction Command="{Binding ClipboardCopyCommand}"
+                                                                       CommandParameter="{Binding ServicePlanNumber}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!--<DataGridTextColumn Header="Contract #" Binding="{Binding ServicePlanNumber}" 
+                                        Width="90" IsReadOnly="true"/>-->
+                        <DataGridTextColumn Header="Status" Binding="{Binding ServicePlanStatus}" 
+                                        Width="90" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="StartDate" Binding="{Binding StartDate, StringFormat={}{0:MM/dd/yyyy}}"
+                                        Width="90" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Expiration" Binding="{Binding ExpireDate, StringFormat={}{0:MM/dd/yyyy}}"
+                                        Width="90" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="PO Expiration" Binding="{Binding PoDate, StringFormat={}{0:MM/dd/yyyy},
+                                        Converter={StaticResource DTMinValue}}"
+                                        Width="90" IsReadOnly="true"/>
+                        <DataGridCheckBoxColumn Header="Expired" Binding="{Binding Expired}"
+                                        Width="Auto" IsReadOnly="true"/>
+                        <DataGridCheckBoxColumn Header="PO Expired" Binding="{Binding PoExpired}"
+                                        Width="Auto" IsReadOnly="true"/>
+                    </DataGrid.Columns>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding ServicePlanDetailsPopupCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </DataGrid>
+            </StackPanel>
+
+            <DataGrid x:Name="dgEquipmentList" Style="{StaticResource roundedDataGrid}"
+                      Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                      Margin="5,310,3,0"
+                      Height="510" 
+                      ItemsSource="{Binding CustomerEquipmentList}"
+                      AutoGenerateColumns="False"
+                      VirtualizingPanel.IsVirtualizing="False"
+                >
+                
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Equipment ID" Binding="{Binding EquipmentID}" Width="Auto"
+                                        CanUserSort="True" SortMemberPath="EquipmentID"/>
+
+                    <DataGridTemplateColumn Width="*" Header="Serial Number" CanUserSort="True"  SortMemberPath="SerialNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SerialNumber}">  
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding ClipboardCopyCommand}"
+                                                                   CommandParameter="{Binding SerialNumber}"
+                                                                   />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--CopySerialNumberCommand-->
+
+                    <DataGridTemplateColumn Width="*" Header="Model" CanUserSort="True"  SortMemberPath="ModelNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox  
+                                          ItemsSource="{Binding ModelList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding ModelNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeVersionCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+
+                    <DataGridTemplateColumn Width="*" Header="Version" CanUserSort="True"  SortMemberPath="VersionNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox  ItemsSource="{Binding VerList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           SelectedItem="{Binding VersionNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="*" Header="Status" CanUserSort="True"  SortMemberPath="ServicePlanStatus">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding StatusList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding ServicePlanStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="Auto" Header="Contract #" CanUserSort="True"  SortMemberPath="ServicePlanNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DataContext.CboContractList, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                          SelectedValue="{Binding ServicePlanNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="90" CanUserSort="True" SortMemberPath="PMMonthDue">
+                        <DataGridTemplateColumn.Header>
+                            <CheckBox Content="PM Due"
+                                      IsChecked="{Binding DataContext.AllSelected, 
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                            >
+                                
+                            </CheckBox>
+
+                        </DataGridTemplateColumn.Header> 
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox x:Name="cboPmMonthDue" ItemsSource="{Binding PMMonthList}"
+                                          SelectedItem="{Binding PmMonthDue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetPMMonthChangedCommand,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                                                   CommandParameter="{Binding PmMonthDue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                             
+                            </DataTemplate>
+                           
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="120" CanUserSort="True" SortMemberPath="PMCompleted">
+                        <DataGridTemplateColumn.Header>
+                            
+                                <CheckBox Content="PM Completed"/>
+                            
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding PMCompleted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                            StringFormat={}{0:MM/dd/yy}}" 
+                                               Margin="10,5,0,0"/>
+                                    <CheckBox Command="{Binding PMDoneCommand}" 
+                                              CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                              IsChecked="{Binding PMCompletedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              VerticalAlignment="Center"
+                                              Margin="15 5 0 0"
+                                              Name="pmDone"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+
+                                        <customcontrols:btnRoundedControl
+                                            btnRDWidth="35"
+                                            btnRDHeight="15"
+                                            btnRDBackground="LightGray"
+                                            btnRDCornerRadius="8"
+                                            btnRDContent="Undo"
+                                            btnRDFontSize="9"
+                                            btnRDMargin="2,1,1,1"
+                                            btnRDCommand="{Binding RevertCommand}"
+                                            />
+
+                                        <customcontrols:btnRoundedControl
+                                            btnRDWidth="35"
+                                            btnRDHeight="15"
+                                            btnRDBackground="LightGray"
+                                            btnRDCornerRadius="8"
+                                            btnRDContent="Clear"
+                                            btnRDFontSize="9"
+                                            btnRDMargin="3,1,3,1"
+                                            btnRDCommand="{Binding ClearCommand}"
+                                            />
+
+                                        <customcontrols:btnRoundedControl
+                                            btnRDWidth="35"
+                                            btnRDHeight="15"
+                                            btnRDBackground="LightGray"
+                                            btnRDCornerRadius="8"
+                                            btnRDContent="Today"
+                                            btnRDFontSize="9"
+                                            btnRDMargin="0,1,1,1"
+                                            btnRDCommand="{Binding TodayCommand}"
+                                            />
+
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <DatePicker x:Name="dpPMCompleted" IsTodayHighlighted="True" Width="95"
+                                                    HorizontalAlignment="Left"
+                                                    SelectedDate="{Binding Pmcompleted, 
+                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                            StringFormat={}{0:MM/dd/yy}}"
+                                        />
+                                            <CheckBox Command="{Binding PMDoneCommand}" 
+                                                  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                                  IsChecked="{Binding PMCompletedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="5 5 0 0"
+                                                  Name="pmDone"
+                                            />
+                                    </StackPanel>
+
+
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="UA" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Command="{Binding CheckCommand}"
+                                          IsChecked="{Binding DeviceUnavailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          VerticalAlignment="Center"
+                                          Margin="5 5 0 0">
+                                </CheckBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border CornerRadius="0,0,13,13"
+                    Grid.Row="2" Grid.ColumnSpan="4"
+                    Background="#E7E8EB"/>
+
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+
+    <sys:Int32 x:Key="Zero">0</sys:Int32>
+    <sys:Int32 x:Key="One">1</sys:Int32>
+    <sys:Int32 x:Key="Two">2</sys:Int32>
+    <sys:Int32 x:Key="Three">3</sys:Int32>
+    <sys:Int32 x:Key="Four">4</sys:Int32>
+    <sys:Int32 x:Key="Five">5</sys:Int32>
+    <sys:Int32 x:Key="Ten">10</sys:Int32>
+    <sys:Int32 x:Key="Twenty">20</sys:Int32>
+    <sys:Int32 x:Key="Thirty">30</sys:Int32>
+    <sys:Int32 x:Key="Forty">40</sys:Int32>
+    <sys:Int32 x:Key="Fifty">50</sys:Int32>
+    <sys:Int32 x:Key="Sixty">60</sys:Int32>
+    <sys:Int32 x:Key="Seventy">70</sys:Int32>
+    <sys:Int32 x:Key="Eighty">80</sys:Int32>
+
+
+    <sys:Int32 x:Key="minusOne">-1</sys:Int32>
+    <sys:Int32 x:Key="minusTwo">-2</sys:Int32>
+    <sys:Int32 x:Key="minusThree">-3</sys:Int32>
+    <sys:Int32 x:Key="minusFour">-4</sys:Int32>
+    <sys:Int32 x:Key="minusFive">-5</sys:Int32>
+    <sys:Int32 x:Key="minusSix">-6</sys:Int32>
+    <sys:Int32 x:Key="minusSeven">-7</sys:Int32>
+    <sys:Int32 x:Key="minusEight">-8</sys:Int32>
+    <sys:Int32 x:Key="minusNine">-9</sys:Int32>
+    <sys:Int32 x:Key="minusTen">-10</sys:Int32>
+    <sys:Int32 x:Key="minusTwenty">-20</sys:Int32>
+    <sys:Int32 x:Key="minusThirty">-30</sys:Int32>
+    <sys:Int32 x:Key="minusForty">-40</sys:Int32>
+    <sys:Int32 x:Key="minusFifty">-50</sys:Int32>
+    <sys:Int32 x:Key="minusSixty">-60</sys:Int32>
+    <sys:Int32 x:Key="minusSeventy">-70</sys:Int32>
+    <sys:Int32 x:Key="minusEighty">-80</sys:Int32>
+    
+    
+
+</ResourceDictionary>

@@ -1,0 +1,280 @@
+﻿<Window x:Class="ContractWork.MVVM.CustomerDetails.CustomerAccountSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.CustomerDetails"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance Type=local:CustomerAccountSelectionWindow}"
+        mc:Ignorable="d"
+        Height="470" Width="730"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="DragMe">
+
+    <Window.Resources>
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+    </Window.Resources>
+
+
+    <Border x:Name="MainBorder" 
+            Background="#F0904E"
+            CornerRadius="10"
+            BorderBrush="White"
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="275"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width=".08*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0"
+                       Content="Customer Accounts"
+                       FontSize="28"
+                       Padding="2,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal">
+                    <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="22"
+                        btnMargin="0, 0, 0, 0"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                    />
+
+                    <customcontrols:WindowControls
+                        TextContent="X"
+                        btnWidth="22"
+                        btnMargin="5, 0, 0, 0"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                    />
+                    
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                  Background="#F8CBAD">
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="5,10,0,0" Content="Customer Account ID:"/>
+                        <TextBox x:Name="txtbxID" Margin="5,10,0,0" 
+                         Background="White" Foreground="Black"
+                         Height="20" Width="50" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.CustomerAccountID}"
+                         IsReadOnly="True"/>
+                        
+                    </StackPanel>
+                    <Label Margin="5,15,0,4" Content="Account Name:"/>
+                    <Label Margin="5,15,5,0" Content="Main Account:"/>
+                    <Label Margin="5" Content="Billing Account:"/>
+                    <Label Margin="5,0,5,5" Content="Shipping Account:"/>
+                    <Label Margin="5,15,5,0" Content="Service Rep:"/>
+                    <Label Margin="5,4,5,5" Content="Sales Rep:"/>
+                    <CheckBox Margin="5,15,5,5" Content="Archive"
+                              IsChecked="{Binding SelectedCustomer.AccountArchived}"
+                              Command="{Binding UpdateAccountArchivedCommand}"
+                              CommandParameter="{Binding SelectedCustomer.AccountArchived}"
+                              IsEnabled="{Binding LockedOrUnlocked}"/>
+                    <CheckBox Margin="5,0,5,5" IsThreeState="True"
+                              Content="{Binding Viewingby}"
+                              d:Content="Viewing Current"
+                              IsChecked="{Binding IsCheckedViewArchived}"
+                              Command="{Binding IncludeArchivedServicePlansCommand}"/>
+
+                    <customcontrols:btnMaintenanceControl
+                        btnClickCommand="{Binding UpdateDatabaseCommand}"
+                        btnContentText="Update Database"
+                        btnContentFontSize="11"
+                        btnBrdrCornerRadius="15"
+                        MaintCornerRadius="14"
+                        MaintBackground="#F0904E"
+                        btnBrdrHeight="43"
+                        btnBrdrWidth="100"
+                        btnHeight="40"
+                        btnWidth="Auto"
+                        btnBrdrMargin="5,25,0,5"
+                        btnHorizAlign="left"
+                        
+                        
+                    />
+
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <StackPanel Orientation="Horizontal" Height="50">
+                    <customcontrols:btnMaintenanceControl
+                        btnClickCommand="{Binding LockOrUnlockCommand}"
+                        btnContentText="{Binding LockOrUnlockText}"
+                        btnContentFontSize="11"
+                        btnBrdrCornerRadius="15"
+                        MaintCornerRadius="14"
+                        MaintBackground="#F0904E"
+                        btnBrdrHeight="30"
+                        btnBrdrWidth="50"
+                        btnHeight="Auto"
+                        btnWidth="Auto"
+                        btnBrdrMargin="80,0,5,5"/>
+
+                    <customcontrols:btnMaintenanceControl
+                        btnClickCommand="{Binding UndoCommand}"
+                        btnContentText="Undo"
+                        btnContentFontSize="11"
+                        btnBrdrCornerRadius="15"
+                        MaintCornerRadius="14"
+                        MaintBackground="#F0904E"
+                        btnBrdrHeight="30"
+                        btnBrdrWidth="50"
+                        btnHeight="Auto"
+                        btnWidth="Auto"
+                        btnBrdrMargin="5,0,5,5"/>
+
+                    
+
+                </StackPanel>
+                <!--CustomerAccount-->
+                <TextBox x:Name="txtbxAccount" Margin="5,5" 
+                         Background="White" Foreground="Black"
+                         Height="25" Width="265" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.AccountName}"
+                         IsReadOnly="True"/>
+                <TextBox x:Name="txtbxMainAccount" Margin="5,16,5,4" 
+                         Height="25" Width="75" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.MainAccountNumber}"
+                         IsReadOnly="True"/>
+                <TextBox x:Name="txtbxBillingAccount" Margin="5,2,5,5" 
+                         Height="25" Width="75" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.BillingAccountNumber}"
+                         IsReadOnly="{Binding LockedOrUnlocked}"/>
+                <TextBox x:Name="txtbxShippingAccount" Margin="5,1,5,5" 
+                         Height="25" Width="75" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.ShippingAccountNumber}"
+                         IsReadOnly="{Binding LockedOrUnlocked}"/>
+                <TextBox x:Name="txtbxServiceRep" Margin="5,15,5,5" 
+                         Height="25" Width="120" HorizontalAlignment="Left"
+                         Text="{Binding SelectedCustomer.ServiceRep}"
+                         IsReadOnly="True"/>
+                <ComboBox x:Name="txtbxSalesRep" Margin="5,1,5,5" 
+                         Height="25" Width="120" HorizontalAlignment="Left"
+                          ItemsSource="{Binding listOfSalesReps}"
+                         Text="{Binding SelectedCustomer.SalesRep}"
+                         IsReadOnly="{Binding LockedOrUnlocked}"/>
+
+                
+
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="2">
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal">
+                        <customcontrols:WindowControls
+                            TextContent="x"
+                            btnWidth="20"
+                            btnMargin="5,10,0,0"
+                            btnBckgrnd="#F0904E"
+                            TextPadding="0,-2,0,3"
+                            btnClick="btnClearSearchTextBox_btnClick"
+                            btnCommand="{Binding ClearSearchTextBoxCommand}"
+                        />
+
+                        <Grid>
+                            <TextBox  x:Name="SearchTermTextBox"
+                                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding IsCustomerListEnabled}"
+                                      Width="250"  
+                                      Height="25"
+                                      VerticalAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      HorizontalAlignment="Left"  
+                                      Margin="5,10,0,0">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding CustomerSearchCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            
+
+                            <TextBlock IsHitTestVisible="False" 
+                                   Text="Customer Search..." 
+                                   VerticalAlignment="Top" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,15,150,0" 
+                                   Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+
+                    </StackPanel>
+                    <CheckBox Content="Mini Me"
+                              Margin="7,10,0,0"
+                              IsChecked="{Binding miniMeSelected}"
+                              />
+                    <ListView ItemsSource="{Binding CustomerList}" 
+                              SelectedItem="{Binding SelectedCustomer}"
+                              IsEnabled="{Binding IsCustomerListEnabled}"
+                              Margin="30,10,5,5"
+                              Width="275"
+                              Height="340"
+                              Background="White"
+                              Foreground="Black"
+                              HorizontalAlignment="Left"
+                              ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".75*"/>
+                                        <ColumnDefinition Width=".25*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding AccountName}"
+                                               Padding="0, 0,0,0"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding CurrentCustomerPickedCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding OpenCustomerAccountDetailsCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                  Background="#E7E8EB" CornerRadius="0,0,9,9"/>
+
+        </Grid>
+    </Border>
+</Window>

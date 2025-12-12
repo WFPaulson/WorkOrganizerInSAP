@@ -1,0 +1,649 @@
+﻿<Window x:Class="ContractWork.MVVM.PMandInventory.PMDueSheetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.PMandInventory"
+        xmlns:converters="clr-namespace:ContractWork.Converters"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls"
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        mc:Ignorable="d"
+        
+        FontFamily="Poppins"
+        SizeToContent="Width"
+        Height="1000" Width="1505"
+        MouseLeftButtonDown="DragMe"
+        ResizeMode="CanResizeWithGrip"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent"
+        x:Name="PMDueSheet"
+        >
+
+    <Window.Resources>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="SeparatorVisibility"  Value="Visible" />
+            <Setter Property="SeparatorBrush"     Value="Black" />
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Padding" Value="5,5,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <Border BorderBrush="black" 
+                        BorderThickness="0,1,1,1" 
+                        Margin="0 0" 
+                        Background="LightGray">
+
+                            <ContentPresenter Content="{TemplateBinding Content}" 
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="txtCell" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,5,0,0"/>
+        </Style>
+
+        <converters:DarkenColorConverter x:Key="Darken" />
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+
+    </Window.Resources>
+
+    <Border CornerRadius="10"
+        Background="#217446">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="95"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <!--<ComboBox ItemsSource="{Binding MonthList}"
+                              SelectedIndex="{Binding StartMonth}"
+                              Width="70"
+                              Height="30"
+                              FontSize="20"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              Margin="20,0,0,0"
+                              Padding="5 2 0 0"
+                              IsEditable="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding MonthChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <Label Content="Through" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding EndMonth}" VerticalAlignment="Center"
+                               Background="White" Width="50" Height="25"
+                               FontSize="20" Padding="5 1 0 0"/>-->
+
+                    <Label Content="PM Due Excel Sheet"
+                           FontSize="20" VerticalAlignment="Center"
+                           Foreground="White"/>
+
+                    
+                    <customcontrols:cmbRoundedControl 
+                       
+                        cmbList="{Binding SelectYearList}"
+                        cmbSelectedItem="{Binding Data.SelectedYear, Source={StaticResource proxy}, 
+                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                        cmbFillerBackground="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        cmbtxtBorder="LightGray"
+                        cmbItemBackground="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        cmbTextBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}}"
+                        cmbMargin="660,0,0,0"
+                        cmbArrow="Black"  
+                    />
+                    <TextBlock Margin="30 0 0 0" Width="20" Height="20" Background="#00FF00"/>
+                    <TextBlock Margin="2 0 0 0" Width="50" Text=": Booked" VerticalAlignment="Center" Foreground="White"/>
+
+                    <TextBlock Margin="30 0 0 0" Width="20" Height="20" Background="#FFFF00"/>
+                    <TextBlock Margin="2 0 0 0" Width="130" Text=": Multi-Year Autorenewal" VerticalAlignment="Center" Foreground="White"/>
+
+                    <TextBlock Margin="30 0 0 0" Width="20" Height="20" Background="#FF0000"/>
+                    <TextBlock Margin="2 0 0 0" Width="130" Text=": Expires" VerticalAlignment="Center" Foreground="White"/>
+
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <customcontrols:WindowControls
+                        TextContent="-"
+                        btnWidth="22"
+                        btnMargin="3, 0"
+                        btnBckgrnd="#F5B53F"
+                        btnClick="btnMinimize_Click"
+                    />
+                    <customcontrols:WindowControls
+                        
+                        btnWidth="22"
+                        btnMargin="3, 0"
+                        btnBckgrnd="SeaGreen"
+                        btnClick="btnMaximize_Click"
+                        ImageSource="/Assets/maximize.png"
+                    />
+                    <!--ImageSource="/Assets/maximize.png"-->
+                    <customcontrols:WindowControls
+                        TextContent="X"
+                        btnWidth="22"
+                        btnMargin="3, 0"
+                        btnBckgrnd="#F55551"
+                        btnClick="btnExit_Click"
+                    />
+                </StackPanel>
+            </Grid>
+            <DataGrid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                    BorderBrush="{x:Null}"
+                    BorderThickness="0"
+                    AutoGenerateColumns="False"
+                    ItemsSource="{Binding ListOfPMsDue}" 
+                    SelectedItem="{Binding SelectedCustomer}"
+                    ColumnHeaderHeight="82"
+                    RowHeight="25"  Margin="0 0 0 0" 
+                >
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="TextElement.FontFamily" Value="Kartika"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="FontWeight" Value="Normal"/>
+                        <Setter Property="Margin" Value="0,0,0,0"/>
+                    </Style>
+                </DataGrid.CellStyle>
+
+                <DataGrid.Columns>
+
+                    <!--<DataGridTextColumn Header="ID" Visibility="Visible" 
+                                        Width="50" Binding="{Binding CustomerAccountID_FK}"
+                                        />-->
+                    <DataGridTemplateColumn Width="50" Header="ID" Visibility="Visible">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CustomerID}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="75" Header="Contract #"
+                                CanUserSort="True" SortMemberPath="ServicePlanNumber">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ServicePlanNumber}" 
+                               Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="220" Header="End User Name"
+                                CanUserSort="True" SortMemberPath="AccountName">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding AccountName}" 
+                               Style="{StaticResource txtCell}">
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                        <!--cmbSelectedItem="{Binding Data.SelectedYear, Source={StaticResource proxy}, 
+                              Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+
+                        
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="75" Header="Start Date"
+                                CanUserSort="True" SortMemberPath="StartDate">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StartDate, StringFormat={}{0:MM/d/yyyy}}" 
+                               Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="75" Header="Expire Date"
+                                CanUserSort="True" SortMemberPath="ExpireDate">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ExpireDate, StringFormat={}{0:MM/d/yyyy}}" 
+                               Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTemplateColumn Width="90" Header="Status"
+                                CanUserSort="True" SortMemberPath="ServicePlanStatus">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PlanStatus}" 
+                               Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="120" Header="Contract Description"
+                        CanUserSort="True" SortMemberPath="ContractDescription">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ContractDescription}" 
+                       Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="70" Header="PM Month"
+                        CanUserSort="True" SortMemberPath="pmMonthName">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PMMonth}" 
+                       Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" Header="Devices"
+                        CanUserSort="True" SortMemberPath="DeviceCount">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DeviceCount}" 
+                       Style="{StaticResource txtCell}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--*************  custom header template file below  ************-->
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="JanDue"
+                        >
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                
+                                mnthDate="Jan"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.JanTotalCount, Source={StaticResource proxy}, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.JanTotalDone, Source={StaticResource proxy}, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                />
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding JanDue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneText="{Binding JanDone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneBackground="{Binding JanColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderThickness="1"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}">
+                                </customcontrols:ExcelPMListDueDoneControl>
+                            </DataTemplate>
+
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="FebDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Feb"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.FebTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.FebTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding FebDue}"
+                                    PMCellDoneText="{Binding FebDone}"
+                                    PMCellDoneBackground="{Binding FebColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="MarDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Mar"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.MarTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.MarTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding MarDue}"
+                                    PMCellDoneText="{Binding MarDone}"
+                                    PMCellDoneBackground="{Binding MarColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="AprDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Apr"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.AprTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.AprTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding AprDue}"
+                                    PMCellDoneText="{Binding AprDone}"
+                                    PMCellDoneBackground="{Binding AprColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="MayDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="May"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.MayTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.MayTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding MayDue}"
+                                    PMCellDoneText="{Binding MayDone}"
+                                    PMCellDoneBackground="{Binding MayColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="JunDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Jun"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.JunTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.JunTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding JunDue}"
+                                    PMCellDoneText="{Binding JunDone}"
+                                    PMCellDoneBackground="{Binding JunColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="JulDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Jul"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.JulTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.JulTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding JulDue}"
+                                    PMCellDoneText="{Binding JulDone}"
+                                    PMCellDoneBackground="{Binding JulColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="AugDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Aug"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.AugTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.AugTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding AugDue}"
+                                    PMCellDoneText="{Binding AugDone}"
+                                    PMCellDoneBackground="{Binding AugColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="SepDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Sep"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.SepTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.SepTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding SepDue}"
+                                    PMCellDoneText="{Binding SepDone}"
+                                    PMCellDoneBackground="{Binding SepColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="OctDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Oct"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.OctTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.OctTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding OctDue}"
+                                    PMCellDoneText="{Binding OctDone}"
+                                    PMCellDoneBackground="{Binding OctColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="NovDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Nov"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.NovTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.NovTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding NovDue}"
+                                    PMCellDoneText="{Binding NovDone}"
+                                    PMCellDoneBackground="{Binding NovColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="60" 
+                        CanUserSort="True" SortMemberPath="DecDue">
+                        <DataGridTemplateColumn.Header>
+                            <customcontrols:ExcelPMListMonthHeader 
+                                mnthDate="Dec"
+                                cellColor="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDue="{Binding Data.DecTotalCount, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                totalDone="{Binding Data.DecTotalDone, Source={StaticResource proxy},
+                                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataGridTemplateColumn.Header>
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <customcontrols:ExcelPMListDueDoneControl
+                                    PMCellDueBackground ="{Binding Data.SelectYearBackground, Source={StaticResource proxy}, 
+                                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellBorderBrush="Black"
+                                    PMCellDueText ="{Binding DecDue}"
+                                    PMCellDoneText="{Binding DecDone}"
+                                    PMCellDoneBackground="{Binding DecColor, Mode=TwoWay, 
+                                                            UpdateSourceTrigger=PropertyChanged}"
+                                    PMCellDoneCommand="{Binding Data.GetLeftButtonInfoCommand, Source={StaticResource proxy}}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding ShowCustomerDataCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </DataGrid>
+
+            <Border Grid.Row="3" 
+                    Grid.Column="0" Grid.ColumnSpan="3"
+                    CornerRadius="0,0,10,10"
+                    Background="LightGray"
+                    BorderBrush="{x:Null}"
+                    BorderThickness="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="1" Background="DarkGray"
+                        BorderBrush="White"
+                        BorderThickness="1,1,.5,.5"/>
+                    <!--<Grid Grid.Row="1" Background="DarkGray"/>-->
+
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

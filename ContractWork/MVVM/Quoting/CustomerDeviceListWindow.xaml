@@ -1,0 +1,256 @@
+﻿<Window x:Class="ContractWork.MVVM.Quoting.CustomerDeviceListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ContractWork.MVVM.Quoting"
+        xmlns:customcontrols="clr-namespace:ContractWork.CustomControls" 
+        xmlns:libraries="clr-namespace:Servicelibraries.Services;assembly=Servicelibraries"
+        d:DataContext="{d:DesignInstance Type=local:CustomerDeviceListViewModel}"
+        mc:Ignorable="d"
+        Title="Quoting Check List" 
+        
+        SizeToContent="WidthAndHeight"
+        d:Height="800" d:Width="1160"
+        >
+    <Window.Resources>
+        <libraries:BindingProxy x:Key="proxy" Data="{Binding}"/>
+    </Window.Resources>
+
+    <Border CornerRadius="10"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        ScrollViewer.HorizontalScrollBarVisibility="Visible">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="87*"/>
+                <ColumnDefinition Width="407*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+
+            <customcontrols:SelectionControls
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                btnBrdrCornerRadius="6"
+                MaintCornerRadius="5"
+                MaintBackground="LightGray"
+                btnBrdrHeight="30"
+                btnBrdrWidth="65"
+                btnBrdrThickness="1"
+                btnContentText="Create Excel Quote"
+                btnContentFontSize="10"
+                btnBrdrMargin="0,0,0,0"
+                btnClickCommand="{Binding CreateQuoteCommand}"
+            />
+            <!--btnClickCommand="{Binding CreateQuoteCommand}"
+            btnCmdParameter="AccessFile"-->
+
+            <TextBox Text="{Binding SelectedContractName}"
+                x:Name="TxtBoxTitle"
+                Grid.Column="0" Grid.ColumnSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid},
+                    Path=ColumnDefinitions.Count, Mode=OneWay}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Margin="0 0 0 0"
+                d:Text="Alderson Fire Department"
+            />
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Grid.ColumnSpan="2" Margin="0,0,0,20" >
+
+                <Label Content="Current Contracts"/>
+                <DataGrid
+                    ItemsSource="{Binding OnContractList}"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    x:Name="AssetsOnThisContractDataGrid" 
+                    CanUserAddRows="False"
+                    AutoGenerateColumns="False"
+                    Height="Auto"
+                    >
+                    <!--AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding OnContractQuote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="Account #" Binding="{Binding CustomerAccount, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding CustomerName, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="ID #" Binding="{Binding EquipmentID, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Product Code" Binding="{Binding ContractMaterial, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Serial #" Binding="{Binding CoveredSerial, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Model" Binding="{Binding Model, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Shipped" Binding="{Binding Sold, StringFormat={}{0:MM/dd/yyyy}, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="EOL" Binding="{Binding EOL, StringFormat={}{0:MM/dd/yyyy}, 
+                             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Start" Binding="{Binding CvgStart, StringFormat={}{0:MM/dd/yyyy}, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="End" Binding="{Binding CvgEnd, StringFormat={}{0:MM/dd/yyyy},
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Tech" Binding="{Binding Tech, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Sales Rep" Binding="{Binding SalesRep, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+            <StackPanel
+                Grid.Row="4"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Grid.ColumnSpan="2" Margin="0,0,0,20">
+
+                <Label Content="Expired Contracts"/>
+                <DataGrid 
+                    ItemsSource="{Binding OnExpiredList}"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    x:Name="ContractExpiredDataGrid" 
+                    CanUserAddRows="False"
+                    AutoGenerateColumns="False"
+                    Height="Auto"
+                    >
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Data.OnExpiredQuote, Source={StaticResource proxy}, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Account #" Binding="{Binding CustomerAccount, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding CustomerName, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="ID #" Binding="{Binding EquipmentID, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Product Code" Binding="{Binding ContractMaterial, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Serial #" Binding="{Binding CoveredSerial, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Model" Binding="{Binding Model, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Shipped" Binding="{Binding Sold, StringFormat={}{0:MM/dd/yyyy}, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="EOL" Binding="{Binding EOL, StringFormat={}{0:MM/dd/yyyy}, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Start" Binding="{Binding CvgStart, StringFormat={}{0:MM/dd/yyyy}, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="End" Binding="{Binding CvgEnd, StringFormat={}{0:MM/dd/yyyy},
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Tech" Binding="{Binding Tech, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        <DataGridTextColumn Header="Sales Rep" Binding="{Binding SalesRep, 
+                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"
+                IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}"-->
+            </StackPanel>
+
+            <Grid
+                Grid.Row="7"
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                Grid.ColumnSpan="2">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label
+                        Grid.Row="0"
+                        Content="No Contract"/>
+
+                    <DataGrid 
+                        ItemsSource="{Binding OnNoList}"
+                        Grid.Row="1"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        x:Name="AssetsWithNoContractDataGrid" 
+                        CanUserAddRows="False"
+                        AutoGenerateColumns="False"
+                    >
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding OnNoListQuote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="Account #" Binding="{Binding CustomerAccount, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding CustomerName, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="ID #" Binding="{Binding EquipmentID, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Product Code" Binding="{Binding ContractMaterial, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Serial #" Binding="{Binding CoveredSerial, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Model" Binding="{Binding Model, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Shipped" Binding="{Binding Sold, StringFormat={}{0:MM/dd/yyyy}, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="EOL" Binding="{Binding EOL, StringFormat={}{0:MM/dd/yyyy}, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Start" Binding="{Binding CvgStart, StringFormat={}{0:MM/dd/yyyy}, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="End" Binding="{Binding CvgEnd, StringFormat={}{0:MM/dd/yyyy},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Tech" Binding="{Binding Tech, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                            <DataGridTextColumn Header="Sales Rep" Binding="{Binding SalesRep, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" IsReadOnly="true"/>
+                        </DataGrid.Columns>
+                    <!--AutoGeneratingColumn="dtgrdXLSpreadsheet_AutoGeneratingColumn"-->
+                    </DataGrid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

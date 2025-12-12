@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>ContractWork</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>pngaaa.com-995042.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Excel.png" />
+    <None Remove="Assets\maximize-64.png" />
+    <None Remove="Assets\maximize.png" />
+    <None Remove="Assets\pngaaa.com-995042.ico" />
+    <None Remove="Assets\refresh - Copy.jpg" />
+    <None Remove="Assets\refresh.jpg" />
+    <None Remove="Assets\Refresh.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
+    <Content Include="pngaaa.com-995042.ico" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\GlobalLibraries\GlobalLibraries.csproj" />
+    <ProjectReference Include="..\Servicelibraries\Servicelibraries.csproj" />
+	<ProjectReference Include="..\Contacts\Contacts.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Compile Update="MVVM\AccountList\AccountListWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MVVM\Dashboard\DashboardWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Resource Include="Assets\Excel.png" />
+    <Resource Include="Assets\maximize-64.png" />
+    <Resource Include="Assets\maximize.png" />
+    <Resource Include="Assets\pngaaa.com-995042.ico" />
+    <Resource Include="Assets\refresh - Copy.jpg" />
+    <Resource Include="Assets\refresh.jpg" />
+    <Resource Include="Assets\Refresh.png" />
+  </ItemGroup>
+	
+
+</Project>
