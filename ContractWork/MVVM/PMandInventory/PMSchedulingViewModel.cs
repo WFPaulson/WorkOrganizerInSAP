@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Drawing;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
@@ -164,7 +165,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
             //item["UA"] = UAPM == null ? DBNull.Value : FirstPM;
         }
 
-        PMMonthColumnWidths.GetMaxColumnWidths(PMScheduleList);
+        //PMMonthColumnWidths.GetMaxColumnWidths(PMScheduleList);
 
     }
 
@@ -223,7 +224,9 @@ public partial class PMSchedulingViewModel : ObservableObject {
             }
         }
 
-        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString());
+        var sb = new StringBuilder();
+
+        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (sb.AppendFormat( dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString());
         String? fst = (Convert.IsDBNull(dte.Rows[0]["PMCompleted"]) ? null : dte.Rows[0]["PMCompleted"].ToString());
 
         // DateTime? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (DateTime)dte.Rows[dte.Rows.Count - 1]["PMCompleted"]);

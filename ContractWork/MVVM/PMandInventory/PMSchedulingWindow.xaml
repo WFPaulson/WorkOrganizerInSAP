@@ -304,7 +304,7 @@
                                 CanUserSort="True" />
                 <DataGridTextColumn Header="Model" 
                                 Binding="{Binding Model}"
-                                Width="Auto"
+                                Width="45"
                                 CanUserSort="True" />
                 <DataGridTextColumn Header="Device Qty" 
                                 Width="Auto"
