@@ -226,7 +226,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         var sb = new StringBuilder();
 
-        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (sb.AppendFormat( dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString());
+        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString()));
         String? fst = (Convert.IsDBNull(dte.Rows[0]["PMCompleted"]) ? null : dte.Rows[0]["PMCompleted"].ToString());
 
         // DateTime? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (DateTime)dte.Rows[dte.Rows.Count - 1]["PMCompleted"]);

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
-using System.Diagnostics.Contracts;
+﻿using System.Data.OleDb;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Windows.Controls;
-using Servicelibraries.Exceptions;
 using SQL = ContractWork.MVVM.ContractAndAssets.ContractAndAssetsSQLStatements;
 
 namespace ContractWork.MVVM.ContractAndAssets;
@@ -398,13 +393,16 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         AccessService.AccessFileLocation = FL.fileLocatinDict["AccessFilePath"];
         ExcelService.ExcelFileLocation = FL.fileLocatinDict["ContractsFilePath"];
         AccessService dbService = new();
+        AddServicePlanToAccess newPlan;
+        List<AddServicePlanToAccess> servicePlans = new List<AddServicePlanToAccess>();
 
         string contractNumber = string.Empty;
         string sqlInsert = string.Empty;
         string sqlAccount = string.Empty;
         double shipAccount, mainAccount = 0;
         int recordCount = 0;
-        List<string> servicePlans = new();
+        //List<string> servicePlans = new();
+        //List<(string Name, int Number)> servicePlans = new List<(string, int)>();
 
         sqlAccount =
                 "SELECT DISTINCT [Account], [Customer], [Contract], [Status], [Cvg Start], [Cvg End] " +
@@ -439,8 +437,19 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                     $"#{((DateTime)drRow["Cvg Start"]).ToString("MM/d/yyyy")}#, #{((DateTime)drRow["Cvg End"]).ToString("MM/d/yyyy")}#)";
                 dbService.AddToAccount(sqlInsert);
 
-                servicePlans.Add(contractNumber);
-                recordCount++;
+                //newPlan = new AddServicePlanToAccess {
+                //    planNumber = contractNumber,
+                //    acctName = drRow["Customer"].ToString()
+                //};
+
+                //3.Add the object to the list
+                //servicePlans.Add(newPlan);
+
+                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
+
+                //newPlan.plan
+                    //= new servicePlan{ (contractNumber, drRow["Customer"]) }; //right here
+                recordCount++; 
             }
             else if (contractNumber.GetServicePlanStatus() == "") {
                 string sqlUpdate =
@@ -449,7 +458,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         $"WHERE [ServicePlanNumber ] = '{contractNumber}'";
                 dbService.AddToAccount(SQLInsert: sqlUpdate);
 
-                servicePlans.Add(contractNumber);
+                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() }););
                 recordCount++;
             }
         }
@@ -464,13 +473,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
        // MessageBox.Show($"Done with Compare Service Plan: Records updated: {recordCount} ");
     }
 
-    private void WrapUpComment(int count, List<string> sbList, string plan) {
+    private void WrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
         StringBuilder addedbuilder = new StringBuilder();
 
         addedbuilder.AppendLine($"{plan} added: ");
 
-        foreach (string item in sbList) {
-            addedbuilder.AppendLine($"- {item}");
+        foreach (AddServicePlanToAccess item in sbList) {
+            addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} ");
         }
         string listContent = addedbuilder.ToString();
 
@@ -814,6 +823,17 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         DataTable dt = AccessDB.FetchDBRecordRequest(sqlStatements);
 
 
+    }
+
+}
+
+public class AddServicePlanToAccess {
+   
+    public string planNumber { get; set; }
+    public string acctName { get; set; }
+
+    public AddServicePlanToAccess() {
+            
     }
 
 }
