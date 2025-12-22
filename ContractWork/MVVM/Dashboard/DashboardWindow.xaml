@@ -23,6 +23,7 @@
     <Window.Resources>
         <converters:MinusOrPlusConverter x:Key="MinusOrPlus"/>
         <converters:DarkenColorConverter x:Key="Darken" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
         <!--<SolidColorBrush x:Key="defaultColor" Color="#FFC4E5F6"/>-->
 
@@ -156,15 +157,23 @@
                          />
 
 
-                        <ProgressBar Height="20" Margin="5,10,5,0" Value="{Binding CurrentProgress, Mode=OneWay}" 
-                                    Visibility="{Binding ProgressBarVisibility}"/>
-                        <!--{Binding ProgressBarVisibility}-->
+                        <ProgressBar Height="20" Margin="5,10,5,0" Value="{Binding CurrentProgress, Mode=OneWay}"
+                                    Visibility="Visible"
+                                     />
+                        <!--Visibility="{Binding ProgressBarVisibility, 
+    Converter={StaticResource BoolToVisibilityConverter}}"-->
+
+
+                        <!--"{Binding ProgressBarVisibility,
+                                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        --><!--{Binding ProgressBarVisibility}-->
                         <TextBlock Text="0%" FontSize="15"
                                    Height="25" Width="50"
                                    Margin="5,3,5,5" TextAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Visibility="{Binding ProgressBarVisibility}"
-                        />
+                                   HorizontalAlignment="Center"/>
+                        <!--Visibility="{Binding ProgressBarVisibility, 
+                                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                        <!--/>-->
 
 
 

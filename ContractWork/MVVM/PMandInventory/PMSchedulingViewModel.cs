@@ -137,6 +137,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
         string FirstPM, LastPM, UAPM;
+        
 
         //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
 
@@ -154,11 +155,17 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         AddPMCompletedColumns(list);
 
+       
+
         //TODO: need to add check if contract has epired also
 
         /// Gets rid of devices that were UA, need to add check for expired contract in this loop
         foreach (DataRow item in PMScheduleList.Rows) {
             (FirstPM, LastPM) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+
+            //LastPM == null ? DBNull.Value;
+
+
 
             item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
             item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
@@ -218,15 +225,15 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         DataTable dte = accessDB.FetchDBRecordRequest(sqlMostRecentAndOldPMs);
 
-        if (customerID == 25){            //dte.Rows.Count == 1){
-            if (dte.Rows[0]["DeviceUnavailable"] == "True") {
-                test = "stupid";
-            }
-        }
+        //if (customerID == 25){            //dte.Rows.Count == 1){
+        //    if (dte.Rows[0]["DeviceUnavailable"] == "True") {
+        //        test = "stupid";
+        //    }
+        //}
 
-        var sb = new StringBuilder();
+       
 
-        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (sb.AppendFormat( dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString());
+        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : ( dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString()));
         String? fst = (Convert.IsDBNull(dte.Rows[0]["PMCompleted"]) ? null : dte.Rows[0]["PMCompleted"].ToString());
 
         // DateTime? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (DateTime)dte.Rows[dte.Rows.Count - 1]["PMCompleted"]);
@@ -238,19 +245,28 @@ public partial class PMSchedulingViewModel : ObservableObject {
         //}
 
 
-       // if (customerID == 18) {
-            if (fst.IsNullOrEmpty() || lst.IsNullOrEmpty()) {
-                if (fst.IsNullOrEmpty()) {
-                    customerID.ContractStatus(mdlID, servicePlanID, out x);
-                    fst = x;
-                }
-                if (lst.IsNullOrEmpty()) {
-                    customerID.ContractStatus(mdlID, servicePlanID, out x);
-                    lst = x;
-                }
-
-                //check for expired contract    ServicePlanStatusLU_cbo
+        // if (customerID == 18) {
+        if (fst.IsNullOrEmpty() || lst.IsNullOrEmpty()) {
+            if (fst.IsNullOrEmpty()) {
+                customerID.ContractStatus(mdlID, servicePlanID, out x);
+                fst = x;
             }
+            if (lst.IsNullOrEmpty()) {
+                customerID.ContractStatus(mdlID, servicePlanID, out x);
+                lst = x;
+            }
+
+            //check for expired contract    ServicePlanStatusLU_cbo
+        }
+        else {
+            DateTime dateTimeObject = DateTime.Parse(fst);
+            fst = dateTimeObject.ToString("MM/dd/yyyy");
+
+            dateTimeObject = DateTime.Parse(lst);
+            lst = dateTimeObject.ToString("MM/dd/yyyy");
+
+
+        }
         //}
 
         return (fst, lst);

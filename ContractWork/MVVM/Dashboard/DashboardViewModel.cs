@@ -16,7 +16,7 @@ public partial class DashboardViewModel : ObservableObject {
     private int _currentProgress;
 
     [ObservableProperty]
-    private Visibility _progressBarVisibility = Visibility.Hidden;
+    private bool _progressBarVisibility = false;
 
     [ObservableProperty]
     private ObservableCollection<string> _combolist;
@@ -266,14 +266,14 @@ public partial class DashboardViewModel : ObservableObject {
 
     [RelayCommand]
     private void CustomerPMSelect() {
-        ProgressBarVisibility = Visibility.Visible;
+        ProgressBarVisibility = true;
 
         PMSchedulingWindow CustomerPMSelect = new () {
             DataContext = _navigationService.CurrentViewModel = new PMSchedulingViewModel(_navigationService)
         };
         CustomerPMSelect.Show();
 
-        ProgressBarVisibility = Visibility.Hidden;
+        //ProgressBarVisibility = false;
     }
 
 
