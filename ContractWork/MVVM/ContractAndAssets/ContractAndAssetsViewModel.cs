@@ -394,15 +394,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         ExcelService.ExcelFileLocation = FL.fileLocatinDict["ContractsFilePath"];
         AccessService dbService = new();
         AddServicePlanToAccess newPlan;
-        List<AddServicePlanToAccess> servicePlans = new List<AddServicePlanToAccess>();
+        List<AddServicePlanToAccess> servicePlans= new();
 
         string contractNumber = string.Empty;
         string sqlInsert = string.Empty;
         string sqlAccount = string.Empty;
         double shipAccount, mainAccount = 0;
         int recordCount = 0;
-        //List<string> servicePlans = new();
-        //List<(string Name, int Number)> servicePlans = new List<(string, int)>();
 
         sqlAccount =
                 "SELECT DISTINCT [Account], [Customer], [Contract], [Status], [Cvg Start], [Cvg End] " +
@@ -437,18 +435,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                     $"#{((DateTime)drRow["Cvg Start"]).ToString("MM/d/yyyy")}#, #{((DateTime)drRow["Cvg End"]).ToString("MM/d/yyyy")}#)";
                 dbService.AddToAccount(sqlInsert);
 
-                //newPlan = new AddServicePlanToAccess {
-                //    planNumber = contractNumber,
-                //    acctName = drRow["Customer"].ToString()
-                //};
-
-                //3.Add the object to the list
-                //servicePlans.Add(newPlan);
-
                 servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
 
-                //newPlan.plan
-                    //= new servicePlan{ (contractNumber, drRow["Customer"]) }; //right here
                 recordCount++; 
             }
             else if (contractNumber.GetServicePlanStatus() == "") {
@@ -459,19 +447,11 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 dbService.AddToAccount(SQLInsert: sqlUpdate);
 
                 servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
-                
                 recordCount++;
             }
         }
 
         WrapUpComment(recordCount, servicePlans, "Service Plans");
-
-        
-
-
-
-
-       // MessageBox.Show($"Done with Compare Service Plan: Records updated: {recordCount} ");
     }
 
     private void WrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
@@ -480,7 +460,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         addedbuilder.AppendLine($"{plan} added: ");
 
         foreach (AddServicePlanToAccess item in sbList) {
-            addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} ");
+
+            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+
         }
         string listContent = addedbuilder.ToString();
 
@@ -528,6 +511,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         AccessService.AccessFileLocation = FL.fileLocatinDict["AccessFilePath"];
         ExcelService.ExcelFileLocation = FL.fileLocatinDict["ContractsFilePath"];            //"ExtendedAssetsFilePath"];    ContractsFilePath
         AccessService dbService = new();
+        List<AddServicePlanToAccess> NewAcctNames = new();
 
         string sqlInsert = string.Empty;
         string sqlAccount = string.Empty;
@@ -535,23 +519,19 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         int recordCount = 0;
         double PrimaryKey = 0;
         int mAccount = 0, ID = 0;
-        List<string> NewAcctNames = new();
-
         
         sqlAccount =
-            "SELECT DISTINCT [Account], [Customer], [Status], [Tech], [Sales Rep] " +              //, [Bill To], [Tech], [Sales Rep] " + //, //[Bill To], , [Contract] " +, [Tech], [Sales Rep]
+            "SELECT DISTINCT [Account], [Customer], [Contract], [Tech], [Sales Rep] " +              //, [Bill To], [Tech], [Sales Rep] " + //, //[Bill To], , [Contract] " +, [Tech], [Sales Rep]
             "FROM [Edited$] " +
             "WHERE [Type] = 'ProCare'"; //[Contract] <> '' AND 
-           
 
         (DataTable dt, _) = ExcelWB.RefreshSpreadSheet(sqlAccount);
-        //int x = 0;
+        
         foreach (DataRow drRow in dt.Rows) {
 
             if (drRow.IsEmpty()) { continue; }
 
             PrimaryKey = (double)drRow["Account"];
-            
 
             if (!AccessExtensionMethods.DoesThisAccountExist(PrimaryKey, "Main")) {
 
@@ -565,29 +545,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                 dbService.AddToAccount(sqlInsert);
 
-                NewAcctNames.Add(drRow["Customer"].ToString());
-                
+                NewAcctNames.Add(new AddServicePlanToAccess { acctName = drRow["Customer"].ToString(), planNumber = drRow["Contract"].ToString(),  });
+
                 recordCount++;
             }
-
         }
 
-
         WrapUpComment(recordCount, NewAcctNames, "Account Numbers");
-
-        //StringBuilder acctNamebuilder = new StringBuilder();
-        //acctNamebuilder.AppendLine("Account Names added: "); 
-
-        //foreach (string item in NewAcctNames) {
-        //    acctNamebuilder.AppendLine($"- {item}");
-        //}
-        //string listContent = acctNamebuilder.ToString();
-
-        //MessageBox.Show("Done with Compare Accounts Plan: \n" +
-        //    $"Records updated: {recordCount} \n" +
-        //    $"{listContent} ");
-
-
     }
 
     private bool BothFilesSelected => (ContractFileName != "blank") && (AccessFileName != "blank");
