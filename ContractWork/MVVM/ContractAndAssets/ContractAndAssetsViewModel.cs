@@ -458,7 +458,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         $"WHERE [ServicePlanNumber ] = '{contractNumber}'";
                 dbService.AddToAccount(SQLInsert: sqlUpdate);
 
-                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() }););
+                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
+                
                 recordCount++;
             }
         }
