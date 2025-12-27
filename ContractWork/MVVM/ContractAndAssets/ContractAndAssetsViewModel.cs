@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SQL = ContractWork.MVVM.ContractAndAssets.ContractAndAssetsSQLStatements;
@@ -451,6 +452,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
             }
         }
 
+       // newPlan.wrapUpComment
+
         WrapUpComment(recordCount, servicePlans, "Service Plans");
     }
 
@@ -545,7 +548,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                 dbService.AddToAccount(sqlInsert);
 
-                NewAcctNames.Add(new AddServicePlanToAccess { acctName = drRow["Customer"].ToString(), planNumber = drRow["Contract"].ToString(),  });
+                NewAcctNames.Add(new AddServicePlanToAccess { acctName = drRow["Customer"].ToString(), planNumber = drRow["Contract"].ToString()  });
 
                 recordCount++;
             }
@@ -559,12 +562,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
     [RelayCommand(CanExecute = nameof(ExtendedAssetsNotBlank))]
     private void CompareEquipment() {
+        List <AddSerialToContract> returnList = new();
         int count = 0, expiredcount = 0, archiveCount = 0;
         string exitstring = string.Empty;
         bool exitcode = false;
 
-        (count, archiveCount, exitcode) = FilterEquipment(SQL.EquipmentNotExpiredContract());
-
+        (count, returnList, archiveCount, exitcode) = FilterEquipment(SQL.EquipmentNotExpiredContract());
+        use return list  for display string builder
         if (exitcode) {
             exitstring = ": program forced Exit ";
         }
@@ -573,12 +577,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
     }
 
 
-    private (int, int, bool) FilterEquipment(string sqlStatus) {
+    private (int, List<AddSerialToContract>, int, bool) FilterEquipment(string sqlStatus) {
         AccessService.AccessFileLocation = FL.fileLocatinDict["AccessFilePath"];
         ExcelService.ExcelFileLocation = FL.fileLocatinDict["AssetsFilePath"];
         AccessService dbService = new();
         List<Tuple<string, string>> list = new();
         DataTable dtAccount = new();
+        Dictionary<string, List<AddSerialToContract>> newEquipment = new();
 
 
         string contractNumber = string.Empty, dbContractStatus = string.Empty, xlContractStatus = string.Empty;
@@ -603,13 +608,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
         foreach (DataRow drRow in dtEquipment.Rows) {
             status = 0;
-            //exit = false;
 
-            //if (drRow["Serial"].ToString() == "48444345" || drRow["Serial"].ToString() == "48444628") {
-            //    MessageBox.Show("Bruceton");
-            //}
-
-            //string LastKnownAccount = drRow["Account"].GetAccountNumber();
+            if (recordCount == 4 ) { exit = true; }
 
             if (drRow["Serial"].ToString().DoesSerialNumberHaveServicePlanAndStatus(out x)) {
                 if (x == "Active" || x.Contains("Future")) {
@@ -618,6 +618,14 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 else {  //this  means that both x != "Active" && x != "Future" - need
                     MessageBox.Show($"contract is not Active, and is not Future, update contract status");
                     UpdateSerialNumberContractStatus(drRow);
+
+                    if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) {
+                        newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
+                    }
+                    //else {
+                        newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                    //}
+                    
                     recordCount++;
                     continue;
                 }
@@ -683,6 +691,15 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                             "Going to add SN and assign contract to it.");
                         AddNewSerialNumber(drRow);
                         UpdateSerialNumberContractStatus(drRow);
+
+                        //TODO: add new equipment count to include serial # and product definition
+
+                        if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) {
+                            newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); //{ serial = drRow["Serial"].ToString() });
+                        }
+                        //else {
+                        newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+
                         recordCount++;
                         break;
 
@@ -698,7 +715,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 //    if (MessageBox.Show($"Do you want to add {drRow["Serial"].ToString()} to contract {drRow["Contract"].ToString()}",
                 //        "My Title", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) {
         }
-        return (recordCount, archiveRecord, exit);
+        return (recordCount, newEquipment, archiveRecord, exit);
     }
 
     //private void AddNewAccount(DataRow dr) {
@@ -797,8 +814,70 @@ public class AddServicePlanToAccess {
     public string planNumber { get; set; }
     public string acctName { get; set; }
 
+   
+
     public AddServicePlanToAccess() {
+       
             
+    }
+
+    //public string wrapUpComment(string customer = null, string sn = null, string type = null) {
+    //    StringBuilder sb = new StringBuilder();
+
+    //}
+
+    public string wrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
+        StringBuilder addedbuilder = new StringBuilder();
+
+        addedbuilder.AppendLine($"{plan} added: ");
+
+        foreach (AddServicePlanToAccess item in sbList) {
+
+            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+
+        }
+        string listContent = addedbuilder.ToString();
+
+        MessageBox.Show($"Done with Compare of {plan}: \n" +
+            $"Records updated: {count} \n" +
+            $"{listContent} ");
+    }
+
+}
+
+public class AddSerialToContract {
+
+    public string acctName { get; set; }
+    public string serial { get; set; }
+    public string product { get; set; }
+
+   // Dictionary<string, string> newContractAsset { get; set; }
+
+    public AddSerialToContract() {
+        
+    }
+
+    //public string wrapUpComment(string customer = null, string sn = null, string type = null) {
+    //    StringBuilder sb = new StringBuilder();
+    //}
+
+    public string wrapUpComment(int count, List<AddSerialToContract> sbList, string plan) {
+        StringBuilder addedbuilder = new StringBuilder();
+
+        addedbuilder.AppendLine($"{plan} added: ");
+
+        foreach (AddServicePlanToAccess item in sbList) {
+
+            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+
+        }
+        string listContent = addedbuilder.ToString();
+
+        MessageBox.Show($"Done with Compare of {plan}: \n" +
+            $"Records updated: {count} \n" +
+            $"{listContent} ");
     }
 
 }
