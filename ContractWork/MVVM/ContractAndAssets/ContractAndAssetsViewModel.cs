@@ -2,6 +2,7 @@
 using System.Data.OleDb;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Microsoft.Extensions.Primitives;
 using SQL = ContractWork.MVVM.ContractAndAssets.ContractAndAssetsSQLStatements;
 
 namespace ContractWork.MVVM.ContractAndAssets;
@@ -584,7 +585,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         List<Tuple<string, string>> list = new();
         DataTable dtAccount = new();
         Dictionary<string, List<AddSerialToContract>> newEquipment = new();
-
+        AddSerialToContract buildWrapUpComment = new();
+        StringBuilder sb = new();
 
         string contractNumber = string.Empty, dbContractStatus = string.Empty, xlContractStatus = string.Empty;
         string messageBoxText = string.Empty, caption = string.Empty;
@@ -623,9 +625,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
                     }
                     //else {
-                        newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                    newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                    buildWrapUpComment.wrapUpComment()
                     //}
-                    
+
                     recordCount++;
                     continue;
                 }
@@ -664,17 +667,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                             drRow.AddNewAccount();
                             drRow.AddNewContract();
                             drRow.AddNewSerialNumber();
-                            //AddNewAccount(drRow);
-                            //AddNewContract(drRow);
-                            //AddNewSerialNumber(drRow);
                             drRow["Contract"].ToString().ArchiveServicePlan();
-
-                            //int contractID = drRow["Contract"].ToString().GetServicePlanID();
-                            //string sqlContract =
-                            //    "INSERT INTO [tblEquipment] ([EquipmentSerial], [ServicePlanID_FK], [ServicePlanStatusLU_cbo], [Archive]) " +
-                            //    $"VALUES ('{drRow["Serial"]}', {contractID}, '{drRow["Status"]}', True)";
-
-                            //dbService.AddToAccount(sqlContract);
 
                         }
 
@@ -694,12 +687,11 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                         //TODO: add new equipment count to include serial # and product definition
 
-                        if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) {
-                            newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); //{ serial = drRow["Serial"].ToString() });
-                        }
-                        //else {
+                        if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) { newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); }
+                     
                         newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
 
+                        
                         recordCount++;
                         break;
 
@@ -717,7 +709,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         }
         return (recordCount, newEquipment, archiveRecord, exit);
     }
-
+   
     //private void AddNewAccount(DataRow dr) {
     //    string sqlContract = string.Empty;
 
@@ -753,10 +745,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         AccessDB.AddToAccount(sqlUpdateStatus);
     }
 
-   
+
     #endregion
 
-
+    #region general methods
     [RelayCommand]
     private void CreateQuote() {
         MessageBoxResult result;
@@ -807,6 +799,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
     }
 
+    #endregion
+
 }
 
 public class AddServicePlanToAccess {
@@ -852,32 +846,50 @@ public class AddSerialToContract {
     public string serial { get; set; }
     public string product { get; set; }
 
-   // Dictionary<string, string> newContractAsset { get; set; }
+   Dictionary<string, string> newContractAsset { get; set; }
 
     public AddSerialToContract() {
         
     }
 
-    //public string wrapUpComment(string customer = null, string sn = null, string type = null) {
-    //    StringBuilder sb = new StringBuilder();
-    //}
+    public string wrapUpComment(string customer = null, string plan = null, string sn = null, string type = null) {
+        StringBuilder sb = new StringBuilder();
 
-    public string wrapUpComment(int count, List<AddSerialToContract> sbList, string plan) {
-        StringBuilder addedbuilder = new StringBuilder();
-
-        addedbuilder.AppendLine($"{plan} added: ");
-
-        foreach (AddServicePlanToAccess item in sbList) {
-
-            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
-            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
-
+        if (customer != null) {
+            sb.Append($"{customer} ")
         }
-        string listContent = addedbuilder.ToString();
+        if (plan != null) {
+            sb.Append()
+        }
+        if (sn != null) {
+            sb.Append()
+        }
+        if (type != null) {
+            sb.Append()
+        }
 
-        MessageBox.Show($"Done with Compare of {plan}: \n" +
-            $"Records updated: {count} \n" +
-            $"{listContent} ");
+
+
+        string lineOfContent = sb.ToString();
+        return lineOfContent;
     }
+
+    //public string wrapUpComment(int count, AddSerialToContract sbList, string plan) {
+    //    StringBuilder addedbuilder = new StringBuilder();
+
+    //    addedbuilder.AppendLine($"{plan} added: ");
+
+    //    foreach (AddServicePlanToAccess item in sbList) {
+
+    //        if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+    //        else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+
+    //    }
+    //    string listContent = addedbuilder.ToString();
+
+    //    MessageBox.Show($"Done with Compare of {plan}: \n" +
+    //        $"Records updated: {count} \n" +
+    //        $"{listContent} ");
+    //}
 
 }
