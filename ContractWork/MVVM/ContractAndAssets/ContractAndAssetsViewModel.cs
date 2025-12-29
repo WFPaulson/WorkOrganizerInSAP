@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿ using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -563,22 +563,25 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
     [RelayCommand(CanExecute = nameof(ExtendedAssetsNotBlank))]
     private void CompareEquipment() {
-        List <AddSerialToContract> returnList = new();
+        //List <AddSerialToContract> returnList = new();
+        string returnString = string.Empty;
         int count = 0, expiredcount = 0, archiveCount = 0;
         string exitstring = string.Empty;
         bool exitcode = false;
 
-        (count, returnList, archiveCount, exitcode) = FilterEquipment(SQL.EquipmentNotExpiredContract());
+        (count, returnString, archiveCount, exitcode) = FilterEquipment(SQL.EquipmentNotExpiredContract());
         //use return list  for display string builder
         if (exitcode) {
             exitstring = ": program forced Exit ";
         }
 
-        MessageBox.Show($"Updated {count} new contracts, archived {archiveCount} {exitstring}");
+        MessageBox.Show($"Updated {count} new contracts, archived {archiveCount} {exitstring} " + GL.nl +
+                        $"{returnString}");
+        
     }
 
 
-    private (int, List<AddSerialToContract>, int, bool) FilterEquipment(string sqlStatus) {
+    private (int, string, int, bool) FilterEquipment(string sqlStatus) {      //List<AddSerialToContract>
         AccessService.AccessFileLocation = FL.fileLocatinDict["AccessFilePath"];
         ExcelService.ExcelFileLocation = FL.fileLocatinDict["AssetsFilePath"];
         AccessService dbService = new();
@@ -586,7 +589,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         DataTable dtAccount = new();
         Dictionary<string, List<AddSerialToContract>> newEquipment = new();
         AddSerialToContract buildWrapUpComment = new();
-        StringBuilder sb = new();
+        StringBuilder sb; 
+        string sbContractAndName;
 
         string contractNumber = string.Empty, dbContractStatus = string.Empty, xlContractStatus = string.Empty;
         string messageBoxText = string.Empty, caption = string.Empty;
@@ -611,7 +615,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         foreach (DataRow drRow in dtEquipment.Rows) {
             status = 0;
 
-            if (recordCount == 4 ) { exit = true; }
+            if (recordCount == 50 ) { exit = true; }
+            
+            sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
+            sbContractAndName = sb.ToString(); // Ensure assignment before use
 
             if (drRow["Serial"].ToString().DoesSerialNumberHaveServicePlanAndStatus(out x)) {
                 if (x == "Active" || x.Contains("Future")) {
@@ -621,18 +628,22 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                     MessageBox.Show($"contract is not Active, and is not Future, update contract status");
                     UpdateSerialNumberContractStatus(drRow);
 
-                    if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) {
-                        newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
+                    if (!newEquipment.ContainsKey(sbContractAndName)){            //          drRow["Contract"].ToString())) {
+                       // sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
+                        //sbContractAndName = sb.ToString(); // Ensure assignment before use
+                        newEquipment.Add(sbContractAndName, new List<AddSerialToContract>());                       //drRow["Contract"].ToString(), new List<AddSerialToContract>());
                     }
-                    //else {
-                    newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
-                    buildWrapUpComment.wrapUpComment()
+                    newEquipment[sbContractAndName].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                    //newEquipment.Add(sbContractAndName, new List<AddSerialToContract>());                            //drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
+                }
+                   // newEquipment[sbContractAndName].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });                                                            //[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                    //buildWrapUpComment.wrapUpComment(newEquipment);
                     //}
 
                     recordCount++;
                     continue;
-                }
             }
+            
 
             else {
                 if (!drRow["Serial"].ToString().DoesThisSerialNumberExist()) {
@@ -687,11 +698,21 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                         //TODO: add new equipment count to include serial # and product definition
 
-                        if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) { newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); }
-                     
-                        newEquipment[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+                        if (!newEquipment.ContainsKey(sbContractAndName)) { 
+                            newEquipment.Add(sbContractAndName, new List<AddSerialToContract>()); 
+                        }  //newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); }
+                                                                                                     //newEquipment.ContainsKey(drRow["Contract"].ToString())) { newEquipment.Add(drRow["Contract"].ToString(), new List<AddSerialToContract>()); }
 
-                        
+                        newEquipment[sbContractAndName].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });                       //drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
+
+                       // if (!newEquipment.ContainsKey(drRow["Contract"].ToString())) {
+                           // sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
+                           // sbContractAndName = sb.ToString(); // Ensure assignment before use
+
+                        //    newEquipment.Add(sbContractAndName, new List<AddSerialToContract>());                            //drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
+                       // }
+
+
                         recordCount++;
                         break;
 
@@ -707,7 +728,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 //    if (MessageBox.Show($"Do you want to add {drRow["Serial"].ToString()} to contract {drRow["Contract"].ToString()}",
                 //        "My Title", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) {
         }
-        return (recordCount, newEquipment, archiveRecord, exit);
+
+        string newEquipmentComment = buildWrapUpComment.wrapUpComment(newEquipment);
+
+        return (recordCount, newEquipmentComment, archiveRecord, exit);
     }
    
     //private void AddNewAccount(DataRow dr) {
@@ -820,23 +844,23 @@ public class AddServicePlanToAccess {
 
     //}
 
-    public string wrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
-        StringBuilder addedbuilder = new StringBuilder();
+    //public string wrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
+    //    StringBuilder addedbuilder = new StringBuilder();
 
-        addedbuilder.AppendLine($"{plan} added: ");
+    //    addedbuilder.AppendLine($"{plan} added: ");
 
-        foreach (AddServicePlanToAccess item in sbList) {
+    //    foreach (AddServicePlanToAccess item in sbList) {
 
-            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
-            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+    //        if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+    //        else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
 
-        }
-        string listContent = addedbuilder.ToString();
+    //    }
+    //    string listContent = addedbuilder.ToString();
 
-        MessageBox.Show($"Done with Compare of {plan}: \n" +
-            $"Records updated: {count} \n" +
-            $"{listContent} ");
-    }
+    //    MessageBox.Show($"Done with Compare of {plan}: \n" +
+    //        $"Records updated: {count} \n" +
+    //        $"{listContent} ");
+    //}
 
 }
 
@@ -852,25 +876,53 @@ public class AddSerialToContract {
         
     }
 
-    public string wrapUpComment(string customer = null, string plan = null, string sn = null, string type = null) {
+    public string wrapUpComment(Dictionary<string, List<AddSerialToContract>> sbList) {                 //string customer = null, string plan = null, string sn = null, string type = null) {
         StringBuilder sb = new StringBuilder();
 
-        if (customer != null) {
-            sb.Append($"{customer} ")
-        }
-        if (plan != null) {
-            sb.Append()
-        }
-        if (sn != null) {
-            sb.Append()
-        }
-        if (type != null) {
-            sb.Append()
+        string separator = ", " + Environment.NewLine;
+
+        //sb.AppendJoin(separator, sbList.
+        //TODO: might be able to remove Contract / Customer as it already has these from up above
+        foreach (var kvp in sbList) {
+            sb.AppendLine($"{kvp.Key} ");
+            foreach (var item in kvp.Value) {
+                sb.AppendLine($"   - Serial #: {item.serial} ");
+            }
         }
 
 
 
-        string lineOfContent = sb.ToString();
+
+            //    Select(kvp => 
+            //    $"Contract #: {kvp.Key} " + GL.nl +
+            //    string.Join(GL.nl, kvp.Value.Select(item => $"   - Serial #: {item.serial} "))
+            //));
+
+            //foreach (var kvp in sbList) {
+            //    sb.AppendLine($"Contract #: {kvp.Key} ");
+            //    foreach (var item in kvp.Value) {
+            //        sb.AppendLine($"   - Serial #: {item.serial} " + GL.nl);
+            //    }
+            //}
+
+
+
+            //if (customer != null) {
+            //    sb.Append($"{customer} ")
+            //}
+            //if (plan != null) {
+            //    sb.Append()
+            //}
+            //if (sn != null) {
+            //    sb.Append()
+            //}
+            //if (type != null) {
+            //    sb.Append()
+            //}
+
+
+
+            string lineOfContent = sb.ToString();
         return lineOfContent;
     }
 

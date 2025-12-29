@@ -115,6 +115,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
     [RelayCommand]
     private void OpenPMToDoList(string tmpSQL) {
+        List<DateTime?> firstAndLast;
+        List<string> status;
         string FirstPM, LastPM;
         PMScheduleList = new DataTable();
 
@@ -123,10 +125,23 @@ public partial class PMSchedulingViewModel : ObservableObject {
         AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
-            (FirstPM, LastPM) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            (firstAndLast, status) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
-            item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
-            item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
+
+            if (firstAndLast[0] == null) {
+                item["Oldest Completed"] = status[0];
+            }
+            else item["Oldest Completed"] = firstAndLast[0];
+
+            if (firstAndLast[1] == null) {
+                item["PM Completed"] = status[1];
+            }
+            else item["PM Completed"] = firstAndLast[1];
+
+
+
+            //item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
+            //item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
         }
 
 
@@ -138,7 +153,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
         DateTime? FirstPM, LastPM;
-        List<DateTime> firstAndLast;
+        List<DateTime?> firstAndLast;
         List<string> status;
         //bool UAPM;
 
@@ -219,13 +234,17 @@ public partial class PMSchedulingViewModel : ObservableObject {
         dcOldestCompleted.SetOrdinal(insertIndex + 1);
     }
 
-    private (List<DateTime> firstAndLast, List<string> status) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
+    private (List<DateTime?> firstAndLast, List<string> status) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
         //TODO: need to add check if contract has epired also
 
         int mdlID = modelName.ModelToID();
         string x = string.Empty;
         string test;
         string strfirst, strlast;
+
+        DateTime? FirstPM, LastPM;
+        List<DateTime?> firstAndLast = new();
+        List<string> status = new();
 
         string sqlMostRecentAndOldPMs =
             "SELECT [PMCompleted], [DeviceUnavailable] " +
@@ -249,12 +268,15 @@ public partial class PMSchedulingViewModel : ObservableObject {
         if (!fst.HasValue || !lst.HasValue) {
             if (!fst.HasValue) {
                 customerID.ContractStatus(mdlID, servicePlanID, out x);
-                fst = null;
+                firstAndLast.Add(null);
+                status.Add(x);
 
             }
             if (!lst.HasValue) {
                 customerID.ContractStatus(mdlID, servicePlanID, out x);
-                lst = null;
+                firstAndLast.Add(null);
+                status.Add(x);
+                //lst = null;
             }
 
             //check for expired contract    ServicePlanStatusLU_cbo
@@ -270,7 +292,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         //}
         //}
 
-        return (fst, lst);
+        return (firstAndLast, status);
        
     }
     
