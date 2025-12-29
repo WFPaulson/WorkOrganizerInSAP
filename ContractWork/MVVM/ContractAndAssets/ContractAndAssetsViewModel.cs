@@ -569,7 +569,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         bool exitcode = false;
 
         (count, returnList, archiveCount, exitcode) = FilterEquipment(SQL.EquipmentNotExpiredContract());
-        use return list  for display string builder
+        //use return list  for display string builder
         if (exitcode) {
             exitstring = ": program forced Exit ";
         }

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ContractWork.MVVM.PMandInventory;
 public partial class PMSchedulingViewModel : ObservableObject {
@@ -136,8 +137,10 @@ public partial class PMSchedulingViewModel : ObservableObject {
     #region Methods
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
-        string FirstPM, LastPM, UAPM;
-        
+        DateTime? FirstPM, LastPM;
+        List<DateTime> firstAndLast;
+        List<string> status;
+        //bool UAPM;
 
         //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
 
@@ -161,20 +164,31 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         /// Gets rid of devices that were UA, need to add check for expired contract in this loop
         foreach (DataRow item in PMScheduleList.Rows) {
-            (FirstPM, LastPM) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
-
+            (firstAndLast, status) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            //(FirstPM, LastPM)
             //LastPM == null ? DBNull.Value;
 
+            if (firstAndLast[0] == null) {
+                item["Oldest Completed"] = status[0];
+            }
+            else item["Oldest Completed"] = firstAndLast[0];
 
+            if (firstAndLast[1] == null) {
+                item["PM Completed"] = status[1];
+            }
+            else item["PM Completed"] = firstAndLast[1];
 
-            item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
-            item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
-            //item["UA"] = UAPM == null ? DBNull.Value : FirstPM;
+            //if (firstAndLast[1] == null) { }
+
         }
+
+            //item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
+            //item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
+            //item["UA"] = UAPM == null ? DBNull.Value : FirstPM;
+    }
 
         //PMMonthColumnWidths.GetMaxColumnWidths(PMScheduleList);
 
-    }
 
     private void AddPMCompletedColumns(List<(string Name, int index)> items) {
         string columnName;
@@ -185,7 +199,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
             columnName = item.Name;
             columnNumber = item.index;
 
-            DataColumn dcName = new DataColumn(columnName, typeof(string));
+            DataColumn dcName = new DataColumn(columnName, typeof(DateTime));
             PMScheduleList.Columns.Add(dcName);
             dcName.SetOrdinal(columnNumber);
 
@@ -205,12 +219,13 @@ public partial class PMSchedulingViewModel : ObservableObject {
         dcOldestCompleted.SetOrdinal(insertIndex + 1);
     }
 
-    private (String? firstPM, String? lastPM) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {
+    private (List<DateTime> firstAndLast, List<string> status) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
         //TODO: need to add check if contract has epired also
 
         int mdlID = modelName.ModelToID();
         string x = string.Empty;
         string test;
+        string strfirst, strlast;
 
         string sqlMostRecentAndOldPMs =
             "SELECT [PMCompleted], [DeviceUnavailable] " +
@@ -220,53 +235,39 @@ public partial class PMSchedulingViewModel : ObservableObject {
             $"AND [ServicePlanID_FK] = {servicePlanID} " +
             "AND [tblEquipment.Archive] <> True " +
             "ORDER BY [PMCompleted] DESC";
-        //"AND [ServicePlanStatusLU_cbo] <> 'Expired'" +
-        // "AND [DeviceUnavailable] <> TRUE " +
 
         DataTable dte = accessDB.FetchDBRecordRequest(sqlMostRecentAndOldPMs);
 
-        //if (customerID == 25){            //dte.Rows.Count == 1){
-        //    if (dte.Rows[0]["DeviceUnavailable"] == "True") {
-        //        test = "stupid";
-        //    }
-        //}
-
-       
-
-        String? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : ( dte.Rows[dte.Rows.Count - 1]["PMCompleted"].ToString()));
-        String? fst = (Convert.IsDBNull(dte.Rows[0]["PMCompleted"]) ? null : dte.Rows[0]["PMCompleted"].ToString());
-
-        // DateTime? lst = (Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"]) ? null : (DateTime)dte.Rows[dte.Rows.Count - 1]["PMCompleted"]);
-        //DateTime? fst = (Convert.IsDBNull(dte.Rows[0]["PMCompleted"]) ? null : (DateTime?)dte.Rows[0]["PMCompleted"]);
-
-        //if (customerID == 8) {
-        //    customerID.ContractStatus(out x);
-
-        //}
-
+        DateTime? lst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"])) 
+            ? (DateTime?)dte.Rows[dte.Rows.Count - 1]["PMCompleted"] 
+            : null;
+        DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"])) 
+            ? (DateTime?)dte.Rows[0]["PMCompleted"] 
+            : null;
 
         // if (customerID == 18) {
-        if (fst.IsNullOrEmpty() || lst.IsNullOrEmpty()) {
-            if (fst.IsNullOrEmpty()) {
+        if (!fst.HasValue || !lst.HasValue) {
+            if (!fst.HasValue) {
                 customerID.ContractStatus(mdlID, servicePlanID, out x);
-                fst = x;
+                fst = null;
+
             }
-            if (lst.IsNullOrEmpty()) {
+            if (!lst.HasValue) {
                 customerID.ContractStatus(mdlID, servicePlanID, out x);
-                lst = x;
+                lst = null;
             }
 
             //check for expired contract    ServicePlanStatusLU_cbo
         }
-        else {
-            DateTime dateTimeObject = DateTime.Parse(fst);
-            fst = dateTimeObject.ToString("MM/dd/yyyy");
+        //else {
+        //    DateTime dateTimeObject = DateTime.Parse(fst);
+        //    fst = dateTimeObject.ToString("MM/dd/yyyy");
 
-            dateTimeObject = DateTime.Parse(lst);
-            lst = dateTimeObject.ToString("MM/dd/yyyy");
+        //    dateTimeObject = DateTime.Parse(lst);
+        //    lst = dateTimeObject.ToString("MM/dd/yyyy");
 
 
-        }
+        //}
         //}
 
         return (fst, lst);
