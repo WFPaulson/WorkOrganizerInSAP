@@ -39,6 +39,15 @@ public partial class PMSchedulingViewModel : ObservableObject {
     //    MessageBox.Show(value.ToString());
     //}
 
+    [ObservableProperty]
+    private string _statusPMCompleted = "Good";
+
+    [ObservableProperty]
+    private string _statusOldCompleted = "Bad";
+
+    [ObservableProperty]
+    private string _pMCompletedVisibility = "Hidden";
+
 
     #endregion
 
@@ -183,15 +192,15 @@ public partial class PMSchedulingViewModel : ObservableObject {
             //(FirstPM, LastPM)
             //LastPM == null ? DBNull.Value;
 
-            if (firstAndLast[0] == null) {
-                item["Oldest Completed"] = status[0];
-            }
-            else item["Oldest Completed"] = firstAndLast[0];
+            //if (firstAndLast[0] == null) {
+            //    item["Oldest Completed"] = status[0];
+            //}
+            //else item["Oldest Completed"] = firstAndLast[0];
 
-            if (firstAndLast[1] == null) {
-                item["PM Completed"] = status[1];
-            }
-            else item["PM Completed"] = firstAndLast[1];
+            //if (firstAndLast[1] == null) {
+            //    item["PM Completed"] = status[1];
+            //}
+            //else item["PM Completed"] = firstAndLast[1];
 
             //if (firstAndLast[1] == null) { }
 
@@ -272,25 +281,31 @@ public partial class PMSchedulingViewModel : ObservableObject {
                 status.Add(x);
 
             }
+            else firstAndLast.Add(fst);
+
             if (!lst.HasValue) {
                 customerID.ContractStatus(mdlID, servicePlanID, out x);
                 firstAndLast.Add(null);
                 status.Add(x);
                 //lst = null;
             }
+            else firstAndLast.Add(lst);
 
             //check for expired contract    ServicePlanStatusLU_cbo
         }
-        //else {
-        //    DateTime dateTimeObject = DateTime.Parse(fst);
-        //    fst = dateTimeObject.ToString("MM/dd/yyyy");
+        else {
+            firstAndLast.Add(fst);
+            firstAndLast.Add(lst);
 
-        //    dateTimeObject = DateTime.Parse(lst);
-        //    lst = dateTimeObject.ToString("MM/dd/yyyy");
+            //    DateTime dateTimeObject = DateTime.Parse(fst);
+            //    fst = dateTimeObject.ToString("MM/dd/yyyy");
+
+            //    dateTimeObject = DateTime.Parse(lst);
+            //    lst = dateTimeObject.ToString("MM/dd/yyyy");
 
 
-        //}
-        //}
+            //}
+        }
 
         return (firstAndLast, status);
        

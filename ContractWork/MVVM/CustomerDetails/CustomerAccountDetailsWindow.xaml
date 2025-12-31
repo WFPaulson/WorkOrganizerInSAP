@@ -577,7 +577,6 @@
                                       IsChecked="{Binding DataContext.AllSelected, 
                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                             >
-                                
                             </CheckBox>
 
                         </DataGridTemplateColumn.Header> 
@@ -602,10 +601,9 @@
 
                     <DataGridTemplateColumn Width="120" CanUserSort="True" SortMemberPath="PMCompleted">
                         <DataGridTemplateColumn.Header>
-                            
                                 <CheckBox Content="PM Completed"/>
-                            
                         </DataGridTemplateColumn.Header>
+                       
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

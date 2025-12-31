@@ -318,14 +318,42 @@
                                 Width="Auto"
                                 Binding="{Binding 'PM Month Number'}"
                                 CanUserSort="True" />
-                <DataGridTextColumn Header="PM Completed" 
-                                Width="Auto"
-                                Binding="{Binding 'PM Completed', StringFormat={}{0:M/dd/yy}}"
-                                CanUserSort="True" />
-                <DataGridTextColumn Header="Oldest Completed" 
-                                Width="Auto"
+
+
+                    <DataGridTemplateColumn Header="PM Completed" Width="Auto" CanUserSort="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="Good"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                              Visibility="{Binding Data.PMCompletedVisibility, Source={StaticResource proxy}}"
+                                               
+                                               />
+                                    <TextBlock Text="BAD"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               
+                                               Visibility="Visible"/>
+                                </Grid>
+                            </DataTemplate>
+                            
+                            <!--Visibility="{Binding PMCompletedVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+
+
+                            <!--'PM Completed', StringFormat={}{0:M/dd/yy}      'Status'        {Binding StatusPMCompleted}     {Binding StatusOldCompleted}-->
+
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--Binding="{Binding 'PM Completed', StringFormat={}{0:M/dd/yy}}"-->
+
+                    <DataGridTextColumn Header="Oldest Completed" 
+                                Width="{Binding OldCompletedOrStatus}"
                                 Binding="{Binding 'Oldest Completed', StringFormat={}{0:M/dd/yy}}"
                                 CanUserSort="True" />
+                
+                
 
                 <DataGridTemplateColumn Header="Add To ToDo" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
