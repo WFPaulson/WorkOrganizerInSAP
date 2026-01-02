@@ -26,6 +26,9 @@ public partial class PMSchedulingViewModel : ObservableObject {
     [ObservableProperty]
     private DataRowView _pMToDoCustomer;
 
+    //[ObservableProperty]
+    //private string? _planStatus;
+
     [ObservableProperty]
     private string _togglePositionText = "Full";
     //partial void OnTogglePositionTextChanged(string value) {
@@ -38,17 +41,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     //partial void OnFullorPMListChanged(bool value) {
     //    MessageBox.Show(value.ToString());
     //}
-
-    [ObservableProperty]
-    private string _statusPMCompleted = "Good";
-
-    [ObservableProperty]
-    private string _statusOldCompleted = "Bad";
-
-    [ObservableProperty]
-    private string _pMCompletedVisibility = "Hidden";
-
-
+    
     #endregion
 
     #region Property statements
@@ -68,7 +61,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     #endregion
 
     # region Declaration statements
-    public GC PMMonthColumnWidths { get; set; }
+    //public GC PMMonthColumnWidths { get; set; }
 
     public AccessService accessDB { get; set; }
 
@@ -79,9 +72,9 @@ public partial class PMSchedulingViewModel : ObservableObject {
     {
         _navigationService = navigationService;
         accessDB = new();
-        PMMonthColumnWidths = new();
+        //PMMonthColumnWidths = new();
 
-        RunPMListSetup();
+         RunPMListSetup();
     }
 
     [RelayCommand]
@@ -124,46 +117,30 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
     [RelayCommand]
     private void OpenPMToDoList(string tmpSQL) {
-        List<DateTime?> firstAndLast;
-        List<string> status;
-        string FirstPM, LastPM;
         PMScheduleList = new DataTable();
+        List<DateTime?> firstAndLast;
 
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
         //TODO: need PM Completed, Oldest Completed, and UA
         AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
-            (firstAndLast, status) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
+            // Assign null if firstAndLast[0] is null, otherwise assign the value
+            item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
 
-            if (firstAndLast[0] == null) {
-                item["Oldest Completed"] = status[0];
-            }
-            else item["Oldest Completed"] = firstAndLast[0];
-
-            if (firstAndLast[1] == null) {
-                item["PM Completed"] = status[1];
-            }
-            else item["PM Completed"] = firstAndLast[1];
-
-
-
-            //item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
-            //item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
+            // If you want to assign "Oldest Completed" as well, you can do similarly:
+            item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
         }
-
-
-
     }
 
 
     #region Methods
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
-        DateTime? FirstPM, LastPM;
         List<DateTime?> firstAndLast;
-        List<string> status;
+        //List<string?> status;
         //bool UAPM;
 
         //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
@@ -182,37 +159,19 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         AddPMCompletedColumns(list);
 
-       
+       int counter = 0;
 
         //TODO: need to add check if contract has epired also
-
         /// Gets rid of devices that were UA, need to add check for expired contract in this loop
+        
         foreach (DataRow item in PMScheduleList.Rows) {
-            (firstAndLast, status) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
-            //(FirstPM, LastPM)
-            //LastPM == null ? DBNull.Value;
+            (firstAndLast) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
-            //if (firstAndLast[0] == null) {
-            //    item["Oldest Completed"] = status[0];
-            //}
-            //else item["Oldest Completed"] = firstAndLast[0];
+            if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
 
-            //if (firstAndLast[1] == null) {
-            //    item["PM Completed"] = status[1];
-            //}
-            //else item["PM Completed"] = firstAndLast[1];
-
-            //if (firstAndLast[1] == null) { }
-
+            if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
         }
-
-            //item["Oldest Completed"] = LastPM == null ? DBNull.Value : LastPM;
-            //item["PM Completed"] = FirstPM == null ? DBNull.Value : FirstPM;
-            //item["UA"] = UAPM == null ? DBNull.Value : FirstPM;
     }
-
-        //PMMonthColumnWidths.GetMaxColumnWidths(PMScheduleList);
-
 
     private void AddPMCompletedColumns(List<(string Name, int index)> items) {
         string columnName;
@@ -243,17 +202,17 @@ public partial class PMSchedulingViewModel : ObservableObject {
         dcOldestCompleted.SetOrdinal(insertIndex + 1);
     }
 
-    private (List<DateTime?> firstAndLast, List<string> status) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
+    private List<DateTime?> GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
         //TODO: need to add check if contract has epired also
 
         int mdlID = modelName.ModelToID();
-        string x = string.Empty;
-        string test;
-        string strfirst, strlast;
+        //string x = string.Empty;
+        //string test;
+        //string strfirst, strlast;
 
-        DateTime? FirstPM, LastPM;
+        //DateTime? FirstPM, LastPM;
         List<DateTime?> firstAndLast = new();
-        List<string> status = new();
+        //List<string> status = new();
 
         string sqlMostRecentAndOldPMs =
             "SELECT [PMCompleted], [DeviceUnavailable] " +
@@ -266,48 +225,45 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         DataTable dte = accessDB.FetchDBRecordRequest(sqlMostRecentAndOldPMs);
 
+        DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"]))
+           ? (DateTime?)dte.Rows[0]["PMCompleted"]
+           : null;
         DateTime? lst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"])) 
             ? (DateTime?)dte.Rows[dte.Rows.Count - 1]["PMCompleted"] 
             : null;
-        DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"])) 
-            ? (DateTime?)dte.Rows[0]["PMCompleted"] 
-            : null;
 
-        // if (customerID == 18) {
-        if (!fst.HasValue || !lst.HasValue) {
-            if (!fst.HasValue) {
-                customerID.ContractStatus(mdlID, servicePlanID, out x);
-                firstAndLast.Add(null);
-                status.Add(x);
+        firstAndLast.Add(fst);
+        firstAndLast.Add(lst);
+        // Fix for CS0019 and CS0201: Remove invalid use of ?? with void-returning Add()
+        // Instead, add fst and lst directly, handling nulls as needed.
+        //if (!fst.HasValue || !lst.HasValue)
+        //{
+        // If fst is null, add null; otherwise, add fst
+        //      firstAndLast.Add(fst.HasValue ? fst : null);
 
-            }
-            else firstAndLast.Add(fst);
+        // If lst is null, add null; otherwise, add lst
+        //      firstAndLast.Add(lst.HasValue ? lst : null);
 
-            if (!lst.HasValue) {
-                customerID.ContractStatus(mdlID, servicePlanID, out x);
-                firstAndLast.Add(null);
-                status.Add(x);
-                //lst = null;
-            }
-            else firstAndLast.Add(lst);
+        // Additional logic for status can be added here if needed
+        // status.Add(x); // Uncomment and implement if required
+        //}
+        //else
+        //{
+        //    firstAndLast.Add(fst);
+        //    firstAndLast.Add(lst);
+        //    status.Add(null);
 
-            //check for expired contract    ServicePlanStatusLU_cbo
-        }
-        else {
-            firstAndLast.Add(fst);
-            firstAndLast.Add(lst);
+        //    DateTime dateTimeObject = DateTime.Parse(fst);
+        //    fst = dateTimeObject.ToString("MM/dd/yyyy");
 
-            //    DateTime dateTimeObject = DateTime.Parse(fst);
-            //    fst = dateTimeObject.ToString("MM/dd/yyyy");
-
-            //    dateTimeObject = DateTime.Parse(lst);
-            //    lst = dateTimeObject.ToString("MM/dd/yyyy");
+        //    dateTimeObject = DateTime.Parse(lst);
+        //    lst = dateTimeObject.ToString("MM/dd/yyyy");
 
 
-            //}
-        }
+        //}
+        //}
 
-        return (firstAndLast, status);
+        return (firstAndLast);
        
     }
     

@@ -11,16 +11,16 @@ public partial class PMSchedulingWindow : Window {
         double width = 0;
         int count = 0;
 
-        ColumnWidths = ((PMSchedulingViewModel)(this.DataContext)).PMMonthColumnWidths;
+        //ColumnWidths = ((PMSchedulingViewModel)(this.DataContext)).PMMonthColumnWidths;
 
-        foreach (string key in ColumnWidths.ColumnWidths.Keys) {
-            if (ColumnWidths.ColumnWidths[key] != 0 && ColumnWidths.ColumnWidths[key] != 99) {
-                width = 6.8 * ColumnWidths.ColumnWidths[key];
-                PMMonthSchedule.Columns[count].Width = width;
+        //foreach (string key in ColumnWidths.ColumnWidths.Keys) {
+        //    if (ColumnWidths.ColumnWidths[key] != 0 && ColumnWidths.ColumnWidths[key] != 99) {
+        //        width = 6.8 * ColumnWidths.ColumnWidths[key];
+        //        PMMonthSchedule.Columns[count].Width = width;
 
-            }
-            count++;
-        }
+        //    }
+        //    count++;
+        //}
     }
 
     private void DragMe(object sender, MouseButtonEventArgs e) {

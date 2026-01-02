@@ -16,6 +16,7 @@ public static class PMandInventorySQLStatements {
                 "tblEquipment.ServicePlanID_FK AS [Service Plan], " +
                 "tblEquipment.PMMonth AS [PM Month], " +
                 "tblEquipment.PMMonthNumber AS [PM Month Number], " +
+                "tblEquipment.ServicePlanStatusLU_cbo AS [Service Plan Status], " +
                 "tblEquipmentModel_LU.ModelType AS [Model], " +
                 "Count(tblEquipment.EquipmentSerial) AS [Device Qty] " +
             "FROM " +
@@ -32,6 +33,7 @@ public static class PMandInventorySQLStatements {
                 "tblEquipment.ServicePlanID_FK, " +
                 "tblEquipment.PMMonth, " +
                 "tblEquipment.PMMonthNumber, " +
+                "tblEquipment.ServicePlanStatusLU_cbo, " +
                 "tblEquipment.Archive, " +
                 "tblEquipment.NoPMContract, " +
                 "tblEquipmentModel_LU.ModelType " +
