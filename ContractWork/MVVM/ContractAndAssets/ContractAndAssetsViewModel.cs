@@ -615,6 +615,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         foreach (DataRow drRow in dtEquipment.Rows) {
             status = 0;
 
+            if (drRow["Serial"].ToString().isSerialNumberArchived()) {
+                archiveRecord++;
+                continue;
+            }
             if (recordCount == 50 ) { exit = true; }
             
             sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
@@ -634,12 +638,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         newEquipment.Add(sbContractAndName, new List<AddSerialToContract>());                       //drRow["Contract"].ToString(), new List<AddSerialToContract>());
                     }
                     newEquipment[sbContractAndName].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
-                    //newEquipment.Add(sbContractAndName, new List<AddSerialToContract>());                            //drRow["Contract"].ToString(), new List<AddSerialToContract> ()); //{ serial = drRow["Serial"].ToString() });
                 }
-                   // newEquipment[sbContractAndName].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });                                                            //[drRow["Contract"].ToString()].Add(new AddSerialToContract { serial = drRow["Serial"].ToString() });
-                    //buildWrapUpComment.wrapUpComment(newEquipment);
-                    //}
-
                     recordCount++;
                     continue;
             }
@@ -679,6 +678,8 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                             drRow.AddNewContract();
                             drRow.AddNewSerialNumber();
                             drRow["Contract"].ToString().ArchiveServicePlan();
+                            drRow["Serial"].ToString().ArchiveSerialNumber();
+                            archiveRecord++;
 
                         }
 
@@ -687,7 +688,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         }
                         break;
                     case 1:
-                        MessageBox.Show("SN exists but contract # does not exist. \n" +
+                        MessageBox.Show("SN exists but contract # does not exist. \n" +   
                             "Need to run 'Service Plans' to update contracts ");
                         break;
                     case 2:

@@ -381,12 +381,34 @@ public static class AccessExtensionMethods {
         return Convert.ToBoolean(dte.Rows[0]["Archive"]);
     }
 
+    public static bool isSerialNumberArchived(this string serialNumber) {
+        AccessService accessDB = new();
+        string sqlIsSerialArchived =
+            "SELECT [Archive] " +
+            "FROM tblEquipment " +
+            $"WHERE [EquipmentSerial] = '{serialNumber}'";
+
+        DataTable dte = accessDB.FetchDBRecordRequest(fullstatement: sqlIsSerialArchived);
+
+        return Convert.ToBoolean(dte.Rows[0]["Archive"]);
+    }
+
     public static bool ArchiveServicePlan(this string servicePlanNumber) {
         AccessService accessDB = new();
         string sqlArchiveContract =
             $"UPDATE [tblServicePlan] " +
             $"SET [Archive] = True " +
             $"WHERE [ServicePlanNumber] = '{servicePlanNumber}'";
+        accessDB.AddToAccount(SQLInsert: sqlArchiveContract);
+        return true;
+    }
+
+    public static bool ArchiveSerialNumber(this string serialNumber) {
+        AccessService accessDB = new();
+        string sqlArchiveContract =
+            $"UPDATE [tblEquipment] " +
+            $"SET [Archive] = True " +
+            $"WHERE [EquipmentSerial] = '{serialNumber}'";
         accessDB.AddToAccount(SQLInsert: sqlArchiveContract);
         return true;
     }
@@ -557,7 +579,7 @@ public static class AccessExtensionMethods {
         string sqlContract =
            "INSERT INTO [tblServicePlan] ([ShipToAccountNumber], [AccountName_cbo], [ServicePlanNumber], " +
            "[ServicePlanStatus], [ServicePlanStartDate], [ServicePlanExpireDate]) " +
-           $"VALUES ({dr["Account"]}, '{dr["Customer"]}', '{dr["Contract"]}', '{dr["Status"]}', {dr["Cvg Start"]}, {dr["Cvg End"]})";
+           $"VALUES ({dr["Account"]}, '{dr["Customer"]}', '{dr["Contract"]}', '{dr["Status"]}', '{dr["Cvg Start"]}', '{dr["Cvg End"]}')";
 
         try {
             accessDB.AddToAccount(sqlContract);

@@ -45,98 +45,61 @@ public static class PMandInventorySQLStatements {
                 "[tblCustomerAccounts.AccountName] ASC ";
     }
 
-    public static string GetAPMList() {
-
+    public static string GetRefreshListFirstHalf() {
         return
         "SELECT " +
-            "tblEquipment.CustomerAccountID_FK AS [ID], " +
             "tblCustomerAccounts.AccountName AS [Account Name], " +
-            "tblEquipmentModel_LU.ModelType AS [Model], " +
-            "Count(tblEquipment.EquipmentSerial) AS [Device Qty], " +
+            "tblCustomerAccounts.PMList AS [Add To List], " +
+            "tblEquipment.CustomerAccountID_FK AS [ID], " +
+            "tblEquipment.ServicePlanID_FK AS [Service Plan], " +
             "tblEquipment.PMMonth AS [PM Month], " +
-            "tblPMMonth_LU.MonthNumber AS [Month Number], " +
-            "tblCustomerAccounts.PMList AS [Add To List] " +
+            "tblEquipment.PMMonthNumber AS [PM Month Number], " +
+            "tblEquipment.ServicePlanStatusLU_cbo AS [Service Plan Status], " +
+            "tblEquipmentModel_LU.ModelType AS [Model], " +
+            "Count(tblEquipment.EquipmentSerial) AS [Device Qty] " +
         "FROM " +
-            "tblPMMonth_LU " +
-            "INNER JOIN (" +
-                "tblCustomerAccounts " +
+            "tblCustomerAccounts " +
                 "INNER JOIN (" +
                     "tblEquipmentModel_LU " +
                     "INNER JOIN " +
                         "tblEquipment " +
                         "ON tblEquipmentModel_LU.ModelID = tblEquipment.ModelID" +
                 ") " +
-                "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK" +
-            ") " +
-            "ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth " +
+                "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK ";
+    }
+       
+    public static string GetRefreshListSecondHalf() {
+        return
         "GROUP BY " +
-            "tblEquipment.CustomerAccountID_FK, " +
             "tblCustomerAccounts.AccountName, " +
-            "tblEquipmentModel_LU.ModelType, " +
-            "tblEquipment.PMMonth, " +
-            "tblPMMonth_LU.MonthNumber, " +
-            "tblCustomerAccounts.Archive, " +
-            "tblEquipment.Archive, " +
             "tblCustomerAccounts.PMList, " +
-            "tblEquipment.NoPMContract " +
+            "tblCustomerAccounts.Archive, " +
+            "tblEquipment.CustomerAccountID_FK, " +
+            "tblEquipment.ServicePlanID_FK, " +
+            "tblEquipment.PMMonth, " +
+            "tblEquipment.PMMonthNumber, " +
+            "tblEquipment.ServicePlanStatusLU_cbo, " +
+            "tblEquipment.Archive, " +
+            "tblEquipment.NoPMContract, " +
+            "tblEquipmentModel_LU.ModelType " +
         "HAVING (" +
             "((tblCustomerAccounts.Archive) <> True) " +
             "AND((tblEquipment.Archive) <> True) " +
             "AND ((tblEquipment.NoPMContract) <> True)) " +
         "ORDER BY " +
-            "[tblPMMonth_LU.MonthNumber] DESC, [tblCustomerAccounts.AccountName] ASC ";
-
+            "[tblCustomerAccounts.AccountName] ASC ";
     }
-
-
-    //"FROM " +
-    //        "tblPMMonth_LU " +
-    //        "INNER JOIN (" +
-    //            "tblCustomerAccounts " +
-    //            "INNER JOIN " +
-    //                "tblEquipmentModel_LU INNER JOIN tblEquipment " +
-    //                "ON tblEquipmentModel_LU.ModelID = tblEquipment.ModelID) " +
-    //                "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK" +
-    //        ") ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth " +
-
-    //"FROM tblPMMonth_LU INNER JOIN(tblCustomerAccounts INNER JOIN (tblEquipmentModel_LU INNER JOIN tblEquipment " +
-//      "ON tblEquipmentModel_LU.ModelID = tblEquipment.ModelID) " +
-//      "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK) " +
-//      "ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth ";
-
-
-    //"First(tblEquipment.PMCompleted) AS [PM Completed], Last(tblEquipment.PMCompleted) AS [Oldest Completed], " +
-
-    // Count
-    //
-    //"GROUP BY tblEquipment.CustomerAccountID_FK, tblCustomerAccounts.AccountName, tblEquipmentModel_LU.ModelType, " +
-    //        "tblEquipment.PMMonth, tblPMMonth_LU.MonthNumber, tblCustomerAccounts.Archive, tblEquipment.Archive, " +
-    //        "tblCustomerAccounts.PMList, tblEquipment.NoPMContract " +
-    //        "HAVING(((tblCustomerAccounts.Archive) <> True) " +
-    //        "AND((tblEquipment.Archive) <> True) " +
-    //        "AND ((tblEquipment.NoPMContract) <> True)) " +
-
-    //[tblPMMonth_LU.MonthNumber] DESC, 
-    // "ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth " +
-
-
-    //"WHERE(((tblCustomerAccounts.Archive) <> True) " +
-    //        "AND((tblEquipment.Archive) <> True) " +
-    //        "AND ((tblEquipment.NoPMContract) <> True)) " +
-
-    //"AND ((tblCustomerAccounts.PMList) = True) " +
-
-    //TODO: need to add check if contract has epired also
 
     public static string ShowPMList() {
         return
-            "SELECT " +
+             "SELECT " +
                 "tblCustomerAccounts.AccountName AS [Account Name], " +
                 "tblCustomerAccounts.PMList AS [Add To List], " +
                 "tblEquipment.CustomerAccountID_FK AS [ID], " +
                 "tblEquipment.ServicePlanID_FK AS [Service Plan], " +
                 "tblEquipment.PMMonth AS [PM Month], " +
                 "tblEquipment.PMMonthNumber AS [PM Month Number], " +
+                "tblEquipment.ServicePlanStatusLU_cbo AS [Service Plan Status], " +
                 "tblEquipmentModel_LU.ModelType AS [Model], " +
                 "Count(tblEquipment.EquipmentSerial) AS [Device Qty] " +
             "FROM " +
@@ -153,6 +116,7 @@ public static class PMandInventorySQLStatements {
                 "tblEquipment.ServicePlanID_FK, " +
                 "tblEquipment.PMMonth, " +
                 "tblEquipment.PMMonthNumber, " +
+                "tblEquipment.ServicePlanStatusLU_cbo, " +
                 "tblEquipment.Archive, " +
                 "tblEquipment.NoPMContract, " +
                 "tblEquipmentModel_LU.ModelType " +
@@ -163,39 +127,5 @@ public static class PMandInventorySQLStatements {
                 "AND ((tblCustomerAccounts.PMList) = True)" +
             "ORDER BY " +
                 "[tblCustomerAccounts.AccountName] ASC ";
-
-
-        //return 
-        //    "SELECT " +
-        //        "tblCustomerAccounts.AccountName AS [Account Name], " +
-        //        "tblCustomerAccounts.PMList AS [Add To List], " +
-        //        "tblEquipment.CustomerAccountID_FK AS [ID], " +
-        //        "tblEquipment.PMMonth AS [PM Month], " +
-        //        "tblEquipment.PMMonthNumber AS [PM Month Number], " +
-        //        "tblEquipmentModel_LU.ModelType AS [Model], " +
-        //        "Count(tblEquipment.EquipmentSerial) AS [Device Qty] " +
-        //    "FROM tblPMMonth_LU INNER JOIN(tblCustomerAccounts INNER JOIN (tblEquipmentModel_LU INNER JOIN tblEquipment " +
-        //        "ON tblEquipmentModel_LU.ModelID = tblEquipment.ModelID) " +
-        //        "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK) " +
-        //        "ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth " +
-        //    "GROUP BY " +
-        //        "tblCustomerAccounts.AccountName, " +
-        //        "tblCustomerAccounts.PMList, " +
-        //        "tblCustomerAccounts.Archive, " +
-        //        "tblEquipment.CustomerAccountID_FK, " +
-        //        "tblEquipment.PMMonth, " +
-        //        "tblEquipment.PMMonthNumber, " +
-        //        "tblEquipment.NoPMContract, " +
-        //        "tblEquipment.Archive, " +
-        //        "tblEquipmentModel_LU.ModelType " +
-        //    "HAVING(" +
-        //        "((tblCustomerAccounts.Archive) <> True) " +
-        //        "AND ((tblEquipment.Archive) <> True) " +
-        //        "AND ((tblEquipment.NoPMContract) <> True) " +
-        //        "AND ((tblCustomerAccounts.PMList) = True)" +
-        //    ") " +
-        //    "ORDER BY tblCustomerAccounts.AccountName ";
     }
-
 }
-//"tblPMMonth_LU.MonthNumber AS [Month Number], " +

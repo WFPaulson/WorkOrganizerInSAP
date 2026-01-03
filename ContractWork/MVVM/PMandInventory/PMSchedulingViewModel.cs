@@ -94,7 +94,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
             OpenPMToDoList(PMandInventorySQLStatements.ShowPMList()); }
         else {
             TogglePositionText = "Full";
-            PMMonthSelection();
+            RunPMListSetup();
+            //PMMonthSelection();
         }
     }
 
@@ -122,17 +123,31 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
         //TODO: need PM Completed, Oldest Completed, and UA
-        AddPMCompletedColumns();
+
+        List<(string Name, int Number)> list = new List<(string, int)>
+       {
+            ("PM Completed", 6),
+            ("Oldest Completed", 6 + 1)
+
+        };
+
+        AddPMCompletedColumns(list);
+
+       // AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
             firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
+            if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
+            if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+
             // Assign null if firstAndLast[0] is null, otherwise assign the value
-            item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
+            //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
 
             // If you want to assign "Oldest Completed" as well, you can do similarly:
-            item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
+            //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
         }
+        string str = string.Empty;
     }
 
 
@@ -140,35 +155,35 @@ public partial class PMSchedulingViewModel : ObservableObject {
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
         List<DateTime?> firstAndLast;
-        //List<string?> status;
-        //bool UAPM;
 
         //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
 
         PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetFullPMList());            //GetFullPMList  GetAPMList
 
-        int columnCount = PMScheduleList.Columns.Count;
-        int index = 6;
+       // int columnCount = PMScheduleList.Columns.Count;
+        //int index = 6;
 
         List<(string Name, int Number)> list = new List<(string, int)>
         {
-            ("PM Completed", index),
-            ("Oldest Completed", index + 1),
-            ("UA", columnCount + 2)
+            ("PM Completed", 6),
+            ("Oldest Completed", 6 + 1)
+            
         };
 
         AddPMCompletedColumns(list);
 
-       int counter = 0;
+       //int counter = 0;
 
         //TODO: need to add check if contract has epired also
         /// Gets rid of devices that were UA, need to add check for expired contract in this loop
         
         foreach (DataRow item in PMScheduleList.Rows) {
-            (firstAndLast) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+
+            //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
+            //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
-
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
         }
     }
@@ -206,13 +221,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         //TODO: need to add check if contract has epired also
 
         int mdlID = modelName.ModelToID();
-        //string x = string.Empty;
-        //string test;
-        //string strfirst, strlast;
-
-        //DateTime? FirstPM, LastPM;
         List<DateTime?> firstAndLast = new();
-        //List<string> status = new();
 
         string sqlMostRecentAndOldPMs =
             "SELECT [PMCompleted], [DeviceUnavailable] " +
@@ -234,6 +243,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         firstAndLast.Add(fst);
         firstAndLast.Add(lst);
+
         // Fix for CS0019 and CS0201: Remove invalid use of ?? with void-returning Add()
         // Instead, add fst and lst directly, handling nulls as needed.
         //if (!fst.HasValue || !lst.HasValue)
@@ -247,24 +257,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
         // Additional logic for status can be added here if needed
         // status.Add(x); // Uncomment and implement if required
         //}
-        //else
-        //{
-        //    firstAndLast.Add(fst);
-        //    firstAndLast.Add(lst);
-        //    status.Add(null);
-
-        //    DateTime dateTimeObject = DateTime.Parse(fst);
-        //    fst = dateTimeObject.ToString("MM/dd/yyyy");
-
-        //    dateTimeObject = DateTime.Parse(lst);
-        //    lst = dateTimeObject.ToString("MM/dd/yyyy");
-
-
-        //}
-        //}
-
-        return (firstAndLast);
        
+        return (firstAndLast);
     }
     
     [RelayCommand]
@@ -293,37 +287,50 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
     private void RefreshPMMonth(List<string> pmMnthSQL) {
         PMScheduleList = new DataTable();
+        List<DateTime?> firstAndLast;
+        StringBuilder sbSQL = new StringBuilder();
 
-        string tmpSQL =
-            "SELECT tblEquipment.CustomerAccountID_FK AS [ID], tblCustomerAccounts.AccountName AS [Account Name], " +
-            "tblEquipmentModel_LU.ModelType AS [Model], Count(tblEquipment.EquipmentSerial) AS [Device Qty], " +
-            "tblEquipment.PMMonth AS [PM Month], tblPMMonth_LU.MonthNumber AS [Month Number], " +
-            "First(tblEquipment.PMCompleted) AS [PM Completed], Last(tblEquipment.PMCompleted) AS [Oldest Completed], " +
-            "tblCustomerAccounts.PMList AS [Add To List] " +
-            "FROM tblPMMonth_LU INNER JOIN(tblCustomerAccounts INNER JOIN (tblEquipmentModel_LU INNER JOIN tblEquipment " +
-            "ON tblEquipmentModel_LU.ModelID = tblEquipment.ModelID) " +
-            "ON tblCustomerAccounts.CustomerAccountID = tblEquipment.CustomerAccountID_FK) " +
-            "ON tblPMMonth_LU.PMMonth = tblEquipment.PMMonth ";
+        sbSQL.Append(PMandInventorySQLStatements.GetRefreshListFirstHalf());
 
         if (pmMnthSQL.Count > 0) {
-            string strHolder = string.Empty;
+            StringBuilder sbHolder = new StringBuilder();
             foreach (string item in pmMnthSQL) {
-                strHolder += item + ", ";
+                sbHolder.Append(item + ", ");
             }
-            strHolder = strHolder.Substring(0, strHolder.Length - 2);
-            tmpSQL += $"WHERE tblEquipment.PMMonth In ({strHolder}) ";
+            string strHolder = sbHolder.ToString(0, sbHolder.Length - 2);
+            //strHolder = strHolder.Substring(0, strHolder.Length - 2);
+            sbSQL.Append($"WHERE tblEquipment.PMMonth In ({strHolder})");
         }
 
-        tmpSQL +=
-            "GROUP BY tblEquipment.CustomerAccountID_FK, tblCustomerAccounts.AccountName, tblEquipmentModel_LU.ModelType, " +
-            "tblEquipment.PMMonth, tblPMMonth_LU.MonthNumber, tblCustomerAccounts.Archive, tblEquipment.Archive, " +
-            "tblCustomerAccounts.PMList, tblEquipment.NoPMContract " +
-            "HAVING(((tblCustomerAccounts.Archive) <> True) " +
-            "AND((tblEquipment.Archive) <> True) " +
-            "AND ((tblEquipment.NoPMContract) <> True)) " +
-            "ORDER BY [tblPMMonth_LU.MonthNumber] DESC, [tblCustomerAccounts.AccountName] ASC ";
+        sbSQL.Append(PMandInventorySQLStatements.GetRefreshListSecondHalf());
+
+     string tmpSQL = sbSQL.ToString();
 
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
+
+        List<(string Name, int Number)> list = new List<(string, int)>
+       {
+            ("PM Completed", 6),
+            ("Oldest Completed", 6 + 1)
+
+        };
+
+        AddPMCompletedColumns(list);
+
+        //AddPMCompletedColumns();
+
+        foreach (DataRow item in PMScheduleList.Rows) {
+            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+
+            if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
+            if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+
+            // Assign null if firstAndLast[0] is null, otherwise assign the value
+            //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
+
+            // If you want to assign "Oldest Completed" as well, you can do similarly:
+            //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
+        }
     }
 
     [RelayCommand]
