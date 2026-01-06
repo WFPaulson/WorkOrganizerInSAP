@@ -203,35 +203,6 @@
                                 
                                 
                             </customcontrols:tglbtnRoundedControl>
-                            <!--<customcontrols:btnMaintenanceControl
-                                btnClickCommand="{Binding OpenPMToDoListCommand}"
-                                btnBrdrHeight="35"
-                                btnBrdrWidth="40"
-                                btnBrdrCornerRadius="10"
-                                btnBrdrBrush="White"
-                                btnBrdrThickness="1,1,0,0"
-                                btn2ndBrdrBrush="Black"
-                                btn2ndBrdrThickness="0,0,1,1"
-                                MaintCornerRadius="9"
-                                MaintBackground="#cd7861"
-                                btnBrdrMargin="1,0,0,0"
-                                textPadding="0,0,0,0"
-                                btnHorizAlign="Left"
-                                btnVertAlign="Center"
-                                btnContentText="PM List"
-                                btnContentFontSize="12"
-                                btnForeground="Black"
-                            />-->
-                            <!--ImageSource="S:\C# Contract Database\2024-0404 - WorkOrganizer in SAP.beta1.02\WorkOrganizerInSAP\ContractWork\Assets\Excel.png"-->
-                            <!--<Border CornerRadius="10"
-                                BorderThickness="1,1,1,1"
-                                BorderBrush="Black" 
-                                Width="32"
-                                Height="22">
-                            <ToggleButton
-                                          />
-                        </Border>-->
-
                         </StackPanel>
                     </Border>
                 </Border>
@@ -278,7 +249,7 @@
                                     Binding="{Binding 'PM Month Number'}"
                                     CanUserSort="True" />
 
-                    <DataGridTextColumn Header="PM Completed" Width="Auto" CanUserSort="True" >
+                    <DataGridTextColumn Header="PM Completed" Width="Auto" SortMemberPath="PM Completed" >
                         <DataGridTextColumn.Binding>
                             <MultiBinding Converter="{StaticResource NullableDateTimeMultiConverter}">
                                 <Binding Path="PM Completed"/>
@@ -287,7 +258,7 @@
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Oldest Completed" Width="Auto" CanUserSort="True" >
+                    <DataGridTextColumn Header="Oldest Completed" Width="Auto" SortMemberPath="Oldest Completed" >
                         <DataGridTextColumn.Binding>
                             <MultiBinding Converter="{StaticResource NullableDateTimeMultiConverter}">
                                 <Binding Path="Oldest Completed"/>
