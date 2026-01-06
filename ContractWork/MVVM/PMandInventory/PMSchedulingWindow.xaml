@@ -267,6 +267,12 @@
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
 
+                    <DataGridTextColumn Header="UA" 
+                                    Width="Auto"
+                                    Binding="{Binding UA}"
+                                    CanUserSort="True" />
+
+
                     <!--"{Binding Data.PlanStatus, Source={StaticResource proxy}}"/>-->
 
                     <!--<DataGridTextColumn Header="Oldest Completed"
