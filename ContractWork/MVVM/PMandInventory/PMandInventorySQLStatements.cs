@@ -1,4 +1,6 @@
-﻿namespace ContractWork.MVVM.PMandInventory;
+﻿using System.Windows.Forms;
+
+namespace ContractWork.MVVM.PMandInventory;
 public static class PMandInventorySQLStatements {
 
     public static string GetCustomerAccountData(int ID) {
@@ -128,4 +130,52 @@ public static class PMandInventorySQLStatements {
             "ORDER BY " +
                 "[tblCustomerAccounts.AccountName] ASC ";
     }
+
+    public static string GetMostRecentAndOldPMsAndUA(int customerID, int planID, int mdlID) {
+        //return
+        //    "SELECT " +
+        //        "[PMCompleted], " +
+        //        "COUNT([DeviceUnavailable]) AS [UA] " +
+        //    "FROM [tblEquipment] " +
+        //    "GROUP BY " +
+        //        "[DeviceUnavailable] " +
+        //    "WHERE "+
+        //        $"[CustomerAccountID_FK] = {customerID} " +
+        //        $"AND [ModelID] = {mdlID} " +
+        //        $"AND [ServicePlanID_FK] = {planID} " +
+        //   "ORDER BY " +
+        //        "[PMCompleted] DESC";
+
+        return
+            "SELECT " +
+                "tblEquipment.PMCompleted, " +
+                "tblEquipment.CustomerAccountID_FK, " +
+                "tblEquipment.ModelID, " +
+                "tblEquipment.ServicePlanID_FK, " +
+                "Count(tblEquipment.DeviceUnavailable) AS UA " +
+            "FROM " +
+                "tblEquipment " +
+            "WHERE " +
+                "(" +
+                    $"((tblEquipment.CustomerAccountID_FK) = {customerID}) " +
+                    $"AND((tblEquipment.ServicePlanID_FK) = {planID}) " +
+                    $"AND((tblEquipment.ModelID) = {mdlID}) " +
+                ") " +
+            "GROUP BY " +
+                "tblEquipment.PMCompleted, " +
+                "tblEquipment.CustomerAccountID_FK, " +
+                "tblEquipment.ModelID, " +
+                "tblEquipment.ServicePlanID_FK, " +
+                "tblEquipment.DeviceUnavailable, " +
+                "tblEquipment.Archive " +
+            "Having " +
+                "(" +
+                    "((tblEquipment.DeviceUnavailable) = True) " +
+                ") " +
+            "ORDER BY " +
+                "tblEquipment.PMCompleted DESC";
+    }
 }
+
+//"HAVING " +
+//                "tblEquipment.DeviceUnavailable = True " +

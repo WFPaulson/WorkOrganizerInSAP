@@ -120,6 +120,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     private void OpenPMToDoList(string tmpSQL) {
         PMScheduleList = new DataTable();
         List<DateTime?> firstAndLast;
+        int uaCount = 0;
 
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
         //TODO: need PM Completed, Oldest Completed, and UA
@@ -127,7 +128,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
         List<(string Name, int Number)> list = new List<(string, int)>
        {
             ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1)
+            ("Oldest Completed", 6 + 1),
+            ("UA", 6 + 2)
 
         };
 
@@ -136,10 +138,11 @@ public partial class PMSchedulingViewModel : ObservableObject {
        // AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
-            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+            if (uaCount > 0) { item["UA"] = uaCount; }
 
             // Assign null if firstAndLast[0] is null, otherwise assign the value
             //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
@@ -155,19 +158,21 @@ public partial class PMSchedulingViewModel : ObservableObject {
     private void RunPMListSetup() {
         PMScheduleList = new DataTable();
         List<DateTime?> firstAndLast;
+        int uaCount = 0;
 
         //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
 
         PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetFullPMList());            //GetFullPMList  GetAPMList
 
-       // int columnCount = PMScheduleList.Columns.Count;
+        // int columnCount = PMScheduleList.Columns.Count;
         //int index = 6;
 
         List<(string Name, int Number)> list = new List<(string, int)>
         {
             ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1)
-            
+            ("Oldest Completed", 6 + 1),
+            ("UA", 6 + 2)
+
         };
 
         AddPMCompletedColumns(list);
@@ -178,15 +183,20 @@ public partial class PMSchedulingViewModel : ObservableObject {
         /// Gets rid of devices that were UA, need to add check for expired contract in this loop
         
         foreach (DataRow item in PMScheduleList.Rows) {
-            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            //uaCount = GetUADeviceCount((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
             //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
             //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+            if (uaCount > 0) { item["UA"] = uaCount; }
+            
         }
     }
+
+   
 
     private void AddPMCompletedColumns(List<(string Name, int index)> items) {
         string columnName;
@@ -204,35 +214,16 @@ public partial class PMSchedulingViewModel : ObservableObject {
         }
     }
 
-    private void AddPMCompletedColumns() {
-        DataColumn dcPMcompleted = new DataColumn("PM Completed", typeof(string));
-        DataColumn dcOldestCompleted = new DataColumn("Oldest Completed", typeof(string));
-
-        int insertIndex = 6;
-
-        PMScheduleList.Columns.Add(dcPMcompleted);
-        PMScheduleList.Columns.Add(dcOldestCompleted);
-
-        dcPMcompleted.SetOrdinal(insertIndex);
-        dcOldestCompleted.SetOrdinal(insertIndex + 1);
-    }
-
-    private List<DateTime?> GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
+    private (List<DateTime?>, int) GetMostRecentAndOldestPMsCompleted(int customerID, int servicePlanID, string modelName) {     //DateTime? firstPM, DateTime? lastPM)
         //TODO: need to add check if contract has epired also
 
         int mdlID = modelName.ModelToID();
         List<DateTime?> firstAndLast = new();
+        int uaCount = 0;
 
-        string sqlMostRecentAndOldPMs =
-            "SELECT [PMCompleted], [DeviceUnavailable] " +
-            "FROM [tblEquipment] " +
-            $"WHERE [CustomerAccountID_FK] = {customerID} " +
-            $"AND [ModelID] = {mdlID} " +
-            $"AND [ServicePlanID_FK] = {servicePlanID} " +
-            "AND [tblEquipment.Archive] <> True " +
-            "ORDER BY [PMCompleted] DESC";
+        //PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMsAndUA(customerID, servicePlanID, mdlID));
 
-        DataTable dte = accessDB.FetchDBRecordRequest(sqlMostRecentAndOldPMs);
+        DataTable dte = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMsAndUA(customerID, servicePlanID, mdlID));
 
         DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"]))
            ? (DateTime?)dte.Rows[0]["PMCompleted"]
@@ -244,6 +235,9 @@ public partial class PMSchedulingViewModel : ObservableObject {
         firstAndLast.Add(fst);
         firstAndLast.Add(lst);
 
+        uaCount = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["UA"]))
+            ? (int)dte.Rows[0]["UA"]
+            : 0;
         // Fix for CS0019 and CS0201: Remove invalid use of ?? with void-returning Add()
         // Instead, add fst and lst directly, handling nulls as needed.
         //if (!fst.HasValue || !lst.HasValue)
@@ -257,8 +251,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
         // Additional logic for status can be added here if needed
         // status.Add(x); // Uncomment and implement if required
         //}
-       
-        return (firstAndLast);
+
+        return (firstAndLast, uaCount);
     }
     
     [RelayCommand]
@@ -289,6 +283,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         PMScheduleList = new DataTable();
         List<DateTime?> firstAndLast;
         StringBuilder sbSQL = new StringBuilder();
+        int uaCount = 0;
 
         sbSQL.Append(PMandInventorySQLStatements.GetRefreshListFirstHalf());
 
@@ -311,7 +306,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
         List<(string Name, int Number)> list = new List<(string, int)>
        {
             ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1)
+            ("Oldest Completed", 6 + 1),
+            ("UA", 6 + 2)
 
         };
 
@@ -320,10 +316,11 @@ public partial class PMSchedulingViewModel : ObservableObject {
         //AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
-            firstAndLast = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+            (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+            if (uaCount > 0) { item["UA"] = uaCount; }
 
             // Assign null if firstAndLast[0] is null, otherwise assign the value
             //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
