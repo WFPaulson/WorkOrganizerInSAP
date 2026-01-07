@@ -131,21 +131,22 @@ public static class PMandInventorySQLStatements {
                 "[tblCustomerAccounts.AccountName] ASC ";
     }
 
-    public static string GetMostRecentAndOldPMsAndUA(int customerID, int planID, int mdlID) {
-        //return
-        //    "SELECT " +
-        //        "[PMCompleted], " +
-        //        "COUNT([DeviceUnavailable]) AS [UA] " +
-        //    "FROM [tblEquipment] " +
-        //    "GROUP BY " +
-        //        "[DeviceUnavailable] " +
-        //    "WHERE "+
-        //        $"[CustomerAccountID_FK] = {customerID} " +
-        //        $"AND [ModelID] = {mdlID} " +
-        //        $"AND [ServicePlanID_FK] = {planID} " +
-        //   "ORDER BY " +
-        //        "[PMCompleted] DESC";
+    public static string GetMostRecentAndOldPMs(int customerID, int planID, int mdlID) {
+        return
+            "SELECT " +
+                "PMCompleted " +
+            "FROM " +
+                "tblEquipment " +
+            "WHERE " +
+                $"CustomerAccountID_FK = {customerID} " +
+                $"AND ModelID = {mdlID} " +
+                $"AND ServicePlanID_FK = {planID} " +
+           "ORDER BY " +
+                "[PMCompleted] DESC";
+    }
 
+
+    public static string GetUACount(int customerID, int planID, int mdlID) {
         return
             "SELECT " +
                 "tblEquipment.PMCompleted, " +
@@ -179,3 +180,33 @@ public static class PMandInventorySQLStatements {
 
 //"HAVING " +
 //                "tblEquipment.DeviceUnavailable = True " +
+
+
+
+//"SELECT " +
+//                "tblEquipment.PMCompleted, " +
+//                "tblEquipment.CustomerAccountID_FK, " +
+//                "tblEquipment.ModelID, " +
+//                "tblEquipment.ServicePlanID_FK, " +
+//                "Count(tblEquipment.DeviceUnavailable) AS UA " +
+//            "FROM " +
+//                "tblEquipment " +
+//            "WHERE " +
+//                "(" +
+//                    $"((tblEquipment.CustomerAccountID_FK) = {customerID}) " +
+//                    $"AND((tblEquipment.ServicePlanID_FK) = {planID}) " +
+//                    $"AND((tblEquipment.ModelID) = {mdlID}) " +
+//                ") " +
+//            "GROUP BY " +
+//                "tblEquipment.PMCompleted, " +
+//                "tblEquipment.CustomerAccountID_FK, " +
+//                "tblEquipment.ModelID, " +
+//                "tblEquipment.ServicePlanID_FK, " +
+//                "tblEquipment.DeviceUnavailable, " +
+//                "tblEquipment.Archive " +
+//            "Having " +
+//                "(" +
+//                    "((tblEquipment.DeviceUnavailable) = True) " +
+//                ") " +
+//            "ORDER BY " +
+//                "tblEquipment.PMCompleted DESC";

@@ -125,24 +125,22 @@ public partial class PMSchedulingViewModel : ObservableObject {
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
         //TODO: need PM Completed, Oldest Completed, and UA
 
-        List<(string Name, int Number)> list = new List<(string, int)>
-       {
-            ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1),
-            ("UA", 6 + 2)
+        List<(string, int, Type)> list = new List<(string, int, Type)>
+        {
+            ("PM Completed", 6, typeof(DateTime)),
+            ("Oldest Completed", 6 + 1, typeof(DateTime)),
+            ("UA", 6 + 2, typeof(int))
 
         };
 
         AddPMCompletedColumns(list);
-
-       // AddPMCompletedColumns();
 
         foreach (DataRow item in PMScheduleList.Rows) {
             (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
-            if (uaCount > 0) { item["UA"] = uaCount; }
+            item["UA"] = uaCount > 0 ? uaCount : 0;
 
             // Assign null if firstAndLast[0] is null, otherwise assign the value
             //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
@@ -167,11 +165,11 @@ public partial class PMSchedulingViewModel : ObservableObject {
         // int columnCount = PMScheduleList.Columns.Count;
         //int index = 6;
 
-        List<(string Name, int Number)> list = new List<(string, int)>
+        List<(string, int, Type)> list = new List<(string, int, Type)>
         {
-            ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1),
-            ("UA", 6 + 2)
+            ("PM Completed", 6, typeof(DateTime)),
+            ("Oldest Completed", 6 + 1, typeof(DateTime)),
+            ("UA", 6 + 2, typeof(int))
 
         };
 
@@ -191,23 +189,29 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
             if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
             if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
-            if (uaCount > 0) { item["UA"] = uaCount; }
-            
+            item["UA"] = uaCount > 0 ? uaCount : 0;
+
+          //  uaCount = (dteUACount.Rows.Count > 0)
+          //? (int)dteUACount.Rows[0]["UA"]
+          //: 0;
+
         }
     }
 
    
 
-    private void AddPMCompletedColumns(List<(string Name, int index)> items) {
+    private void AddPMCompletedColumns(List<(string Name, int index, Type type)> items) {
         string columnName;
         int columnNumber;
+        Type columnType;
 
         foreach (var item in items) {
            
             columnName = item.Name;
             columnNumber = item.index;
+            columnType = item.type;
 
-            DataColumn dcName = new DataColumn(columnName, typeof(DateTime));
+            DataColumn dcName = new DataColumn(columnName, columnType);
             PMScheduleList.Columns.Add(dcName);
             dcName.SetOrdinal(columnNumber);
 
@@ -223,8 +227,21 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         //PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMsAndUA(customerID, servicePlanID, mdlID));
 
-        DataTable dte = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMsAndUA(customerID, servicePlanID, mdlID));
+        DataTable dte = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMs(customerID, servicePlanID, mdlID));
+        DataTable dteUACount = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetUACount(customerID, servicePlanID, mdlID));
 
+        //if (customerID == 89) {
+        //    int s = 0;
+        //}
+
+        //if (dteUACount.Rows.Count > 0) {
+        //    int s = 0;
+        //}
+            uaCount = (dteUACount.Rows.Count > 0)
+          ? (int)dteUACount.Rows[0]["UA"]
+          : 0;
+        //}
+        //&& !Convert.IsDBNull(dteUACount.Rows[0]["UA"])
         DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"]))
            ? (DateTime?)dte.Rows[0]["PMCompleted"]
            : null;
@@ -235,9 +252,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         firstAndLast.Add(fst);
         firstAndLast.Add(lst);
 
-        uaCount = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["UA"]))
-            ? (int)dte.Rows[0]["UA"]
-            : 0;
+      
         // Fix for CS0019 and CS0201: Remove invalid use of ?? with void-returning Add()
         // Instead, add fst and lst directly, handling nulls as needed.
         //if (!fst.HasValue || !lst.HasValue)
@@ -303,11 +318,11 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         PMScheduleList = accessDB.FetchDBRecordRequest(tmpSQL);
 
-        List<(string Name, int Number)> list = new List<(string, int)>
-       {
-            ("PM Completed", 6),
-            ("Oldest Completed", 6 + 1),
-            ("UA", 6 + 2)
+        List<(string, int, Type)> list = new List<(string, int, Type)>
+        {
+            ("PM Completed", 6, typeof(DateTime)),
+            ("Oldest Completed", 6 + 1, typeof(DateTime)),
+            ("UA", 6 + 2, typeof(int))
 
         };
 

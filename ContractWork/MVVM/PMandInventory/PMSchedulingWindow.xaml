@@ -278,7 +278,7 @@
                                     Binding="{Binding 'PM Month Number'}"
                                     CanUserSort="True" />
 
-                    <DataGridTextColumn Header="PM Completed" Width="Auto" CanUserSort="True" >
+                    <DataGridTextColumn Header="PM Completed" Width="Auto" SortMemberPath="PM Completed" >
                         <DataGridTextColumn.Binding>
                             <MultiBinding Converter="{StaticResource NullableDateTimeMultiConverter}">
                                 <Binding Path="PM Completed"/>
@@ -287,7 +287,7 @@
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Oldest Completed" Width="Auto" CanUserSort="True" >
+                    <DataGridTextColumn Header="Oldest Completed" Width="Auto" SortMemberPath="Oldest Completed" >
                         <DataGridTextColumn.Binding>
                             <MultiBinding Converter="{StaticResource NullableDateTimeMultiConverter}">
                                 <Binding Path="Oldest Completed"/>
