@@ -619,7 +619,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 archiveRecord++;
                 continue;
             }
-            if (recordCount == 50 ) { exit = true; }
+            if (recordCount >= 50 ) { exit = true; break; }
             
             sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
             sbContractAndName = sb.ToString(); // Ensure assignment before use
