@@ -37,7 +37,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
     //}
 
     [ObservableProperty]
-    private bool _fullorPMList;
+    private bool _fullorPMList = false;
     //partial void OnFullorPMListChanged(bool value) {
     //    MessageBox.Show(value.ToString());
     //}
@@ -74,7 +74,8 @@ public partial class PMSchedulingViewModel : ObservableObject {
         accessDB = new();
         //PMMonthColumnWidths = new();
 
-         RunPMListSetup();
+        // RunPMListSetup();
+        Full_PMList();
     }
 
     [RelayCommand]
@@ -94,9 +95,11 @@ public partial class PMSchedulingViewModel : ObservableObject {
             OpenPMToDoList(PMandInventorySQLStatements.ShowPMList()); }
         else {
             TogglePositionText = "Full";
-            RunPMListSetup();
-            //PMMonthSelection();
+            OpenPMToDoList(PMandInventorySQLStatements.GetFullPMList()); 
         }
+            //RunPMListSetup();
+            //PMMonthSelection();
+        //}
     }
 
     [RelayCommand]
@@ -153,50 +156,50 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
 
     #region Methods
-    private void RunPMListSetup() {
-        PMScheduleList = new DataTable();
-        List<DateTime?> firstAndLast;
-        int uaCount = 0;
+    //private void RunPMListSetup() {
+    //    PMScheduleList = new DataTable();
+    //    List<DateTime?> firstAndLast;
+    //    int uaCount = 0;
 
-        //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
+    //    //TODO: need to add ua as being completed, but a hover states how many were UA, like on the excel spreadsheet
 
-        PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetFullPMList());            //GetFullPMList  GetAPMList
+    //    PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetFullPMList());            //GetFullPMList  GetAPMList
 
-        // int columnCount = PMScheduleList.Columns.Count;
-        //int index = 6;
+    //    // int columnCount = PMScheduleList.Columns.Count;
+    //    //int index = 6;
 
-        List<(string, int, Type)> list = new List<(string, int, Type)>
-        {
-            ("PM Completed", 6, typeof(DateTime)),
-            ("Oldest Completed", 6 + 1, typeof(DateTime)),
-            ("UA", 6 + 2, typeof(int))
+    //    List<(string, int, Type)> list = new List<(string, int, Type)>
+    //    {
+    //        ("PM Completed", 6, typeof(DateTime)),
+    //        ("Oldest Completed", 6 + 1, typeof(DateTime)),
+    //        ("UA", 6 + 2, typeof(int))
 
-        };
+    //    };
 
-        AddPMCompletedColumns(list);
+    //    AddPMCompletedColumns(list);
 
-       //int counter = 0;
+    //   //int counter = 0;
 
-        //TODO: need to add check if contract has epired also
-        /// Gets rid of devices that were UA, need to add check for expired contract in this loop
+    //    //TODO: need to add check if contract has epired also
+    //    /// Gets rid of devices that were UA, need to add check for expired contract in this loop
         
-        foreach (DataRow item in PMScheduleList.Rows) {
-            (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
-            //uaCount = GetUADeviceCount((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+    //    foreach (DataRow item in PMScheduleList.Rows) {
+    //        (firstAndLast, uaCount) = GetMostRecentAndOldestPMsCompleted((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
+    //        //uaCount = GetUADeviceCount((int)item["ID"], (int)item["Service Plan"], item["Model"].ToString());
 
-            //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
-            //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
+    //        //item["PM Completed"] = firstAndLast[0] == null ? null : firstAndLast[0];
+    //        //item["Oldest Completed"] = firstAndLast[1] == null ? null : firstAndLast[1];
 
-            if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
-            if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
-            item["UA"] = uaCount > 0 ? uaCount : 0;
+    //        if (firstAndLast[0] != null) { item["PM Completed"] = firstAndLast[0]; }
+    //        if (firstAndLast[1] != null) { item["Oldest Completed"] = firstAndLast[1]; }
+    //        item["UA"] = uaCount > 0 ? uaCount : 0;
 
-          //  uaCount = (dteUACount.Rows.Count > 0)
-          //? (int)dteUACount.Rows[0]["UA"]
-          //: 0;
+    //      //  uaCount = (dteUACount.Rows.Count > 0)
+    //      //? (int)dteUACount.Rows[0]["UA"]
+    //      //: 0;
 
-        }
-    }
+    //    }
+    //}
 
    
 
