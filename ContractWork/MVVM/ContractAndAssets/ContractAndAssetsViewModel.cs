@@ -412,16 +412,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         (DataTable dt,_) = ExcelWB.RefreshSpreadSheet(sqlAccount);
         int x = 0;
         foreach (DataRow drRow in dt.Rows) {
-            contractNumber = "00";
-            if (drRow["Contract"].ToString().Substring(0, 2) != "00") {
-                contractNumber += drRow["Contract"].ToString();
-            }
-            else contractNumber = drRow["Contract"].ToString();
-
-            if (string.IsNullOrEmpty(contractNumber) || contractNumber == "00") {
+            if (drRow["Contract"].ToString().FixAccountFormat(out contractNumber)) {
+                MessageBox.Show($"Customer: {drRow["Customer"].ToString()} {GL.nl} Contract # {drRow["Contract"].ToString()} {GL.nl} !Does Note Exist!");
                 continue;
             }
-
             mainAccount = 0;
             mainAccount = (double)drRow["Account"];
             //if (mainAccount == 20261793) {
@@ -613,6 +607,13 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
 
         foreach (DataRow drRow in dtEquipment.Rows) {
+///
+//TODO: fix reference issue here with contract number cant use drRow["Contract"].ToString() have to use contractNumber variable 
+///
+            if (drRow["Contract"].ToString().FixAccountFormat(out contractNumber)) {
+                MessageBox.Show($"Customer: {drRow["Customer"].ToString()} {GL.nl} Contract # {drRow["Contract"].ToString()} {GL.nl} !Does Note Exist!");
+                continue;
+            }
             status = 0;
 
             if (drRow["Serial"].ToString().isSerialNumberArchived()) {
@@ -621,7 +622,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
             }
             if (recordCount >= 50 ) { exit = true; break; }
             
-            sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
+            sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {contractNumber} ");
             sbContractAndName = sb.ToString(); // Ensure assignment before use
 
             if (drRow["Serial"].ToString().DoesSerialNumberHaveServicePlanAndStatus(out x)) {
@@ -630,7 +631,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 }
                 else {  //this  means that both x != "Active" && x != "Future" - need
                     MessageBox.Show($"contract is not Active, and is not Future, update contract status");
-                    UpdateSerialNumberContractStatus(drRow);
+                    UpdateSerialNumberContractStatus(drRow, contractNumber);
 
                     if (!newEquipment.ContainsKey(sbContractAndName)){            //          drRow["Contract"].ToString())) {
                        // sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
@@ -651,7 +652,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 }
                 status += 1;
                 //serial number exists, does the service plan exist?
-                if (!drRow["Contract"].ToString().DoesThisServicePlanExist()) {
+                if (!contractNumber.DoesThisServicePlanExist()) {
                     //MessageBox.Show($"Contract # {drRow["Contract"].ToString()} does not exist");
                     status += -2;
                 }
@@ -662,7 +663,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                 switch (status) {
                     case 0:
-                        messageBoxText = $"Neither the SN: {drRow["Serial"].ToString()} or contract # {drRow["Contract"].ToString()} exists. \n" +
+                        messageBoxText = $"Neither the SN: {drRow["Serial"].ToString()} or contract # {contractNumber} exists. \n" +
                             "They are propably a CPO device from a previous account. \n" +
                             "Select NO if you want to Research SN and Contract. \n" +
                             "Select YES if you want to archive this contract and SN \n" +
@@ -677,7 +678,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                             drRow.AddNewAccount();
                             drRow.AddNewContract();
                             drRow.AddNewSerialNumber();
-                            drRow["Contract"].ToString().ArchiveServicePlan();
+                            contractNumber.ArchiveServicePlan();
                             drRow["Serial"].ToString().ArchiveSerialNumber();
                             archiveRecord++;
 
@@ -695,7 +696,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         MessageBox.Show("The SN does not exist but contract # exists \n" +
                             "Going to add SN and assign contract to it.");
                         AddNewSerialNumber(drRow);
-                        UpdateSerialNumberContractStatus(drRow);
+                        UpdateSerialNumberContractStatus(drRow, contractNumber);
 
                         //TODO: add new equipment count to include serial # and product definition
 
@@ -760,10 +761,10 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         AccessDB.AddToAccount(sqlAddSN);
     }
 
-    private void UpdateSerialNumberContractStatus(DataRow v) {
+    private void UpdateSerialNumberContractStatus(DataRow v, string contract) {
         string sqlUpdateStatus =
             "UPDATE [tblEquipment] " +
-            $"SET [ServicePlanID_FK] = {v["Contract"].ToString().GetServicePlanID()}, " +
+            $"SET [ServicePlanID_FK] = {contract.GetServicePlanID()}, " +
             $"[ServicePlanStatusLU_cbo] = '{v["Status"].ToString()}' " +
             $"WHERE [EquipmentSerial] = '{v["Serial"].ToString()}' ";
 

@@ -340,6 +340,22 @@ public static class AccessExtensionMethods {
     //    return Convert.ToBoolean(dte.Rows[0]["Archive"]);
     //}
 
+    public static bool FixAccountFormat(this string accountNumber, out string result) {
+        string contractNumber = "00";
+
+        if (string.IsNullOrEmpty(accountNumber) || accountNumber == "00"){
+            result = string.Empty;
+            return false;
+        }
+
+        if (accountNumber.Substring(0, 2) != "00") {
+            contractNumber += accountNumber;
+            result = contractNumber;
+            return true;
+        }
+        else { result = accountNumber; return true; }
+    }
+
     public static bool isContractArchived<t>(this t servicePlanNumberOrID) {
 
         AccessService accessDB = new AccessService();

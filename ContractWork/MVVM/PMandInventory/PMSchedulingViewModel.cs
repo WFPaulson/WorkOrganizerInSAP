@@ -228,23 +228,13 @@ public partial class PMSchedulingViewModel : ObservableObject {
         List<DateTime?> firstAndLast = new();
         int uaCount = 0;
 
-        //PMScheduleList = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMsAndUA(customerID, servicePlanID, mdlID));
-
         DataTable dte = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMs(customerID, servicePlanID, mdlID));
         DataTable dteUACount = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetUACount(customerID, servicePlanID, mdlID));
 
-        //if (customerID == 89) {
-        //    int s = 0;
-        //}
-
-        //if (dteUACount.Rows.Count > 0) {
-        //    int s = 0;
-        //}
-            uaCount = (dteUACount.Rows.Count > 0)
-          ? (int)dteUACount.Rows[0]["UA"]
-          : 0;
-        //}
-        //&& !Convert.IsDBNull(dteUACount.Rows[0]["UA"])
+        uaCount = (dteUACount.Rows.Count > 0)
+            ? (int)dteUACount.Rows[0]["UA"]
+            : 0;
+        
         DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"]))
            ? (DateTime?)dte.Rows[0]["PMCompleted"]
            : null;
@@ -254,7 +244,6 @@ public partial class PMSchedulingViewModel : ObservableObject {
 
         firstAndLast.Add(fst);
         firstAndLast.Add(lst);
-
       
         // Fix for CS0019 and CS0201: Remove invalid use of ?? with void-returning Add()
         // Instead, add fst and lst directly, handling nulls as needed.
