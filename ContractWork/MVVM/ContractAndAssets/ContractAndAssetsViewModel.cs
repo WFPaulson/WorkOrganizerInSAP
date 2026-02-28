@@ -404,6 +404,9 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         double shipAccount, mainAccount = 0;
         int recordCount = 0;
 
+        //TODO: use distinct you could have a device Lucas 2 expire but other devices still active ex. Folsom
+        //will need to follow up with a where status is active
+
         sqlAccount =
                 "SELECT DISTINCT [Account], [Customer], [Contract], [Status], [Cvg Start], [Cvg End] " +
                 "FROM [Edited$] " +
@@ -411,56 +414,117 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
         (DataTable dt,_) = ExcelWB.RefreshSpreadSheet(sqlAccount);
         int x = 0;
+
         foreach (DataRow drRow in dt.Rows) {
-            if (drRow["Contract"].ToString().FixAccountFormat(out contractNumber)) {
-                MessageBox.Show($"Customer: {drRow["Customer"].ToString()} {GL.nl} Contract # {drRow["Contract"].ToString()} {GL.nl} !Does Note Exist!");
-                continue;
-            }
+           
             mainAccount = 0;
             mainAccount = (double)drRow["Account"];
             //if (mainAccount == 20261793) {
             //    MessageBox.Show("Should be Lewis Co");
             //}
 
-            if (!contractNumber.DoesThisServicePlanExist() || !mainAccount.DoesThisAccountExist()) {
+            if (!drRow["Contract"].ToString().DoesThisServicePlanExist() || !mainAccount.DoesThisAccountExist()) {
                 
                 sqlInsert =
                     "INSERT INTO [tblServicePlan]([ShipToAccountNumber], [AccountName_cbo], [ServicePlanNumber], [ServicePlanStatus], " +
                     "[ServicePlanStartDate], [ServicePlanExpireDate]) " +
-                    $"VALUES ({drRow["Account"]}, '{drRow["Customer"]}', '{contractNumber}', '{drRow["Status"]}', " +
+                    $"VALUES ({drRow["Account"]}, '{drRow["Customer"]}', '{drRow["Contract"]}', '{drRow["Status"]}', " +
                     $"#{((DateTime)drRow["Cvg Start"]).ToString("MM/d/yyyy")}#, #{((DateTime)drRow["Cvg End"]).ToString("MM/d/yyyy")}#)";
+                
                 dbService.AddToAccount(sqlInsert);
 
-                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
-
+                servicePlans.Add(new AddServicePlanToAccess { planNumber = drRow["Contract"].ToString(), acctName = drRow["Customer"].ToString() });
                 recordCount++; 
             }
-            else if (contractNumber.GetServicePlanStatus() == "") {
+            else if (drRow["Contract"].ToString().GetServicePlanStatus() == "") {
+                
                 string sqlUpdate =
                         "UPDATE [tblServicePlan] " +
                         $"SET [ServicePlanStatus] = '{drRow["Status"]}' " +
-                        $"WHERE [ServicePlanNumber ] = '{contractNumber}'";
+                        $"WHERE [ServicePlanNumber ] = '{drRow["Contract"]}'";
+                
                 dbService.AddToAccount(SQLInsert: sqlUpdate);
-
-                servicePlans.Add(new AddServicePlanToAccess { planNumber = contractNumber, acctName = drRow["Customer"].ToString() });
+                servicePlans.Add(new AddServicePlanToAccess { planNumber = drRow["Contract"].ToString(), acctName = drRow["Customer"].ToString() });
                 recordCount++;
             }
         }
 
-       // newPlan.wrapUpComment
-
         WrapUpComment(recordCount, servicePlans, "Service Plans");
+
+        //TODO: you cant use distinct you could have a device Lucas 2 expire but other devices still active ex. Folsom
+
+        MessageBox.Show("Need to perform an update to set the Active contract status correctly");
+
+        recordCount = 0;
+        servicePlans.Clear();
+        
+        sqlAccount =
+                "SELECT DISTINCT " +
+                    "[Contract], [Customer] " +
+                "FROM " +
+                    "[Edited$] " +
+                "WHERE " +
+                    "[Type] = 'ProCare' " +
+                    "AND [Status] = 'Active'";
+
+        dt.Reset();
+
+        (dt, _) = ExcelWB.RefreshSpreadSheet(sqlAccount);
+
+        foreach (DataRow drRow in dt.Rows) {
+            string sqlUpdate =
+                    "UPDATE " +
+                        "[tblServicePlan] " +
+                    $"SET " +
+                        "[ServicePlanStatus] = 'Active' " +
+                    "WHERE " +
+                        $"[ServicePlanNumber ] = '{drRow["Contract"]}' " +
+                        "AND [ServicePlanStatus] <> 'Active'";
+
+            dbService.AddToAccount(SQLInsert: sqlUpdate);
+            servicePlans.Add(new AddServicePlanToAccess { planNumber = drRow["Contract"].ToString(), acctName = drRow["Customer"].ToString() });
+            recordCount++;
+        }
+
+        WrapUpComment(recordCount, servicePlans, "Contract Status");
     }
 
     private void WrapUpComment(int count, List<AddServicePlanToAccess> sbList, string plan) {
         StringBuilder addedbuilder = new StringBuilder();
 
+
+        //// 1. Create a large list (e.g., 120 items)
+        //List<int> largeList = Enumerable.Range(1, 120).ToList();
+        //int pageSize = 50;
+        //int pageNumber = 0;
+
+        //// 2. Loop until no more items are found
+        //while (pageNumber * pageSize < largeList.Count) {
+        //    // Skip previous pages and take 50 items
+        //    var pageItems = largeList.Skip(pageNumber * pageSize).Take(pageSize);
+
+        //    Console.WriteLine($"--- Page {pageNumber + 1} ---");
+        //    foreach (var item in pageItems) {
+        //        Console.WriteLine(item);
+        //    }
+
+        //    pageNumber++;
+        //}
+
+
+
+
+
+        do {
+
+        } while (true);
         addedbuilder.AppendLine($"{plan} added: ");
 
         foreach (AddServicePlanToAccess item in sbList) {
 
             if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
             else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+            else if (plan == "Contract Status") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
 
         }
         string listContent = addedbuilder.ToString();
@@ -607,13 +671,18 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
 
         foreach (DataRow drRow in dtEquipment.Rows) {
-///
-//TODO: fix reference issue here with contract number cant use drRow["Contract"].ToString() have to use contractNumber variable 
-///
-            if (drRow["Contract"].ToString().FixAccountFormat(out contractNumber)) {
-                MessageBox.Show($"Customer: {drRow["Customer"].ToString()} {GL.nl} Contract # {drRow["Contract"].ToString()} {GL.nl} !Does Note Exist!");
-                continue;
-            }
+            ///
+            //TODO: fix reference issue here with contract number cant use drRow["Contract"].ToString() have to use contractNumber variable 
+            ///
+            //if (drRow["Contract"].ToString().FixAccountFormat(out contractNumber)) {
+            //    MessageBox.Show($"Customer: {drRow["Customer"].ToString()} {GL.nl} Contract # {drRow["Contract"].ToString()} {GL.nl} !Does Note Exist!");
+            //    continue;
+            //}
+            //drRow["Contract"].ToString().FixAccountFormat(out contractNumber);
+
+            //drRow["Contract"].ToString().FixAccountFormat(out contractNumber);
+            //drRow["Contract"] = contractNumber;
+
             status = 0;
 
             if (drRow["Serial"].ToString().isSerialNumberArchived()) {
@@ -622,7 +691,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
             }
             if (recordCount >= 50 ) { exit = true; break; }
             
-            sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {contractNumber} ");
+            sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
             sbContractAndName = sb.ToString(); // Ensure assignment before use
 
             if (drRow["Serial"].ToString().DoesSerialNumberHaveServicePlanAndStatus(out x)) {
@@ -631,7 +700,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                 }
                 else {  //this  means that both x != "Active" && x != "Future" - need
                     MessageBox.Show($"contract is not Active, and is not Future, update contract status");
-                    UpdateSerialNumberContractStatus(drRow, contractNumber);
+                    UpdateSerialNumberContractStatus(drRow, drRow["Contract"].ToString());
 
                     if (!newEquipment.ContainsKey(sbContractAndName)){            //          drRow["Contract"].ToString())) {
                        // sb = new StringBuilder($"Customer: {drRow["Customer"].ToString()}, Contract #: {drRow["Contract"].ToString()} ");
@@ -663,7 +732,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
                 switch (status) {
                     case 0:
-                        messageBoxText = $"Neither the SN: {drRow["Serial"].ToString()} or contract # {contractNumber} exists. \n" +
+                        messageBoxText = $"Neither the SN: {drRow["Serial"].ToString()} or contract # {drRow["Contract"].ToString()} exists. \n" +
                             "They are propably a CPO device from a previous account. \n" +
                             "Select NO if you want to Research SN and Contract. \n" +
                             "Select YES if you want to archive this contract and SN \n" +
@@ -678,7 +747,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                             drRow.AddNewAccount();
                             drRow.AddNewContract();
                             drRow.AddNewSerialNumber();
-                            contractNumber.ArchiveServicePlan();
+                            drRow["Contract"].ToString().ArchiveServicePlan();
                             drRow["Serial"].ToString().ArchiveSerialNumber();
                             archiveRecord++;
 
@@ -696,7 +765,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
                         MessageBox.Show("The SN does not exist but contract # exists \n" +
                             "Going to add SN and assign contract to it.");
                         AddNewSerialNumber(drRow);
-                        UpdateSerialNumberContractStatus(drRow, contractNumber);
+                        UpdateSerialNumberContractStatus(drRow, drRow["Contract"].ToString());
 
                         //TODO: add new equipment count to include serial # and product definition
 
@@ -736,20 +805,6 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
         return (recordCount, newEquipmentComment, archiveRecord, exit);
     }
    
-    //private void AddNewAccount(DataRow dr) {
-    //    string sqlContract = string.Empty;
-
-    //    AccessDB.AddToAccount(sqlContract);
-    //}
-
-    //private void AddNewContract(DataRow dr) {
-    //    string sqlContract =
-    //        "INSERT INTO [tblServicePlan] ([ShipToAccountNumber], [ServicePlanNumber], [ServicePlanStatus], [Archive]) " +
-    //        $"VALUES ('{dr["Account"]}', '{dr["Contract"]} ', ' {dr["Status"]}')";
-
-    //    AccessDB.AddToAccount(sqlContract);
-    //}
-
     private void AddNewSerialNumber(DataRow dr) {
         double custID = (double)dr["Account"];
         //var custID = v["Account"];

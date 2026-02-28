@@ -405,6 +405,9 @@ public static class AccessExtensionMethods {
             $"WHERE [EquipmentSerial] = '{serialNumber}'";
 
         DataTable dte = accessDB.FetchDBRecordRequest(fullstatement: sqlIsSerialArchived);
+        if (dte.Rows.Count < 1 ) {
+            return false;
+        }
 
         return Convert.ToBoolean(dte.Rows[0]["Archive"]);
     }
