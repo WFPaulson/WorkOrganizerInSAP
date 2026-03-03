@@ -495,43 +495,55 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
         //// 1. Create a large list (e.g., 120 items)
         //List<int> largeList = Enumerable.Range(1, 120).ToList();
-        //int pageSize = 50;
-        //int pageNumber = 0;
+        int pageSize = 50;
+        int pageNumber = 0;
+        int runtime = 0;
+        string listContent = string.Empty;
+        
 
         //// 2. Loop until no more items are found
-        //while (pageNumber * pageSize < largeList.Count) {
-        //    // Skip previous pages and take 50 items
-        //    var pageItems = largeList.Skip(pageNumber * pageSize).Take(pageSize);
-
-        //    Console.WriteLine($"--- Page {pageNumber + 1} ---");
-        //    foreach (var item in pageItems) {
-        //        Console.WriteLine(item);
-        //    }
-
-        //    pageNumber++;
-        //}
-
-
-
-
-
         do {
+            addedbuilder.Clear();
+            addedbuilder.AppendLine($"{plan} added: ");
 
-        } while (true);
-        addedbuilder.AppendLine($"{plan} added: ");
+            if (runtime == 1) {
+                pageNumber++;
+                runtime = 0;
+            }
+            runtime = 1;
 
-        foreach (AddServicePlanToAccess item in sbList) {
+            // Skip previous pages and take 50 items
+            var pageItems = sbList.Skip(pageNumber * pageSize).Take(pageSize);
 
-            if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
-            else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
-            else if (plan == "Contract Status") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+            //    Console.WriteLine($"--- Page {pageNumber + 1} ---");
+            //    foreach (var item in pageItems) {
+            //        Console.WriteLine(item);
+            //    }
 
-        }
-        string listContent = addedbuilder.ToString();
 
-        MessageBox.Show($"Done with Compare of {plan}: \n" +
-            $"Records updated: {count} \n" +
-            $"{listContent} ");
+           
+
+
+
+
+
+
+            //addedbuilder.AppendLine($"{plan} added: ");
+
+            foreach (AddServicePlanToAccess item in pageItems) {                        //sbList) {
+
+                if (plan == "Service Plans") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+                else if (plan == "Account Numbers") { addedbuilder.AppendLine($"- {item.acctName}   - {item.planNumber} "); }
+                else if (plan == "Contract Status") { addedbuilder.AppendLine($"- {item.planNumber}   - {item.acctName} "); }
+
+            }
+            listContent = string.Empty;
+             listContent= addedbuilder.ToString();
+
+            MessageBox.Show($"Done with page {pageNumber + 1} Comparing {plan}: \n" +
+                $"Records updated: {count} \n" +
+                $"{listContent} ");
+        } while (pageNumber * pageSize < sbList.Count);
     }
 
     private bool ExtendedAssetsNotBlank => (ExtendedAssetsFileName != "blank") && (AccessFileName != "blank");
