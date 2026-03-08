@@ -1,4 +1,4 @@
-﻿ <Window x:Class="ContractWork.MVVM.CustomerDetails.CustomerAccountDetailsWindow"
+﻿<Window x:Class="ContractWork.MVVM.CustomerDetails.CustomerAccountDetailsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -212,9 +212,9 @@
                     </StackPanel>
 
                     <Label Margin="5,-8,0,4" Content="Account Name:"/>
-                    
+
                     <!--TODO: need to add a Archive checkbox and an unlock/lock button-->
-                    
+
                     <Label Margin="5,30,5,0" Content="Main Account:"/>
                     <Label Margin="5" Content="Billing Account:"/>
                     <Label Margin="5,0,5,5" Content="Shipping Account:"/>
@@ -251,7 +251,7 @@
 
                 </StackPanel>
 
-                
+
 
             </Grid>
 
@@ -305,8 +305,8 @@
             <Grid Grid.Row="1" Grid.Column="3">
                 <StackPanel >
                     <StackPanel Orientation="Horizontal">
-                    <Label Content="Customers:"/>
-                    <CheckBox Margin="2,7,5,5" IsThreeState="True"
+                        <Label Content="Customers:"/>
+                        <CheckBox Margin="2,7,5,5" IsThreeState="True"
                             Content="{Binding CustomerViewingby}"
                             d:Content="Viewing Current"
                             IsChecked="{Binding IsCheckedCustomerArchived}"
@@ -497,14 +497,14 @@
 
             <DataGrid x:Name="dgEquipmentList" Style="{StaticResource roundedDataGrid}"
                       Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-                      Margin="5,310,3,0"
+                      Margin="-89,338,97,8"
                       Height="510" 
                       ItemsSource="{Binding CustomerEquipmentList}"
                       AutoGenerateColumns="False"
-                      VirtualizingPanel.IsVirtualizing="False"
+                      VirtualizingPanel.IsVirtualizing="False" Grid.RowSpan="2"
                 >
-                
-                
+
+
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Equipment ID" Binding="{Binding EquipmentID}" Width="Auto"
                                         CanUserSort="True" SortMemberPath="EquipmentID"/>
@@ -579,31 +579,34 @@
                             >
                             </CheckBox>
 
-                        </DataGridTemplateColumn.Header> 
+                        </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox x:Name="cboPmMonthDue" ItemsSource="{Binding PMMonthList}"
                                           SelectedItem="{Binding PmMonthDue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="SelectionChanged">
-                                            <i:InvokeCommandAction Command="{Binding DataContext.SetPMMonthChangedCommand,
-                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                                                   CommandParameter="{Binding PmMonthDue}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+
                                 </ComboBox>
-                             
+
                             </DataTemplate>
-                           
+
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Width="120" CanUserSort="True" SortMemberPath="PMCompleted">
                         <DataGridTemplateColumn.Header>
-                                <CheckBox Content="PM Completed"/>
+                            <CheckBox Content="PM Completed"
+                                        IsChecked="{Binding DataContext.AllPMCompletedSelected, 
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                            >
+                            </CheckBox>
+
+                            <!--<CheckBox Content="PM Due"
+      IsChecked="{Binding DataContext.AllSelected, 
+RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" -->
+
                         </DataGridTemplateColumn.Header>
-                       
+
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -666,7 +669,7 @@
                                             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
                                             StringFormat={}{0:MM/dd/yy}}"
                                         />
-                                            <CheckBox Command="{Binding PMDoneCommand}" 
+                                        <CheckBox Command="{Binding PMDoneCommand}" 
                                                   CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                                   IsChecked="{Binding PMCompletedCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   VerticalAlignment="Center"

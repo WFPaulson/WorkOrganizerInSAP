@@ -67,6 +67,10 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
     [ObservableProperty]
     private bool _allSelected;
 
+
+    [ObservableProperty]
+    private bool _allPMCompletedSelected;
+
     [ObservableProperty]
     private string _selectedPmMonthDue;     // = "";
 
@@ -94,6 +98,7 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
         GetCustomerList();
     }
 
+    //TODO: setup for the AllPMCompletedSelected to set all PMs to completed or not completed
 
     [RelayCommand]
     public void SetPMMonthChanged(string dateChanged) {

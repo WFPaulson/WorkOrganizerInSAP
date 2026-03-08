@@ -116,7 +116,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         accessDB.AddToAccount(SQLInsert: sqlInsert);
 
         //PMMonthSelection();
-        Full_PMList();
+        //Full_PMList();
     }
 
     [RelayCommand]
@@ -228,6 +228,7 @@ public partial class PMSchedulingViewModel : ObservableObject {
         List<DateTime?> firstAndLast = new();
         int uaCount = 0;
 
+        //TODO: we dont want to include oldest if the device is ua
         DataTable dte = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetMostRecentAndOldPMs(customerID, servicePlanID, mdlID));
         DataTable dteUACount = accessDB.FetchDBRecordRequest(PMandInventorySQLStatements.GetUACount(customerID, servicePlanID, mdlID));
 
@@ -238,6 +239,9 @@ public partial class PMSchedulingViewModel : ObservableObject {
         DateTime? fst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[0]["PMCompleted"]))
            ? (DateTime?)dte.Rows[0]["PMCompleted"]
            : null;
+
+        //TODO: we dont want to include if the device is ua
+
         DateTime? lst = (dte.Rows.Count > 0 && !Convert.IsDBNull(dte.Rows[dte.Rows.Count - 1]["PMCompleted"])) 
             ? (DateTime?)dte.Rows[dte.Rows.Count - 1]["PMCompleted"] 
             : null;
