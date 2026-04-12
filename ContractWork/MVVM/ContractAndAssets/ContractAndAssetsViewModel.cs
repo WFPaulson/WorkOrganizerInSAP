@@ -457,7 +457,7 @@ public partial class ContractAndAssetsViewModel : ObservableObject {
 
         recordCount = 0;
         servicePlans.Clear();
-        
+        // use database to get info not excel Edited ws
         sqlAccount =
                 "SELECT DISTINCT " +
                     "[Contract], [Customer] " +

@@ -497,7 +497,7 @@
 
             <DataGrid x:Name="dgEquipmentList" Style="{StaticResource roundedDataGrid}"
                       Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-                      Margin="-89,338,97,8"
+                      Margin="1,338,7,8"
                       Height="510" 
                       ItemsSource="{Binding CustomerEquipmentList}"
                       AutoGenerateColumns="False"
@@ -578,18 +578,20 @@
                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                             >
                             </CheckBox>
-
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox x:Name="cboPmMonthDue" ItemsSource="{Binding PMMonthList}"
                                           SelectedItem="{Binding PmMonthDue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-
-
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetPMMonthChangedCommand,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                                                   CommandParameter="{Binding PmMonthDue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </ComboBox>
-
                             </DataTemplate>
-
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
@@ -600,11 +602,6 @@
                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                             >
                             </CheckBox>
-
-                            <!--<CheckBox Content="PM Due"
-      IsChecked="{Binding DataContext.AllSelected, 
-RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" -->
-
                         </DataGridTemplateColumn.Header>
 
                         <DataGridTemplateColumn.CellTemplate>
@@ -619,6 +616,16 @@ RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" -->
                                               VerticalAlignment="Center"
                                               Margin="15 5 0 0"
                                               Name="pmDone"/>
+
+
+                                    <!--<i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetPMCompletedCommand,
+RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                   CommandParameter="{Binding PmMonthDue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>-->
+
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
