@@ -67,6 +67,10 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
     [ObservableProperty]
     private bool _allSelected;
 
+
+    [ObservableProperty]
+    private bool _allPMCompletedSelected;
+
     [ObservableProperty]
     private string _selectedPmMonthDue;     // = "";
 
@@ -94,6 +98,7 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
         GetCustomerList();
     }
 
+    //TODO: setup for the AllPMCompletedSelected to set all PMs to completed or not completed
 
     [RelayCommand]
     public void SetPMMonthChanged(string dateChanged) {
@@ -102,6 +107,21 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
             SetAllPMDueToSame();
         }
 
+    }
+
+    [RelayCommand]
+    public void SetPMCompleted(string dateCompleted) {
+        SelectedPmMonthDue = dateCompleted;
+        if (AllPMCompletedSelected)
+        {
+            SetAllPMCompletedToSame();
+        }
+
+    }
+
+    private void SetAllPMCompletedToSame()
+    {
+        
     }
 
     [RelayCommand]
@@ -193,8 +213,8 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
         int _mainAccount = _customerID.getShippingAccountNumberFromCustID();
 
         //need to change accountname to custid or main account #
-        string sqlJoinStatement =
-            "SELECT DISTINCT ServicePlanNumber, ServicePlanStatus, ServicePlanStartDate, ServicePlanExpireDate, " +
+        string sqlJoinStatement =   //DISTINCT
+            "SELECT ServicePlanNumber, ServicePlanStatus, ServicePlanStartDate, ServicePlanExpireDate, " +
             "Expired " +
             "FROM tblServicePlan " +    
             $"WHERE tblServicePlan.[ShipToAccountNumber] = {_mainAccount} ";      //(tblEquipment.[CustomerAccountID_FK]) = {_customerID} ";
