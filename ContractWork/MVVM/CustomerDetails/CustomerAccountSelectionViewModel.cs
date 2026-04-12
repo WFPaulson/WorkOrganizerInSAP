@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ContractWork.MVVM.CustomerDetails;
 public partial class CustomerAccountSelectionViewModel : ObservableObject {
@@ -116,7 +117,13 @@ public partial class CustomerAccountSelectionViewModel : ObservableObject {
 
         accessDB.AddToAccount(SQLInsert: sqlUpdate);
 
+        Refresh();
+        
         MessageBox.Show("Update completed");
+    }
+
+    private void Refresh() {
+        GetList();
     }
 
     [RelayCommand]
