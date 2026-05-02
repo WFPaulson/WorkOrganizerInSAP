@@ -317,11 +317,24 @@ public partial class CustomerEquipmentModel : ObservableObject, ICustomerAccount
             PmMonthNumber = GV._monthNumberLookup[PmMonthName];
         }
         if (update)
-            //value =
-            //value = "'" + value + "'";
-        //"'" + value.Substring(0, 3) + "'";
         AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PmMonthName, this, PMMonthParameters);
     }
+
+    public void Update_bf_pmMonthDue(string value){
+        _pmMonthDue = value;
+        PmMonthName = DeconstructPMMonthDue(value);
+        AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PmMonthName, this, PMMonthParameters);
+    }
+        //backing_fieldName = value;
+        //switch (backing_fieldName)
+        //{
+        //    case "PMMonthDue":
+        //        _pmMonthDue = value;
+        //        PmMonthName = DeconstructPMMonthDue(value);
+        //        AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PmMonthName, this, PMMonthParameters);
+
+        //        break;
+        //}
 
     private string DeconstructPMMonthDue(string value) {    // "May-5" 
         if (value != string.Empty && value != "No Date")  {
@@ -476,6 +489,23 @@ public partial class CustomerEquipmentModel : ObservableObject, ICustomerAccount
     private bool update = false;
 
     public bool IsSelected { get; set; }
+
+    
+
+                
+
+
+        //if (update) {
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(ModelID, this, ModelNumberParams);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(VersionID, this, VersionNumberParams);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(DeviceUnavailable, this, DeviceUnavailableParameters);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(ServicePlanStatus, this, StatusParameters);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PmMonthName, this, PMMonthParameters);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PmMonthNumber, this, PMMonthNumberParameters);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PMCompletedCheck, this, PMCompletedCheckParams);
+        //    AccessService.UpdateCustomerAccountDetails<CustomerEquipmentModel>(PMCompleted, this, PMCompletedParams);
+        //}
+    
 
     public CustomerEquipmentModel() {
         update = false;

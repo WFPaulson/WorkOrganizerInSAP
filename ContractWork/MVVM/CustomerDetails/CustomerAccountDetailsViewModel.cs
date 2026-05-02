@@ -104,7 +104,7 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
     public void SetPMMonthChanged(string dateChanged) {
         SelectedPmMonthDue = dateChanged;
         if (AllSelected) {
-            SetAllPMDueToSame();
+            SetAllPMDueToSame(dateChanged);
         }
 
     }
@@ -125,11 +125,12 @@ public partial class CustomerAccountDetailsViewModel : ObservableObject {
     }
 
     [RelayCommand]
-    public void SetAllPMDueToSame() {
+    public void SetAllPMDueToSame(string dChange) {
         foreach (var item in CustomerEquipmentList) {
-            item.PmMonthDue = SelectedPmMonthDue;
+            item.Update_bf_pmMonthDue(dChange);
         }
         AllSelected = false;
+        Refresh();
     }
 
     [RelayCommand]
